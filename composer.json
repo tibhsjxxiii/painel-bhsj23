@@ -1,0 +1,23 @@
+{
+    "name": "bhsj23/painel-estrategico",
+    "description": "Painel Estratégico BHSJ23",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "phpoffice/phpspreadsheet": "^4.2",
+        "dompdf/dompdf": "^3.1",
+        "vlucas/phpdotenv": "^5.6",
+        "monolog/monolog": "^3.9",
+        "ramsey/uuid": "^4.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
