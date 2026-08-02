@@ -58,15 +58,12 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .info-popover{position:absolute;background:var(--navy);color:#fff;font-size:0.76rem;padding:10px 13px;border-radius:8px;max-width:270px;box-shadow:0 10px 28px rgba(0,0,0,0.3);z-index:9998;line-height:1.5;}
 .panel-sub{color:var(--muted);font-size:0.7rem;margin-bottom:8px;}
 
-.dash-grid{display:grid;grid-template-columns:250px 1fr;gap:10px;height:calc(100vh - 100px);}
+.dash-grid{display:grid;grid-template-columns:340px 1fr;gap:10px;height:calc(100vh - 100px);}
 @media(max-width:1100px){.dash-grid{grid-template-columns:1fr;height:auto;}.main{height:auto;overflow-y:visible;}}
-.dash-left{display:flex;flex-direction:column;gap:10px;min-height:0;}
-.dash-right{display:flex;flex-direction:column;gap:10px;min-height:0;}
-.dash-right>.panel{display:flex;flex-direction:column;min-height:0;}
-.dash-right>.panel:first-child{flex:1.25;}
-.dash-right>.two-col{flex:1.3;min-height:0;}
-.dash-right>.two-col>.panel{min-height:0;overflow-y:auto;}
-.dash-right>.panel:last-child{flex:1;}
+.dash-left{display:flex;flex-direction:column;gap:10px;min-height:0;height:100%;}
+.dash-right{display:flex;flex-direction:column;gap:10px;min-height:0;height:100%;}
+.dash-right>.panel{display:flex;flex-direction:column;min-height:0;flex:1;}
+.dash-right .chart-wrap{flex:1;min-height:0;}
 .dash-right .chart-wrap{flex:1;min-height:0;}
 
 .gauge-card{text-align:center;padding:12px 16px !important;}
@@ -148,7 +145,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     <div class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></div>
     <div class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></div>
     <div class="nav-item" data-view="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg><span data-i18n="navAI">Insights</span></div>
-    <div class="nav-item" data-view="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg><span data-i18n="navInfo">Sobre</span></div>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-live"></div>
   </aside>
@@ -184,55 +180,50 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
             <div class="bignum"><div class="v mono" id="bigGeral">—</div><div class="l" data-i18n="bigGeralL">Atendimento Geral</div></div>
             <div class="bignum"><div class="v mono" id="bigSaude">—</div><div class="l" data-i18n="bigSaudeL">Em Saúde</div></div>
           </div>
-          <div class="panel gauge-card">
-            <div class="panel-title"><span data-i18n="gauge2Title">Participação da Odontologia</span><button class="info-icon" data-info="infoGauge2">i</button></div>
-            <div class="panel-sub" data-i18n="gauge2Sub">% do atendimento em saúde</div>
-            <div class="gauge-wrap"><canvas id="gauge2"></canvas><div class="gauge-value" id="gauge2Val">—</div></div>
-          </div>
-          <div class="mini-grid">
-            <div class="mini-stat"><div class="v mono" id="miniExp">—</div><div class="l" data-i18n="miniExpL">Expedições</div></div>
-            <div class="mini-stat"><div class="v mono" id="miniMun">—</div><div class="l" data-i18n="miniMunL">Municípios</div></div>
-            <div class="mini-stat"><div class="v mono" id="miniAvg">—</div><div class="l" data-i18n="miniAvgL">Média/Expedição</div></div>
-            <div class="mini-stat"><div class="v mono" id="miniAlim">—</div><div class="l" data-i18n="miniAlimL">Refeições</div></div>
+          <div class="panel" style="flex:1;display:flex;flex-direction:column;min-height:0;">
+            <div class="panel-title"><span data-i18n="breakdownTitle">Detalhamento de Atendimentos</span><button class="info-icon" data-info="infoBreakdown">i</button></div>
+            <div class="panel-sub" data-i18n="breakdownSub">Todas as categorias de atendimento no período selecionado</div>
+            <div class="chart-wrap" style="height:170px;flex:none;"><canvas id="chartBreakdown"></canvas></div>
+            <div id="breakdownList" style="overflow-y:auto;flex:1;margin-top:6px;"></div>
           </div>
         </div>
         <div class="dash-right">
           <div class="panel">
-            <div class="panel-title"><span data-i18n="stackTitle">Atendimento por Expedição · por Categoria</span><button class="info-icon" data-info="infoStack">i</button></div>
-            <div class="panel-sub" data-i18n="stackSub">Composição de cada expedição, empilhada por tipo de atendimento</div>
-            <div class="chart-wrap tall"><canvas id="chartStacked"></canvas></div>
-          </div>
-          <div class="two-col">
-            <div class="panel">
-              <div class="panel-title"><span data-i18n="top5Title">Top 5 Especialidades Médicas</span><button class="info-icon" data-info="infoTop5">i</button></div>
-              <div class="panel-sub" data-i18n="top5Sub">Maior volume de consultas no período</div>
-              <div id="top5List"></div>
-            </div>
-            <div class="panel">
-              <div class="panel-title"><span data-i18n="donutTitle">Distribuição por Categoria</span><button class="info-icon" data-info="infoDonut">i</button></div>
-              <div class="panel-sub" data-i18n="donutSub">Participação de cada categoria no total</div>
-              <div class="chart-wrap short"><canvas id="chartDonutCat"></canvas></div>
-            </div>
+            <div class="panel-title"><span data-i18n="areaTitle">Evolução do Atendimento Geral</span><button class="info-icon" data-info="infoArea">i</button></div>
+            <div class="panel-sub" data-i18n="areaSub">Ao longo das expedições, na ordem em que ocorreram — passe o mouse para ver o município</div>
+            <div class="chart-wrap"><canvas id="chartArea"></canvas></div>
           </div>
           <div class="panel">
-            <div class="panel-title"><span data-i18n="areaTitle">Evolução do Atendimento Geral</span><button class="info-icon" data-info="infoArea">i</button></div>
-            <div class="panel-sub" data-i18n="areaSub">Ao longo das expedições, na ordem em que ocorreram</div>
-            <div class="chart-wrap short"><canvas id="chartArea"></canvas></div>
+            <div class="panel-title"><span data-i18n="examMiniTitle">Exames por Tipo</span><button class="info-icon" data-info="infoExam">i</button></div>
+            <div class="panel-sub" data-i18n="examNote">Distribuição dos exames realizados, considerando o período selecionado.</div>
+            <div class="chart-wrap"><canvas id="chartExamsMini"></canvas></div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="view" id="view-specialties">
-      <div class="panel">
-        <div class="panel-title"><span data-i18n="specTitle">Especialidades Médicas</span><button class="info-icon" data-info="infoSpec">i</button></div>
-        <div class="panel-sub" data-i18n="specNote">Volume de consultas por especialidade, considerando o período selecionado.</div>
-        <div class="chart-wrap" style="height:460px;"><canvas id="chartSpecialties"></canvas></div>
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="voyageTitle">Rota das Expedições</span><button class="info-icon" data-info="infoVoyageSpec">i</button></div>
+          <div class="panel-sub" data-i18n="voyageSpecNote">Passe o mouse em qualquer parada para ver as especialidades daquela expedição</div>
+          <div class="voyage"><div class="voyage-track" id="voyageTrackSpec"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="specTitle">Especialidades Médicas</span><button class="info-icon" data-info="infoSpec">i</button></div>
+          <div class="panel-sub" data-i18n="specNote">Volume de consultas por especialidade, considerando o período selecionado.</div>
+          <div class="chart-wrap" style="height:420px;"><canvas id="chartSpecialties"></canvas></div>
+        </div>
       </div>
     </div>
 
     <div class="view" id="view-exams">
       <div class="stack">
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="voyageTitle">Rota das Expedições</span><button class="info-icon" data-info="infoVoyageExam">i</button></div>
+          <div class="panel-sub" data-i18n="voyageExamNote">Passe o mouse em qualquer parada para ver os exames daquela expedição</div>
+          <div class="voyage"><div class="voyage-track" id="voyageTrackExam"></div></div>
+        </div>
         <div class="panel">
           <div class="panel-title"><span data-i18n="examTitle">Exames por Tipo</span><button class="info-icon" data-info="infoExam">i</button></div>
           <div class="panel-sub" data-i18n="examNote">Distribuição dos exames realizados, considerando o período selecionado.</div>
@@ -284,11 +275,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <div id="aiAnswer"></div>
         </div>
       </div>
-    </div>
-
-    <div class="view" id="view-info">
-      <div class="dq"><b data-i18n="dqTitle">Nota de qualidade de dados —</b> <span data-i18n="dqBody">Todos os valores deste painel foram extraídos linha por linha, coluna por coluna, diretamente da planilha oficial, com leitura programática — sem digitação manual.</span></div>
-      <div class="prod"><b data-i18n="prodTitle">Como atualizar após cada expedição —</b> <span data-i18n="prodBody">Rode "gerar_dashboard.py" apontando para a planilha .ods atualizada. O script detecta automaticamente todas as abas de ano (2025, 2026, 2027...), recalcula tudo e gera um novo dashboard.html pronto para publicar. Nenhuma edição de código é necessária.</span></div>
     </div>
   </main>
 </div>
@@ -396,6 +382,26 @@ const I18N = {
   infoVoyage:"A sequência real de municípios visitados pelo barco. Clique em qualquer parada para ver todos os dados daquela expedição específica.",
   infoRank:"Todos os municípios atendidos, somando todas as expedições no período selecionado (municípios revisitados aparecem somados).",
   infoTop10:"Os 10 municípios com maior atendimento geral acumulado no período selecionado, com o valor exato ao lado de cada barra.",
+  examMiniTitle:"Exames por Tipo",
+  breakdownTitle:"Detalhamento de Atendimentos",
+  breakdownSub:"Todas as categorias de atendimento no período selecionado",
+  infoBreakdown:"Todas as categorias de atendimento realizadas pelo barco: especialidades médicas, exames, cirurgias de média e baixa complexidade, procedimento odontológico, triagem/enfermagem, consulta odontológica, entrega de medicamentos e alimentação — no período selecionado.",
+  catEspecialidade:"Especialidade Médica (Consultas)",
+  catExames:"Exames",
+  catTriagem:"Triagem / Enfermagem",
+  catMedicamento:"Entrega de Medicamento",
+  catAlimentacao:"Alimentação",
+  voyageSpecNote:"Passe o mouse em qualquer parada para ver as especialidades daquela expedição",
+  voyageExamNote:"Passe o mouse em qualquer parada para ver os exames daquela expedição",
+  infoVoyageSpec:"Mesma rota das expedições, mas ao passar o mouse mostra as especialidades médicas realizadas naquela expedição específica.",
+  infoVoyageExam:"Mesma rota das expedições, mas ao passar o mouse mostra os exames realizados naquela expedição específica.",
+  procMiniTitle:"Cirurgias e Procedimentos Odontológicos",
+  procMiniSub:"Cirurgias de média e baixa complexidade comparadas aos procedimentos odontológicos",
+  infoProcMini:"Compara o volume de cirurgias de baixa complexidade, cirurgias de média complexidade e procedimentos odontológicos (categoria separada da consulta odontológica comum) no período selecionado.",
+  procCirBaixa:"Cirurgia de Baixa Complexidade",
+  procCirMedia:"Cirurgia de Média Complexidade",
+  procOdontoL:"Procedimento Odontológico",
+  consultaOdontoL:"Consulta Odontológica",
   ansAverage:(name,avg,total,n)=>`A média de "${name}" é de ${fmt(avg)} por expedição (total de ${fmt(total)} em ${n} expedições no período selecionado).`,
   ansTotal:(name,total,avg)=>`O total de "${name}" no período selecionado é ${fmt(total)} (média de ${fmt(avg)} por expedição).`,
   ansTopSpec:(name,val)=>`A especialidade com maior volume é "${name}", com ${fmt(val)} consultas no período selecionado.`,
@@ -441,6 +447,26 @@ const I18N = {
   infoVoyage:"The actual sequence of municipalities visited by the boat. Click any stop to see all the data for that specific expedition.",
   infoRank:"Every municipality served, summing all expeditions in the selected period (revisited municipalities are combined).",
   infoTop10:"The 10 municipalities with the highest cumulative total attendance in the selected period, with the exact value next to each bar.",
+  examMiniTitle:"Exams by Type",
+  breakdownTitle:"Attendance Breakdown",
+  breakdownSub:"All attendance categories in the selected period",
+  infoBreakdown:"Every attendance category performed by the boat: medical specialties, exams, medium and low-complexity surgeries, dental procedures, triage/nursing, dental consultations, medication delivery, and meals — for the selected period.",
+  catEspecialidade:"Medical Specialty (Consultations)",
+  catExames:"Exams",
+  catTriagem:"Triage / Nursing",
+  catMedicamento:"Medication Delivery",
+  catAlimentacao:"Meals",
+  voyageSpecNote:"Hover over any stop to see the specialties from that expedition",
+  voyageExamNote:"Hover over any stop to see the exams from that expedition",
+  infoVoyageSpec:"Same expedition route, but hovering shows the medical specialties performed on that specific expedition.",
+  infoVoyageExam:"Same expedition route, but hovering shows the exams performed on that specific expedition.",
+  procMiniTitle:"Surgeries and Dental Procedures",
+  procMiniSub:"Medium and low-complexity surgeries compared to dental procedures",
+  infoProcMini:"Compares the volume of low-complexity surgeries, medium-complexity surgeries, and dental procedures (a separate category from routine dental consultations) in the selected period.",
+  procCirBaixa:"Low-Complexity Surgery",
+  procCirMedia:"Medium-Complexity Surgery",
+  procOdontoL:"Dental Procedure",
+  consultaOdontoL:"Dental Consultation",
   ansAverage:(name,avg,total,n)=>`The average of "${name}" is ${fmt(avg)} per expedition (total of ${fmt(total)} across ${n} expeditions in the selected period).`,
   ansTotal:(name,total,avg)=>`The total for "${name}" in the selected period is ${fmt(total)} (average of ${fmt(avg)} per expedition).`,
   ansTopSpec:(name,val)=>`The specialty with the highest volume is "${name}", with ${fmt(val)} consultations in the selected period.`,
@@ -486,6 +512,26 @@ const I18N = {
   infoVoyage:"Die tatsächliche Reihenfolge der vom Boot besuchten Gemeinden. Klicken Sie auf einen Stopp für alle Daten dieser Expedition.",
   infoRank:"Alle versorgten Gemeinden, summiert über alle Expeditionen im gewählten Zeitraum.",
   infoTop10:"Die 10 Gemeinden mit den meisten Gesamtbehandlungen im gewählten Zeitraum, mit genauem Wert neben jedem Balken.",
+  examMiniTitle:"Untersuchungen nach Art",
+  breakdownTitle:"Behandlungsübersicht",
+  breakdownSub:"Alle Behandlungskategorien im gewählten Zeitraum",
+  infoBreakdown:"Alle vom Boot durchgeführten Behandlungskategorien: medizinische Fachrichtungen, Untersuchungen, Operationen mittlerer und niedriger Komplexität, zahnärztliche Eingriffe, Triage/Pflege, Zahnkonsultationen, Medikamentenausgabe und Mahlzeiten — im gewählten Zeitraum.",
+  catEspecialidade:"Medizinische Fachrichtung (Konsultationen)",
+  catExames:"Untersuchungen",
+  catTriagem:"Triage / Pflege",
+  catMedicamento:"Medikamentenausgabe",
+  catAlimentacao:"Mahlzeiten",
+  voyageSpecNote:"Fahren Sie über einen Stopp, um die Fachrichtungen dieser Expedition zu sehen",
+  voyageExamNote:"Fahren Sie über einen Stopp, um die Untersuchungen dieser Expedition zu sehen",
+  infoVoyageSpec:"Dieselbe Expeditionsroute, aber beim Überfahren werden die medizinischen Fachrichtungen dieser Expedition angezeigt.",
+  infoVoyageExam:"Dieselbe Expeditionsroute, aber beim Überfahren werden die Untersuchungen dieser Expedition angezeigt.",
+  procMiniTitle:"Operationen und zahnärztliche Eingriffe",
+  procMiniSub:"Operationen mittlerer und niedriger Komplexität im Vergleich zu zahnärztlichen Eingriffen",
+  infoProcMini:"Vergleicht das Volumen von Operationen niedriger Komplexität, mittlerer Komplexität und zahnärztlichen Eingriffen (getrennt von der regulären Zahnkonsultation) im gewählten Zeitraum.",
+  procCirBaixa:"Operation niedriger Komplexität",
+  procCirMedia:"Operation mittlerer Komplexität",
+  procOdontoL:"Zahnärztlicher Eingriff",
+  consultaOdontoL:"Zahnkonsultation",
   ansAverage:(name,avg,total,n)=>`Der Durchschnitt von "${name}" beträgt ${fmt(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expeditionen im gewählten Zeitraum).`,
   ansTotal:(name,total,avg)=>`Die Gesamtzahl für "${name}" im gewählten Zeitraum beträgt ${fmt(total)} (Durchschnitt ${fmt(avg)} pro Expedition).`,
   ansTopSpec:(name,val)=>`Die Fachrichtung mit dem höchsten Volumen ist "${name}", mit ${fmt(val)} Konsultationen im gewählten Zeitraum.`,
@@ -531,6 +577,26 @@ const I18N = {
   infoVoyage:"La secuencia real de municipios visitados por el barco. Haga clic en cualquier parada para ver todos los datos de esa expedición.",
   infoRank:"Todos los municipios atendidos, sumando todas las expediciones en el período seleccionado.",
   infoTop10:"Los 10 municipios con mayor atención general acumulada en el período seleccionado, con el valor exacto junto a cada barra.",
+  examMiniTitle:"Exámenes por Tipo",
+  breakdownTitle:"Desglose de Atenciones",
+  breakdownSub:"Todas las categorías de atención en el período seleccionado",
+  infoBreakdown:"Todas las categorías de atención realizadas por el barco: especialidades médicas, exámenes, cirugías de mediana y baja complejidad, procedimiento odontológico, triaje/enfermería, consulta odontológica, entrega de medicamentos y alimentación — en el período seleccionado.",
+  catEspecialidade:"Especialidad Médica (Consultas)",
+  catExames:"Exámenes",
+  catTriagem:"Triaje / Enfermería",
+  catMedicamento:"Entrega de Medicamento",
+  catAlimentacao:"Alimentación",
+  voyageSpecNote:"Pase el mouse sobre cualquier parada para ver las especialidades de esa expedición",
+  voyageExamNote:"Pase el mouse sobre cualquier parada para ver los exámenes de esa expedición",
+  infoVoyageSpec:"La misma ruta de expediciones, pero al pasar el mouse muestra las especialidades médicas de esa expedición específica.",
+  infoVoyageExam:"La misma ruta de expediciones, pero al pasar el mouse muestra los exámenes de esa expedición específica.",
+  procMiniTitle:"Cirugías y Procedimientos Odontológicos",
+  procMiniSub:"Cirugías de mediana y baja complejidad comparadas con los procedimientos odontológicos",
+  infoProcMini:"Compara el volumen de cirugías de baja complejidad, cirugías de mediana complejidad y procedimientos odontológicos (categoría separada de la consulta odontológica común) en el período seleccionado.",
+  procCirBaixa:"Cirugía de Baja Complejidad",
+  procCirMedia:"Cirugía de Mediana Complejidad",
+  procOdontoL:"Procedimiento Odontológico",
+  consultaOdontoL:"Consulta Odontológica",
   ansAverage:(name,avg,total,n)=>`El promedio de "${name}" es ${fmt(avg)} por expedición (total de ${fmt(total)} en ${n} expediciones en el período seleccionado).`,
   ansTotal:(name,total,avg)=>`El total de "${name}" en el período seleccionado es ${fmt(total)} (promedio de ${fmt(avg)} por expedición).`,
   ansTopSpec:(name,val)=>`La especialidad con mayor volumen es "${name}", con ${fmt(val)} consultas en el período seleccionado.`,
@@ -604,7 +670,7 @@ function renderYearSelector(){
 }
 
 /* ================= gauges ================= */
-let gauge1, gauge2;
+let gauge1;
 function gaugeChart(ctxId, pct, color){
   if(!window.HAS_CHART) return null;
   const ctx = document.getElementById(ctxId).getContext('2d');
@@ -616,22 +682,13 @@ function gaugeChart(ctxId, pct, color){
 
 function renderDashboard(){
   const exp = currentExpeditions();
-  const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude'), totalOdonto=sum(exp,'odonto'), totalAlim=sum(exp,'alim');
+  const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude');
   const pctSaude = totalGeral? Math.round(totalSaude/totalGeral*1000)/10 : 0;
-  const pctOdonto = totalSaude? Math.round(totalOdonto/totalSaude*1000)/10 : 0;
-  const municipios = new Set(exp.map(d=>d.mun.replace(/\s*\(.*\)/,'')));
-  const avg = exp.length? Math.round(totalGeral/exp.length):0;
   document.getElementById('gauge1Val').textContent = pctSaude+'%';
-  document.getElementById('gauge2Val').textContent = pctOdonto+'%';
   document.getElementById('bigGeral').textContent = fmt(totalGeral);
   document.getElementById('bigSaude').textContent = fmt(totalSaude);
-  document.getElementById('miniExp').textContent = exp.length;
-  document.getElementById('miniMun').textContent = municipios.size;
-  document.getElementById('miniAvg').textContent = fmt(avg);
-  document.getElementById('miniAlim').textContent = fmt(totalAlim);
-  if(gauge1) gauge1.destroy(); if(gauge2) gauge2.destroy();
+  if(gauge1) gauge1.destroy();
   gauge1 = gaugeChart('gauge1', pctSaude, '#0e8f6f');
-  gauge2 = gaugeChart('gauge2', pctOdonto, '#b8934a');
 }
 
 function renderVoyage(){
@@ -648,12 +705,65 @@ function renderVoyage(){
     el.style.cursor='pointer';
     el.addEventListener('click',()=>openExpeditionModal(all[+el.dataset.idx]));
   });
+  renderContextVoyage('voyageTrackSpec', all, max, 'spec');
+  renderContextVoyage('voyageTrackExam', all, max, 'exam');
+}
+
+function renderContextVoyage(containerId, all, max, type){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = all.map((d,idx)=>`
+    <div class="stop" data-idx="${idx}">
+      <div class="stop-num">${d.year}·${d.n}</div>
+      <div class="stop-node" style="box-shadow:0 0 ${4+10*(d.geral/max)}px rgba(184,147,74,${0.25+0.5*(d.geral/max)})"></div>
+      <div class="stop-label">${d.mun}</div>
+    </div>`).join('');
+  container.querySelectorAll('.stop').forEach(el=>{
+    const exp = all[+el.dataset.idx];
+    el.addEventListener('mouseenter',()=>showContextTooltip(el, exp, type));
+    el.addEventListener('mouseleave', hideContextTooltip);
+    el.addEventListener('click',()=>openExpeditionModal(exp));
+    el.style.cursor='pointer';
+  });
+}
+
+function showContextTooltip(el, exp, type){
+  hideContextTooltip();
+  const translate = type==='spec' ? trSpec : trExam;
+  const data = type==='spec' ? (exp.spec||{}) : (exp.exam||{});
+  const entries = Object.entries(data).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  const rows = entries.length
+    ? entries.map(([n,v])=>`<div style="display:flex;justify-content:space-between;gap:14px;padding:2px 0;"><span>${translate(n)}</span><b class="mono" style="flex-shrink:0;">${fmt(v)}</b></div>`).join('')
+    : `<div style="opacity:0.75;">—</div>`;
+  const pop = document.createElement('div');
+  pop.className = 'info-popover';
+  pop.id = 'contextTooltip';
+  pop.style.maxHeight = '260px';
+  pop.style.overflowY = 'auto';
+  pop.innerHTML = `<div style="font-weight:700;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.25);padding-bottom:5px;">${exp.mun} · ${exp.year}·${exp.n}</div>${rows}`;
+  document.body.appendChild(pop);
+  const r = el.getBoundingClientRect();
+  let left = r.left + window.scrollX - 90;
+  if(left < 10) left = 10;
+  if(left + 260 > window.innerWidth) left = window.innerWidth - 270;
+  pop.style.top = (r.top + window.scrollY - 8) + 'px';
+  pop.style.left = left + 'px';
+  pop.style.transform = 'translateY(-100%)';
+}
+function hideContextTooltip(){
+  const p = document.getElementById('contextTooltip');
+  if(p) p.remove();
 }
 
 function openExpeditionModal(exp){
   const t = I18N[CUR_LANG];
   const catL = catLabels();
   const rows = CAT_KEYS.map((k,i)=>`<tr><td>${catL[i]}</td><td class="mono" style="text-align:right;">${fmt(exp[k])}</td></tr>`).join('');
+  const detailRows = `
+    <tr><td>${t.procCirBaixa}</td><td class="mono" style="text-align:right;">${fmt(exp.cirBaixa||0)}</td></tr>
+    <tr><td>${t.procCirMedia}</td><td class="mono" style="text-align:right;">${fmt(exp.cirMedia||0)}</td></tr>
+    <tr><td>${t.procOdontoL}</td><td class="mono" style="text-align:right;">${fmt(exp.procOdonto||0)}</td></tr>
+    <tr><td>${t.consultaOdontoL}</td><td class="mono" style="text-align:right;">${fmt(exp.consultaOdonto||0)}</td></tr>`;
   const specRows = Object.entries(exp.spec||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trSpec(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
   const examRows = Object.entries(exp.exam||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trExam(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
   const overlay = document.createElement('div');
@@ -678,8 +788,10 @@ function openExpeditionModal(exp){
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">${t.bigSaudeL}</div>
         </div>
       </div>
-      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:14px 0 6px;">${t.stackTitle}</div>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:14px 0 6px;">${t.bigGeralL}</div>
       <table style="width:100%;font-size:0.85rem;">${rows}</table>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.procMiniTitle}</div>
+      <table style="width:100%;font-size:0.85rem;">${detailRows}</table>
       <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.specTitle}</div>
       <table style="width:100%;font-size:0.85rem;">${specRows}</table>
       <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.examTitle}</div>
@@ -690,7 +802,7 @@ function openExpeditionModal(exp){
   document.getElementById('expModalClose').addEventListener('click',()=>overlay.remove());
 }
 
-let chartStacked, chartDonutCat, chartArea, chartSpecialties, chartExamsBar, chartExamsDonut, chartTop10;
+let chartArea, chartSpecialties, chartExamsBar, chartExamsDonut, chartTop10, chartExamsMini, chartBreakdown;
 const valueLabelPlugin = {
   id: 'valueLabel',
   afterDatasetsDraw(chart){
@@ -721,27 +833,8 @@ if(window.HAS_CHART){ Chart.defaults.color='#6b7688'; Chart.defaults.font.family
 function destroyIfExists(c){ if(c) c.destroy(); }
 
 function buildAllCharts(){
-  renderTop5();
   if(!window.HAS_CHART) return;
   const exp = currentExpeditions();
-
-  destroyIfExists(chartStacked);
-  const ctx1 = document.getElementById('chartStacked').getContext('2d');
-  const catL = catLabels();
-  chartStacked = new Chart(ctx1,{type:'bar',
-    data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.mun.replace(/\s*\(.*\)/,'')),
-      datasets:CAT_KEYS.map((k,i)=>({label:catL[i],data:exp.map(x=>x[k]),backgroundColor:CAT_COLORS[i],borderRadius:3,maxBarThickness:24}))},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#14202e',boxWidth:10,font:{size:10}}}},
-      scales:{x:{stacked:true,ticks:{maxRotation:65,minRotation:65,font:{size:8}},grid:{display:false}},y:{stacked:true,grid:{color:'rgba(15,42,74,0.05)'}}}}
-  });
-
-  destroyIfExists(chartDonutCat);
-  const catTotals = CAT_KEYS.map(k=>sum(exp,k));
-  const ctx2 = document.getElementById('chartDonutCat').getContext('2d');
-  chartDonutCat = new Chart(ctx2,{type:'doughnut',
-    data:{labels:catL,datasets:[{data:catTotals,backgroundColor:CAT_COLORS,borderWidth:2,borderColor:'#ffffff'}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
-  });
 
   destroyIfExists(chartArea);
   const ctx3 = document.getElementById('chartArea').getContext('2d');
@@ -750,9 +843,54 @@ function buildAllCharts(){
   chartArea = new Chart(ctx3,{type:'line',
     data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.n),
       datasets:[{data:exp.map(x=>x.geral),borderColor:'#0f2a4a',backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:'#b8934a'}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{
+        title:(items)=> exp[items[0].dataIndex] ? exp[items[0].dataIndex].mun : '',
+        label:(item)=> fmt(item.raw)
+      }}},
       scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
   });
+
+  destroyIfExists(chartExamsMini);
+  const examSorted = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1]);
+  if(document.getElementById('chartExamsMini')){
+    const ctxEM = document.getElementById('chartExamsMini').getContext('2d');
+    chartExamsMini = new Chart(ctxEM,{type:'bar',
+      data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderRadius:5,maxBarThickness:26}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{ticks:{font:{size:8},color:'#14202e',maxRotation:30,minRotation:0},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+    });
+  }
+
+  destroyIfExists(chartBreakdown);
+  if(document.getElementById('chartBreakdown')){
+    const t = I18N[CUR_LANG];
+    const BREAKDOWN = [
+      {label:t.catEspecialidade, val:sum(exp,'consultas'), color:'#0f2a4a'},
+      {label:t.catExames, val:sum(exp,'exames'), color:'#3f7fa6'},
+      {label:t.procCirMedia, val:sum(exp,'cirMedia'), color:'#a9564a'},
+      {label:t.procCirBaixa, val:sum(exp,'cirBaixa'), color:'#e0917f'},
+      {label:t.procOdontoL, val:sum(exp,'procOdonto'), color:'#b8934a'},
+      {label:t.catTriagem, val:sum(exp,'naoMed'), color:'#7a5ea8'},
+      {label:t.consultaOdontoL, val:sum(exp,'consultaOdonto'), color:'#d9c07e'},
+      {label:t.catMedicamento, val:sum(exp,'farm'), color:'#4f9e78'},
+      {label:t.catAlimentacao, val:sum(exp,'alim'), color:'#8bd450'},
+    ].sort((a,b)=>b.val-a.val);
+    const ctxBD = document.getElementById('chartBreakdown').getContext('2d');
+    chartBreakdown = new Chart(ctxBD,{type:'bar',
+      data:{labels:BREAKDOWN.map(p=>p.label),datasets:[{data:BREAKDOWN.map(p=>p.val),backgroundColor:BREAKDOWN.map(p=>p.color),borderRadius:4,maxBarThickness:14}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{ticks:{display:false},grid:{color:'rgba(15,42,74,0.05)'}},y:{grid:{display:false},ticks:{font:{size:9},color:'#14202e'}}}},
+      plugins:[valueLabelPlugin]
+    });
+    const maxB = BREAKDOWN.length? BREAKDOWN[0].val : 1;
+    document.getElementById('breakdownList').innerHTML = BREAKDOWN.map(p=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:0.76rem;">
+        <span style="flex:0 0 auto;width:9px;height:9px;border-radius:2px;background:${p.color};"></span>
+        <span style="flex:1;color:var(--text);">${p.label}</span>
+        <span class="mono" style="font-weight:600;color:var(--navy);">${fmt(p.val)}</span>
+      </div>`).join('');
+  }
 
   destroyIfExists(chartSpecialties);
   const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
@@ -764,7 +902,6 @@ function buildAllCharts(){
   });
 
   destroyIfExists(chartExamsBar);
-  const examSorted = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1]);
   const ctx5 = document.getElementById('chartExamsBar').getContext('2d');
   chartExamsBar = new Chart(ctx5,{type:'bar',
     data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{label:'Exames',data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderRadius:5,maxBarThickness:34}]},
@@ -778,14 +915,6 @@ function buildAllCharts(){
     data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
   });
-}
-
-function renderTop5(){
-  const sorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const max = sorted.length? sorted[0][1] : 1;
-  document.getElementById('top5List').innerHTML = sorted.map(([name,val],i)=>`
-    <div class="top5-item"><div class="top5-head"><span>${i+1}. ${trSpec(name)}</span><b>${fmt(val)}</b></div>
-    <div class="top5-track"><div class="top5-fill" style="width:${(val/max*100).toFixed(0)}%"></div></div></div>`).join('');
 }
 
 function renderRanking(){

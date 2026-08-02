@@ -138,6 +138,21 @@ def parse_year_sheet(df, year):
                 if v:
                     exams_per_col[c][label] = exams_per_col[c].get(label, 0) + v
 
+    # detailed breakdown rows (small/medium surgery, dental procedures vs consultations)
+    DETAIL_LABELS = {
+        "Cirurgias de Baixa Complexidade": "cirBaixa",
+        "Cirurgias de Média Complexidade": "cirMedia",
+        "Procedimentos Odontológicos": "procOdonto",
+        "Consulta Odontológica": "consultaOdonto",
+    }
+    detail_totals = {key: {} for key in DETAIL_LABELS.values()}
+    for label, key in DETAIL_LABELS.items():
+        r = find_row_by_label(df, label)
+        if r is None:
+            continue
+        for c in cols:
+            detail_totals[key][c] = _num(df.iloc[r, c])
+
     expeditions = []
     for c in cols:
         expeditions.append({
@@ -155,6 +170,10 @@ def parse_year_sheet(df, year):
             "alim": totals["alim"].get(c, 0),
             "saude": totals["saude"].get(c, 0),
             "geral": totals["geral"].get(c, 0),
+            "cirBaixa": detail_totals["cirBaixa"].get(c, 0),
+            "cirMedia": detail_totals["cirMedia"].get(c, 0),
+            "procOdonto": detail_totals["procOdonto"].get(c, 0),
+            "consultaOdonto": detail_totals["consultaOdonto"].get(c, 0),
             "spec": specialties_per_col[c],
             "exam": exams_per_col[c],
         })
