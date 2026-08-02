@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BHSJ XXIII — Painel Executivo de Expedições</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f2; --panel:#ffffff; --panel-2:#fbfaf7;
+  --navy:#0f2a4a; --navy-2:#173a63; --navy-soft:#e8edf3;
+  --gold:#b8934a; --gold-dim:rgba(184,147,74,0.12);
+  --teal:#0e8f6f; --teal-dim:rgba(14,143,111,0.10);
+  --line:#e7e5df; --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0;
+  --radius:12px; --shadow:0 2px 16px rgba(15,42,74,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+.serif{font-family:'Fraunces',serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+#errBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#7a2318;color:#fff;padding:10px 18px;font:600 13px Inter,sans-serif;}
+
+.app-shell{display:flex;min-height:100vh;}
+.sidebar{width:88px;background:var(--navy);display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.sidebar-logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(155deg,var(--gold),#8a6c34);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(184,147,74,0.35);margin-bottom:30px;}
+.nav-item{width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 0;color:rgba(255,255,255,0.55);cursor:pointer;border-radius:10px;margin-bottom:5px;transition:all .18s;}
+.nav-item svg{width:18px;height:18px;}
+.nav-item span{font-size:0.6rem;letter-spacing:0.02em;text-align:center;line-height:1.15;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.06);}
+.nav-item.active{color:var(--gold);background:rgba(184,147,74,0.14);}
+.sidebar-spacer{flex:1;}
+.sidebar-live{width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;margin-bottom:12px;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.main{flex:1;min-width:0;padding:18px 28px 20px;height:100vh;overflow-y:auto;box-sizing:border-box;}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+.topbar h1{font-family:'Fraunces';font-size:1.5rem;font-weight:600;color:var(--navy);}
+.topbar .sub{color:var(--muted);font-size:0.82rem;margin-top:4px;}
+.topbar-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.year-select{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:4px;box-shadow:var(--shadow);}
+.year-select button{background:transparent;border:none;color:var(--muted);font-family:'JetBrains Mono';font-size:0.76rem;padding:7px 14px;border-radius:100px;cursor:pointer;transition:all .18s;}
+.year-select button.active{background:var(--navy);color:#fff;font-weight:600;}
+select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-family:'Inter';font-size:0.82rem;cursor:pointer;box-shadow:var(--shadow);}
+.live-badge{display:flex;align-items:center;gap:7px;font-size:0.7rem;color:var(--teal);letter-spacing:0.04em;text-transform:uppercase;background:var(--teal-dim);border:1px solid rgba(14,143,111,0.22);padding:6px 12px;border-radius:100px;}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;}
+.updated-badge{font-size:0.68rem;color:var(--muted-2);margin-top:6px;}
+
+.view{display:none;}
+.view.visible{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.panel-title{font-family:'Fraunces';font-size:0.88rem;font-weight:600;margin-bottom:2px;color:var(--navy);display:flex;align-items:center;gap:6px;}
+.info-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--navy-soft);color:var(--navy);font-size:0.62rem;font-style:italic;font-family:Georgia,serif;cursor:pointer;border:none;flex-shrink:0;}
+.info-icon:hover{background:var(--gold);color:#fff;}
+.info-popover{position:absolute;background:var(--navy);color:#fff;font-size:0.76rem;padding:10px 13px;border-radius:8px;max-width:270px;box-shadow:0 10px 28px rgba(0,0,0,0.3);z-index:9998;line-height:1.5;}
+.panel-sub{color:var(--muted);font-size:0.7rem;margin-bottom:8px;}
+
+.dash-grid{display:grid;grid-template-columns:250px 1fr;gap:10px;height:calc(100vh - 100px);}
+@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;height:auto;}.main{height:auto;overflow-y:visible;}}
+.dash-left{display:flex;flex-direction:column;gap:10px;min-height:0;}
+.dash-right{display:flex;flex-direction:column;gap:10px;min-height:0;}
+.dash-right>.panel{display:flex;flex-direction:column;min-height:0;}
+.dash-right>.panel:first-child{flex:1.25;}
+.dash-right>.two-col{flex:1.3;min-height:0;}
+.dash-right>.two-col>.panel{min-height:0;overflow-y:auto;}
+.dash-right>.panel:last-child{flex:1;}
+.dash-right .chart-wrap{flex:1;min-height:0;}
+
+.gauge-card{text-align:center;padding:12px 16px !important;}
+.gauge-wrap{position:relative;height:92px;}
+.gauge-value{position:absolute;bottom:0;left:0;right:0;text-align:center;font-family:'Fraunces';font-size:1.3rem;font-weight:600;color:var(--navy);}
+
+.bignum-row{display:flex;gap:8px;}
+.bignum{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;border-top:3px solid var(--gold);}
+.bignum .v{font-family:'Fraunces';font-size:1.05rem;font-weight:600;color:var(--navy);}
+.bignum .l{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.03em;margin-top:2px;}
+
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mini-stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;}
+.mini-stat .v{font-family:'Fraunces';font-size:0.92rem;font-weight:600;color:var(--navy);}
+.mini-stat .l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.02em;margin-top:2px;}
+
+.chart-wrap{position:relative;height:220px;}
+.chart-wrap.tall{height:100%;min-height:210px;}
+.chart-wrap.short{height:140px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+
+.top5-item{margin-bottom:8px;}
+.top5-head{display:flex;justify-content:space-between;font-size:0.76rem;margin-bottom:3px;}
+.top5-head b{font-family:'Fraunces';color:var(--navy);}
+.top5-track{height:6px;background:var(--navy-soft);border-radius:5px;overflow:hidden;}
+.top5-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--navy));}
+
+.voyage{overflow-x:auto;padding:14px 4px 20px;}
+.voyage-track{display:flex;position:relative;min-width:max-content;padding:20px 10px;}
+.voyage-track::before{content:'';position:absolute;top:50%;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--navy),var(--gold),var(--navy),transparent);opacity:0.35;}
+.stop{display:flex;flex-direction:column;align-items:center;width:98px;flex-shrink:0;position:relative;}
+.stop-node{width:13px;height:13px;border-radius:50%;background:var(--panel);border:2px solid var(--navy);position:relative;z-index:2;transition:all .2s;}
+.stop:hover .stop-node{border-color:var(--gold);box-shadow:0 0 10px var(--gold);transform:scale(1.3);}
+.stop-label{font-size:0.65rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.3;}
+.stop-num{font-family:'JetBrains Mono';font-size:0.58rem;color:var(--muted-2);margin-bottom:6px;}
+.stop-val{font-family:'Fraunces';font-size:0.76rem;color:var(--gold);margin-top:3px;font-weight:600;}
+
+table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+thead th{text-align:left;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;padding:10px 12px;border-bottom:1px solid var(--line);}
+tbody td{padding:12px;border-bottom:1px solid var(--line);}
+tbody tr:hover{background:var(--gold-dim);}
+.bar-cell{display:flex;align-items:center;gap:10px;}
+.bar-track{flex:1;height:6px;background:var(--navy-soft);border-radius:4px;overflow:hidden;min-width:70px;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:4px;}
+.rank{font-family:'JetBrains Mono';color:var(--muted-2);width:20px;display:inline-block;}
+
+.ai-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.ai-orb{width:28px;height:28px;border-radius:50%;background:conic-gradient(from 180deg,var(--gold),var(--navy),var(--teal),var(--gold));flex-shrink:0;}
+.ai-input-row{display:flex;gap:10px;flex-wrap:wrap;}
+#aiInput{flex:1;min-width:220px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px 14px;font-family:'Inter';font-size:0.9rem;}
+#aiInput:focus{outline:none;border-color:var(--gold);}
+#aiAsk{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-weight:600;cursor:pointer;font-family:'Inter';font-size:0.88rem;}
+.ai-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.ai-chip{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);border-radius:100px;padding:6px 12px;font-size:0.76rem;cursor:pointer;transition:all .15s;}
+.ai-chip:hover{border-color:var(--gold);color:var(--navy);}
+#aiAnswer{margin-top:18px;font-size:0.94rem;line-height:1.65;color:var(--text);white-space:pre-wrap;background:var(--panel-2);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:14px 16px;}
+#aiAnswer:empty{display:none;padding:0;}
+.insights-list{list-style:none;margin-top:6px;}
+.insights-list li{padding:10px 0;border-bottom:1px solid var(--line);font-size:0.88rem;display:flex;gap:10px;}
+.insights-list li:last-child{border-bottom:none;}
+.insights-dot{color:var(--gold);flex-shrink:0;}
+
+.dq{border-left:3px solid var(--gold);background:var(--gold-dim);border-radius:0 10px 10px 0;padding:16px 20px;font-size:0.85rem;line-height:1.6;}
+.dq b{color:var(--navy);}
+.prod{border-left:3px solid var(--teal);background:var(--teal-dim);border-radius:0 10px 10px 0;padding:16px 20px;font-size:0.85rem;line-height:1.6;margin-top:14px;}
+.prod b{color:var(--teal);}
+.stack{display:flex;flex-direction:column;gap:16px;}
+code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono';font-size:0.85em;}
+</style>
+</head>
+<body>
+<div id="errBanner"></div>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z" stroke="#0f2a4a" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 12V6H15L18 12" stroke="#0f2a4a" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 6V3" stroke="#0f2a4a" stroke-width="1.7"/></svg></div>
+    <div class="nav-item active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg><span data-i18n="navDash">Painel</span></div>
+    <div class="nav-item" data-view="specialties"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v7a6 6 0 0012 0V4"/><path d="M9 4V2M15 4V2"/><circle cx="18" cy="15" r="3"/></svg><span data-i18n="navSpec">Especialidades</span></div>
+    <div class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></div>
+    <div class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></div>
+    <div class="nav-item" data-view="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg><span data-i18n="navAI">Insights</span></div>
+    <div class="nav-item" data-view="info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg><span data-i18n="navInfo">Sobre</span></div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-live"></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
+        <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 02/08/2026 00:06</div>
+      </div>
+      <div class="topbar-controls">
+        <div class="year-select" id="yearSelect"></div>
+        <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
+        <select id="langSel">
+          <option value="pt">🇧🇷 Português</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="de">🇩🇪 Deutsch</option>
+          <option value="es">🇪🇸 Español</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="view visible" id="view-dashboard">
+      <div class="dash-grid">
+        <div class="dash-left">
+          <div class="panel gauge-card">
+            <div class="panel-title"><span data-i18n="gauge1Title">Cobertura de Saúde</span><button class="info-icon" data-info="infoGauge1">i</button></div>
+            <div class="panel-sub" data-i18n="gauge1Sub">% do atendimento geral que é saúde</div>
+            <div class="gauge-wrap"><canvas id="gauge1"></canvas><div class="gauge-value" id="gauge1Val">—</div></div>
+          </div>
+          <div class="bignum-row">
+            <div class="bignum"><div class="v mono" id="bigGeral">—</div><div class="l" data-i18n="bigGeralL">Atendimento Geral</div></div>
+            <div class="bignum"><div class="v mono" id="bigSaude">—</div><div class="l" data-i18n="bigSaudeL">Em Saúde</div></div>
+          </div>
+          <div class="panel gauge-card">
+            <div class="panel-title"><span data-i18n="gauge2Title">Participação da Odontologia</span><button class="info-icon" data-info="infoGauge2">i</button></div>
+            <div class="panel-sub" data-i18n="gauge2Sub">% do atendimento em saúde</div>
+            <div class="gauge-wrap"><canvas id="gauge2"></canvas><div class="gauge-value" id="gauge2Val">—</div></div>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-stat"><div class="v mono" id="miniExp">—</div><div class="l" data-i18n="miniExpL">Expedições</div></div>
+            <div class="mini-stat"><div class="v mono" id="miniMun">—</div><div class="l" data-i18n="miniMunL">Municípios</div></div>
+            <div class="mini-stat"><div class="v mono" id="miniAvg">—</div><div class="l" data-i18n="miniAvgL">Média/Expedição</div></div>
+            <div class="mini-stat"><div class="v mono" id="miniAlim">—</div><div class="l" data-i18n="miniAlimL">Refeições</div></div>
+          </div>
+        </div>
+        <div class="dash-right">
+          <div class="panel">
+            <div class="panel-title"><span data-i18n="stackTitle">Atendimento por Expedição · por Categoria</span><button class="info-icon" data-info="infoStack">i</button></div>
+            <div class="panel-sub" data-i18n="stackSub">Composição de cada expedição, empilhada por tipo de atendimento</div>
+            <div class="chart-wrap tall"><canvas id="chartStacked"></canvas></div>
+          </div>
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-title"><span data-i18n="top5Title">Top 5 Especialidades Médicas</span><button class="info-icon" data-info="infoTop5">i</button></div>
+              <div class="panel-sub" data-i18n="top5Sub">Maior volume de consultas no período</div>
+              <div id="top5List"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-title"><span data-i18n="donutTitle">Distribuição por Categoria</span><button class="info-icon" data-info="infoDonut">i</button></div>
+              <div class="panel-sub" data-i18n="donutSub">Participação de cada categoria no total</div>
+              <div class="chart-wrap short"><canvas id="chartDonutCat"></canvas></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title"><span data-i18n="areaTitle">Evolução do Atendimento Geral</span><button class="info-icon" data-info="infoArea">i</button></div>
+            <div class="panel-sub" data-i18n="areaSub">Ao longo das expedições, na ordem em que ocorreram</div>
+            <div class="chart-wrap short"><canvas id="chartArea"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-specialties">
+      <div class="panel">
+        <div class="panel-title"><span data-i18n="specTitle">Especialidades Médicas</span><button class="info-icon" data-info="infoSpec">i</button></div>
+        <div class="panel-sub" data-i18n="specNote">Volume de consultas por especialidade, considerando o período selecionado.</div>
+        <div class="chart-wrap" style="height:460px;"><canvas id="chartSpecialties"></canvas></div>
+      </div>
+    </div>
+
+    <div class="view" id="view-exams">
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="examTitle">Exames por Tipo</span><button class="info-icon" data-info="infoExam">i</button></div>
+          <div class="panel-sub" data-i18n="examNote">Distribuição dos exames realizados, considerando o período selecionado.</div>
+        </div>
+        <div class="two-col">
+          <div class="panel"><div class="chart-wrap"><canvas id="chartExamsBar"></canvas></div></div>
+          <div class="panel"><div class="chart-wrap"><canvas id="chartExamsDonut"></canvas></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-municipios">
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="top10Title">Top 10 Municípios · Atendimento Geral</span><button class="info-icon" data-info="infoTop10">i</button></div>
+          <div class="panel-sub" data-i18n="top10Sub">Os 10 municípios com maior volume total no período selecionado</div>
+          <div class="chart-wrap" style="height:320px;"><canvas id="chartTop10"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="voyageTitle">Rota das Expedições</span><button class="info-icon" data-info="infoVoyage">i</button></div>
+          <div class="panel-sub" data-i18n="voyageNote">Cada nó é um município atendido, na ordem em que o barco navegou.</div>
+          <div class="voyage"><div class="voyage-track" id="voyageTrack"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="rankTitle">Ranking de Municípios · Atendimento Geral</span><button class="info-icon" data-info="infoRank">i</button></div>
+          <div class="panel-sub" data-i18n="rankNote">Soma do período selecionado por município (municípios revisitados aparecem somados).</div>
+          <table><thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead><tbody id="rankBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-ai">
+      <div class="stack">
+        <div class="panel">
+          <div class="panel-title" data-i18n="insightsAutoTitle">Destaques Automáticos</div>
+          <div class="panel-sub" data-i18n="insightsAutoSub">Gerados a partir dos dados do período selecionado</div>
+          <ul class="insights-list" id="insightsList"></ul>
+        </div>
+        <div class="panel">
+          <div class="ai-head">
+            <div class="ai-orb"></div>
+            <div><div class="panel-title" data-i18n="aiTitle" style="margin-bottom:2px;">Assistente de Dados</div><div class="panel-sub" data-i18n="aiSub" style="margin-bottom:0;">Pergunte sobre especialidades, exames, categorias ou municípios — cálculo instantâneo, sem depender de internet.</div></div>
+          </div>
+          <div class="ai-input-row">
+            <input id="aiInput" type="text" data-i18n-ph="aiPlaceholder" placeholder="Ex.: Qual a média de consultas cirúrgicas?">
+            <button id="aiAsk" data-i18n="aiAskBtn">Perguntar</button>
+          </div>
+          <div class="ai-chips" id="aiChips"></div>
+          <div id="aiAnswer"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-info">
+      <div class="dq"><b data-i18n="dqTitle">Nota de qualidade de dados —</b> <span data-i18n="dqBody">Todos os valores deste painel foram extraídos linha por linha, coluna por coluna, diretamente da planilha oficial, com leitura programática — sem digitação manual.</span></div>
+      <div class="prod"><b data-i18n="prodTitle">Como atualizar após cada expedição —</b> <span data-i18n="prodBody">Rode "gerar_dashboard.py" apontando para a planilha .ods atualizada. O script detecta automaticamente todas as abas de ano (2025, 2026, 2027...), recalcula tudo e gera um novo dashboard.html pronto para publicar. Nenhuma edição de código é necessária.</span></div>
+    </div>
+  </main>
+</div>
+
+<script>
+function showErr(msg){ const b=document.getElementById('errBanner'); b.style.display='block'; b.textContent='⚠ '+msg; }
+window.addEventListener('error', e=>{ showErr('Erro no painel: ' + (e.message||'erro desconhecido') + ' — recarregue a página.'); });
+function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+async function ensureChart(){
+  if(window.Chart) return true;
+  const sources=['https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js','https://unpkg.com/chart.js@4.4.4/dist/chart.umd.min.js'];
+  for(const src of sources){ try{ await loadScript(src); if(window.Chart) return true; }catch(e){} }
+  return false;
+}
+(async function boot(){
+  const ok = await ensureChart();
+  if(!ok) showErr('Os gráficos não carregaram (sem acesso à internet nesta rede). Os números e filtros abaixo continuam funcionando normalmente.');
+  window.HAS_CHART = ok;
+  initDashboardApp();
+})();
+
+function initDashboardApp(){
+/* Cole aqui a URL do seu Cloudflare Worker depois de implantá-lo (veja worker.js).
+   Deixe vazio ('') para usar só o assistente local por padrões. */
+const PROXY_URL = "";
+/* ================= DATA (injected by gerar_dashboard.py from the official spreadsheet) ================= */
+const ALL_EXPEDITIONS = [{"year": 2025, "n": 2, "mun": "Manaquiri", "consultas": 775, "oft": 192, "odonto": 667, "naoMed": 1038, "exames": 1211, "intern": 56, "proc": 78, "farm": 382, "alim": 1000, "saude": 4399, "geral": 5399, "spec": {"Clínico Geral": 414, "Pediatria": 157, "Consulta Anestésica": 56, "Consultas Cirúrgicas": 148}, "exam": {"Raios-X": 187, "Mamografia": 61, "Ultrassom": 229, "Análises Clínicas": 662, "Eletrocardiograma": 72}}, {"year": 2025, "n": 3, "mun": "Novo Airão", "consultas": 722, "oft": 198, "odonto": 1046, "naoMed": 1144, "exames": 1116, "intern": 39, "proc": 69, "farm": 714, "alim": 1093, "saude": 5048, "geral": 6141, "spec": {"Clínico Geral": 446, "Pediatria": 45, "Dermatologia": 95, "Consulta Anestésica": 39, "Consultas Cirúrgicas": 97}, "exam": {"Raios-X": 136, "Mamografia": 104, "Ultrassom": 172, "Análises Clínicas": 621, "Eletrocardiograma": 83}}, {"year": 2025, "n": 4, "mun": "Manacapuru", "consultas": 1037, "oft": 0, "odonto": 1405, "naoMed": 1401, "exames": 1316, "intern": 59, "proc": 92, "farm": 909, "alim": 1391, "saude": 6219, "geral": 7610, "spec": {"Clínico Geral": 500, "Pediatria": 178, "Geriatria": 134, "Consulta Anestésica": 53, "Consultas Cirúrgicas": 172}, "exam": {"Raios-X": 195, "Mamografia": 151, "Ultrassom": 249, "Análises Clínicas": 671, "Eletrocardiograma": 50}}, {"year": 2025, "n": 5, "mun": "Anori", "consultas": 726, "oft": 171, "odonto": 856, "naoMed": 1090, "exames": 588, "intern": 49, "proc": 107, "farm": 605, "alim": 1201, "saude": 4192, "geral": 5393, "spec": {"Clínico Geral": 368, "Ginecologia": 40, "Pediatria": 64, "Cardiologia": 58, "Dermatologia": 107, "Proctologista": 16, "Consulta Anestésica": 11, "Consultas Cirúrgicas": 62}, "exam": {"Raios-X": 187, "Mamografia": 41, "Análises Clínicas": 253, "Eletrocardiograma": 107}}, {"year": 2025, "n": 6, "mun": "Codajás", "consultas": 879, "oft": 165, "odonto": 1025, "naoMed": 1282, "exames": 2810, "intern": 39, "proc": 135, "farm": 846, "alim": 1362, "saude": 7181, "geral": 8543, "spec": {"Clínico Geral": 386, "Ginecologia": 156, "Pediatria": 100, "Infectologia": 43, "Gastrologia": 53, "Consulta Anestésica": 41, "Consultas Cirúrgicas": 100}, "exam": {"Raios-X": 307, "Mamografia": 104, "Ultrassom": 167, "Análises Clínicas": 2089, "Eletrocardiograma": 143}}, {"year": 2025, "n": 7, "mun": "Novo Remanso I", "consultas": 1372, "oft": 0, "odonto": 1551, "naoMed": 1695, "exames": 3401, "intern": 88, "proc": 137, "farm": 1177, "alim": 1730, "saude": 9421, "geral": 11151, "spec": {"Clínico Geral": 701, "Ginecologia": 180, "Pediatria": 168, "Consulta Anestésica": 88, "Consultas Cirúrgicas": 235}, "exam": {"Raios-X": 374, "Mamografia": 360, "Ultrassom": 693, "Análises Clínicas": 1596, "Eletrocardiograma": 378}}, {"year": 2025, "n": 8, "mun": "Novo Remanso II", "consultas": 1313, "oft": 281, "odonto": 2452, "naoMed": 1976, "exames": 3659, "intern": 74, "proc": 197, "farm": 752, "alim": 2088, "saude": 10704, "geral": 12792, "spec": {"Clínico Geral": 395, "Ginecologia": 232, "Dermatologia": 370, "Psiquiatria": 92, "Consulta Anestésica": 74, "Consultas Cirúrgicas": 150}, "exam": {"Raios-X": 627, "Mamografia": 240, "Ultrassom": 440, "Análises Clínicas": 2059, "Eletrocardiograma": 293}}, {"year": 2025, "n": 9, "mun": "Urucará", "consultas": 1187, "oft": 162, "odonto": 1769, "naoMed": 1619, "exames": 2744, "intern": 48, "proc": 94, "farm": 811, "alim": 3088, "saude": 8434, "geral": 11522, "spec": {"Clínico Geral": 145, "Ginecologia": 146, "Pediatria": 210, "Neurologia": 119, "Dermatologia": 233, "Reumatologia": 117, "Consulta Anestésica": 46, "Consultas Cirúrgicas": 171}, "exam": {"Raios-X": 381, "Mamografia": 254, "Ultrassom": 243, "Análises Clínicas": 1580, "Eletrocardiograma": 286}}, {"year": 2025, "n": 10, "mun": "Urucurituba", "consultas": 971, "oft": 202, "odonto": 1830, "naoMed": 1457, "exames": 3020, "intern": 64, "proc": 101, "farm": 751, "alim": 3029, "saude": 8396, "geral": 11425, "spec": {"Clínico Geral": 302, "Pediatria": 214, "Endocrinologia": 184, "Consulta Anestésica": 64, "Consultas Cirúrgicas": 207}, "exam": {"Raios-X": 147, "Mamografia": 59, "Ultrassom": 257, "Análises Clínicas": 2446, "Eletrocardiograma": 111}}, {"year": 2025, "n": 11, "mun": "Anamã", "consultas": 1044, "oft": 339, "odonto": 2521, "naoMed": 1804, "exames": 4408, "intern": 70, "proc": 100, "farm": 772, "alim": 3270, "saude": 11058, "geral": 14328, "spec": {"Clínico Geral": 181, "Ginecologia": 159, "Pediatria": 248, "Otorrinolaringologia": 168, "Consulta Anestésica": 69, "Consultas Cirúrgicas": 219}, "exam": {"Raios-X": 164, "Mamografia": 135, "Ultrassom": 393, "Análises Clínicas": 3534, "Eletrocardiograma": 182}}, {"year": 2025, "n": 12, "mun": "Parintins", "consultas": 1113, "oft": 224, "odonto": 1366, "naoMed": 1606, "exames": 3207, "intern": 76, "proc": 101, "farm": 849, "alim": 2869, "saude": 8542, "geral": 11411, "spec": {"Clínico Geral": 625, "Ginecologia": 107, "Pediatria": 143, "Consulta Anestésica": 75, "Consultas Cirúrgicas": 163}, "exam": {"Raios-X": 242, "Mamografia": 304, "Ultrassom": 396, "Análises Clínicas": 2155, "Eletrocardiograma": 110}}, {"year": 2025, "n": 13, "mun": "Barreirinha", "consultas": 1108, "oft": 185, "odonto": 1749, "naoMed": 1550, "exames": 3276, "intern": 42, "proc": 125, "farm": 912, "alim": 3138, "saude": 8947, "geral": 12085, "spec": {"Clínico Geral": 476, "Ginecologia": 195, "Pediatria": 146, "Otorrinolaringologia": 170, "Consulta Anestésica": 42, "Consultas Cirúrgicas": 79}, "exam": {"Raios-X": 191, "Mamografia": 133, "Ultrassom": 236, "Análises Clínicas": 2153, "Oftalmologia": 388, "Eletrocardiograma": 175}}, {"year": 2025, "n": 14, "mun": "Nhamundá", "consultas": 912, "oft": 243, "odonto": 1713, "naoMed": 1383, "exames": 2362, "intern": 59, "proc": 112, "farm": 780, "alim": 2956, "saude": 7564, "geral": 10520, "spec": {"Clínico Geral": 218, "Pediatria": 161, "Cardiologia": 121, "Infectologia": 118, "Urologista": 107, "Consulta Anestésica": 68, "Consultas Cirúrgicas": 119}, "exam": {"Raios-X": 148, "Mamografia": 121, "Ultrassom": 234, "Análises Clínicas": 1137, "Oftalmologia": 462, "Eletrocardiograma": 260}}, {"year": 2025, "n": 15, "mun": "Beruri", "consultas": 899, "oft": 209, "odonto": 1764, "naoMed": 1261, "exames": 4157, "intern": 61, "proc": 134, "farm": 711, "alim": 3085, "saude": 9196, "geral": 12281, "spec": {"Clínico Geral": 375, "Ginecologia": 108, "Pediatria": 210, "Consulta Anestésica": 63, "Consultas Cirúrgicas": 143}, "exam": {"Raios-X": 229, "Mamografia": 220, "Ultrassom": 254, "Análises Clínicas": 2360, "Oftalmologia": 877, "Eletrocardiograma": 217}}, {"year": 2025, "n": 16, "mun": "Boa Vista Do Ramos", "consultas": 1217, "oft": 0, "odonto": 2234, "naoMed": 1390, "exames": 2101, "intern": 69, "proc": 101, "farm": 1164, "alim": 2990, "saude": 8276, "geral": 11266, "spec": {"Clínico Geral": 447, "Ginecologia": 83, "Pediatria": 122, "Medicina Geral Comunidade": 102, "Ortopedia": 129, "Dermatologia": 116, "Consulta Anestésica": 69, "Consultas Cirúrgicas": 149}, "exam": {"Raios-X": 173, "Mamografia": 184, "Ultrassom": 291, "Análises Clínicas": 1359, "Eletrocardiograma": 94}}, {"year": 2025, "n": 17, "mun": "Careiro da Várzea", "consultas": 862, "oft": 237, "odonto": 1454, "naoMed": 1218, "exames": 3693, "intern": 55, "proc": 66, "farm": 547, "alim": 2884, "saude": 8132, "geral": 11016, "spec": {"Clínico Geral": 509, "Ginecologia": 124, "Mastologia": 61, "Consulta Anestésica": 55, "Consultas Cirúrgicas": 113}, "exam": {"Raios-X": 121, "Mamografia": 163, "Ultrassom": 333, "Análises Clínicas": 2050, "Oftalmologia": 918, "Eletrocardiograma": 108}}, {"year": 2025, "n": 18, "mun": "Careiro Castanho", "consultas": 802, "oft": 219, "odonto": 1620, "naoMed": 1200, "exames": 2827, "intern": 40, "proc": 111, "farm": 864, "alim": 3767, "saude": 7683, "geral": 11450, "spec": {"Clínico Geral": 481, "Ginecologia": 66, "Pediatria": 129, "Consulta Anestésica": 38, "Consultas Cirúrgicas": 88}, "exam": {"Raios-X": 110, "Mamografia": 114, "Ultrassom": 236, "Análises Clínicas": 1275, "Oftalmologia": 1016, "Eletrocardiograma": 76}}, {"year": 2025, "n": 19, "mun": "Silves", "consultas": 821, "oft": 240, "odonto": 1389, "naoMed": 1189, "exames": 2125, "intern": 44, "proc": 112, "farm": 601, "alim": 3849, "saude": 6521, "geral": 10370, "spec": {"Clínico Geral": 328, "Ginecologia": 92, "Pediatria": 179, "Cardiologia": 89, "Consulta Anestésica": 44, "Consultas Cirúrgicas": 89}, "exam": {"Raios-X": 79, "Mamografia": 185, "Ultrassom": 170, "Análises Clínicas": 909, "Oftalmologia": 664, "Eletrocardiograma": 118}}, {"year": 2025, "n": 20, "mun": "Beruri", "consultas": 937, "oft": 218, "odonto": 2044, "naoMed": 1333, "exames": 2771, "intern": 50, "proc": 73, "farm": 900, "alim": 3414, "saude": 8326, "geral": 11740, "spec": {"Clínico Geral": 520, "Ginecologia": 93, "Pediatria": 136, "Consulta Anestésica": 47, "Consultas Cirúrgicas": 141}, "exam": {"Raios-X": 253, "Mamografia": 214, "Ultrassom": 105, "Análises Clínicas": 1321, "Oftalmologia": 824, "Eletrocardiograma": 54}}, {"year": 2025, "n": 21, "mun": "Belém", "consultas": 861, "oft": 247, "odonto": 1937, "naoMed": 1285, "exames": 2653, "intern": 95, "proc": 140, "farm": 538, "alim": 2025, "saude": 7756, "geral": 9781, "spec": {"Clínico Geral": 267, "Ginecologia": 129, "Pediatria": 167, "Consulta Anestésica": 95, "Consultas Cirúrgicas": 203}, "exam": {"Raios-X": 74, "Mamografia": 198, "Ultrassom": 203, "Análises Clínicas": 1553, "Oftalmologia": 545, "Eletrocardiograma": 80}}, {"year": 2025, "n": 22, "mun": "Urucurituba", "consultas": 870, "oft": 262, "odonto": 1954, "naoMed": 1299, "exames": 4406, "intern": 0, "proc": 116, "farm": 860, "alim": 3068, "saude": 9767, "geral": 12835, "spec": {"Clínico Geral": 329, "Ginecologia": 139, "Pediatria": 113, "Endocrinologia": 108, "Consulta Anestésica": 60, "Consultas Cirúrgicas": 121}, "exam": {"Raios-X": 274, "Mamografia": 177, "Ultrassom": 375, "Análises Clínicas": 2932, "Oftalmologia": 589, "Eletrocardiograma": 59}}, {"year": 2025, "n": 23, "mun": "Caapiranga", "consultas": 869, "oft": 122, "odonto": 1790, "naoMed": 1168, "exames": 4599, "intern": 57, "proc": 86, "farm": 853, "alim": 2972, "saude": 9544, "geral": 12516, "spec": {"Clínico Geral": 145, "Ginecologia": 137, "Pediatria": 133, "Ortopedia": 227, "Cardiologia": 99, "Consulta Anestésica": 43, "Consultas Cirúrgicas": 85}, "exam": {"Raios-X": 208, "Mamografia": 102, "Ultrassom": 383, "Análises Clínicas": 3077, "Oftalmologia": 751, "Eletrocardiograma": 78}}, {"year": 2026, "n": 24, "mun": "Manacapuru", "consultas": 664, "oft": 156, "odonto": 2026, "naoMed": 994, "exames": 2756, "intern": 50, "proc": 50, "farm": 752, "alim": 2630, "saude": 7448, "geral": 10078, "spec": {"Clínico Geral": 410, "Ginecologia": 12, "Medicina geral comunidade": 118, "Consulta Anestésica": 32, "Consultas Cirúrgicas": 92}, "exam": {"Raios-X": 132, "Mamografia": 75, "Ultrassom": 11, "Análises Clínicas": 1671, "Oftalmologia": 800, "Eletrocardiograma": 67}}, {"year": 2026, "n": 25, "mun": "Itapiranga", "consultas": 607, "oft": 101, "odonto": 1698, "naoMed": 873, "exames": 2230, "intern": 29, "proc": 32, "farm": 567, "alim": 2358, "saude": 6137, "geral": 8495, "spec": {"Clínico Geral": 350, "Ginecologia": 52, "Ortopedia": 78, "Consulta Anestésica": 22, "Consultas Cirúrgicas": 105}, "exam": {"Raios-X": 317, "Mamografia": 98, "Análises Clínicas": 1293, "Oftalmologia": 460, "Eletrocardiograma": 62}}, {"year": 2026, "n": 26, "mun": "Silves", "consultas": 683, "oft": 0, "odonto": 1776, "naoMed": 855, "exames": 1206, "intern": 40, "proc": 51, "farm": 712, "alim": 2184, "saude": 5323, "geral": 7507, "spec": {"Clínico Geral": 307, "Pediatria": 151, "Medicina geral comunidade": 79, "Consulta Anestésica": 40, "Consultas Cirúrgicas": 106}, "exam": {"Raios-X": 93, "Mamografia": 100, "Análises Clínicas": 957, "Eletrocardiograma": 56}}, {"year": 2026, "n": 27, "mun": "São Sebastião Do Uatumã", "consultas": 867, "oft": 0, "odonto": 1806, "naoMed": 1043, "exames": 1785, "intern": 49, "proc": 68, "farm": 693, "alim": 2536, "saude": 6311, "geral": 8847, "spec": {"Clínico Geral": 338, "Ginecologia": 122, "Pediatria": 127, "Dermatologia": 116, "Consulta Anestésica": 49, "Consultas Cirúrgicas": 115}, "exam": {"Raios-X": 126, "Mamografia": 59, "Ultrassom": 188, "Análises Clínicas": 1361, "Eletrocardiograma": 51}}, {"year": 2026, "n": 28, "mun": "Novo Aripuanã", "consultas": 772, "oft": 155, "odonto": 1841, "naoMed": 1109, "exames": 1462, "intern": 24, "proc": 72, "farm": 782, "alim": 2375, "saude": 6217, "geral": 8592, "spec": {"Clínico Geral": 415, "Pediatria": 174, "Dermatologia": 73, "Consulta Anestésica": 23, "Consultas Cirúrgicas": 87}, "exam": {"Raios-X": 109, "Mamografia": 97, "Ultrassom": 145, "Análises Clínicas": 920, "Oftalmologia": 153, "Eletrocardiograma": 38}}, {"year": 2026, "n": "EXTRA", "mun": "Anamã", "consultas": 623, "oft": 172, "odonto": 1659, "naoMed": 998, "exames": 2177, "intern": 41, "proc": 64, "farm": 571, "alim": 2305, "saude": 6305, "geral": 8610, "spec": {"Clínico Geral": 386, "Ginecologia": 90, "Consulta Anestésica": 41, "Consultas Cirúrgicas": 106}, "exam": {"Raios-X": 95, "Mamografia": 99, "Ultrassom": 171, "Análises Clínicas": 1222, "Oftalmologia": 561, "Eletrocardiograma": 29}}, {"year": 2026, "n": 29, "mun": "Tefé", "consultas": 955, "oft": 0, "odonto": 2598, "naoMed": 1244, "exames": 1313, "intern": 52, "proc": 58, "farm": 772, "alim": 3036, "saude": 6992, "geral": 10028, "spec": {"Clínico Geral": 476, "Ginecologia": 163, "Pediatria": 112, "Consulta Anestésica": 48, "Consultas Cirúrgicas": 156}, "exam": {"Raios-X": 49, "Mamografia": 100, "Ultrassom": 168, "Análises Clínicas": 970, "Eletrocardiograma": 26}}, {"year": 2026, "n": 30, "mun": "Alvarães", "consultas": 779, "oft": 218, "odonto": 2343, "naoMed": 1377, "exames": 5337, "intern": 33, "proc": 95, "farm": 867, "alim": 2994, "saude": 11049, "geral": 14043, "spec": {"Clínico Geral": 539, "Ginecologia": 33, "Consulta Anestésica": 28, "Consultas Cirúrgicas": 179}, "exam": {"Raios-X": 337, "Mamografia": 146, "Ultrassom": 18, "Análises Clínicas": 2714, "Oftalmologia": 2046, "Eletrocardiograma": 76}}, {"year": 2026, "n": 31, "mun": "Borba", "consultas": 970, "oft": 216, "odonto": 2145, "naoMed": 1452, "exames": 4061, "intern": 42, "proc": 66, "farm": 910, "alim": 2672, "saude": 9862, "geral": 12534, "spec": {"Clínico Geral": 456, "Pediatria": 146, "Cardiologia": 123, "Dermatologia": 100, "Consulta Anestésica": 30, "Consultas Cirúrgicas": 115}, "exam": {"Raios-X": 184, "Mamografia": 164, "Ultrassom": 177, "Análises Clínicas": 1805, "Oftalmologia": 1579, "Eletrocardiograma": 152}}, {"year": 2026, "n": 32, "mun": "Beruri", "consultas": 1259, "oft": 0, "odonto": 2072, "naoMed": 1557, "exames": 2063, "intern": 69, "proc": 81, "farm": 1096, "alim": 3320, "saude": 8197, "geral": 11517, "spec": {"Clínico Geral": 686, "Ginecologia": 142, "Cardiologia": 75, "Otorrinolaringologia": 103, "Consulta Anestésica": 61, "Consultas Cirúrgicas": 192}, "exam": {"Raios-X": 212, "Mamografia": 72, "Ultrassom": 369, "Análises Clínicas": 1256, "Eletrocardiograma": 126, "Otorrinolaringologia": 28}}, {"year": 2026, "n": 33, "mun": "Parintins", "consultas": 717, "oft": 137, "odonto": 1124, "naoMed": 1025, "exames": 2066, "intern": 29, "proc": 66, "farm": 560, "alim": 2079, "saude": 5724, "geral": 7803, "spec": {"Clínico Geral": 258, "Ginecologia": 106, "Pediatria": 127, "Cardiologia": 92, "Consulta Anestésica": 25, "Consultas Cirúrgicas": 109}, "exam": {"Raios-X": 121, "Mamografia": 131, "Ultrassom": 184, "Análises Clínicas": 907, "Oftalmologia": 671, "Eletrocardiograma": 52}}, {"year": 2026, "n": 34, "mun": "Urucará", "consultas": 850, "oft": 187, "odonto": 1468, "naoMed": 1244, "exames": 3208, "intern": 59, "proc": 127, "farm": 985, "alim": 2550, "saude": 8128, "geral": 10678, "spec": {"Clínico Geral": 370, "Ginecologia": 125, "Pediatria": 145, "Consulta Anestésica": 51, "Consultas Cirúrgicas": 159}, "exam": {"Raios-X": 173, "Mamografia": 137, "Ultrassom": 182, "Análises Clínicas": 1184, "Oftalmologia": 1457, "Eletrocardiograma": 75}}];
+const SPECIALTIES_BY_YEAR = {"2025": {"Clínico Geral": 8558, "Ginecologia": 2186, "Pediatria": 3023, "Neurologia": 119, "Medicina Geral Comunidade": 102, "Ortopedia": 356, "Cardiologia": 367, "Dermatologia": 921, "Endocrinologia": 292, "Infectologia": 161, "Mastologia": 61, "Geriatria": 134, "Gastrologia": 53, "Psiquiatria": 92, "Otorrinolaringologia": 338, "Proctologista": 16, "Reumatologia": 117, "Pneumologia": 0, "Urologista": 107, "Consulta Anestésica": 1240, "Consultas Cirúrgicas": 3054}, "2026": {"Clínico Geral": 4991, "Ginecologia": 845, "Pediatria": 982, "Neurologia": 0, "Ortopedia": 78, "Medicina geral comunidade": 197, "Cardiologia": 290, "Dermatologia": 289, "Endocrinologia": 0, "Infectologia": 0, "Geriatria": 0, "Gastrologia": 0, "Otorrinolaringologia": 103, "Reumatologia": 0, "Pneumologia": 0, "Consulta Anestésica": 450, "Consultas Cirúrgicas": 1521}};
+const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom": 6059, "Análises Clínicas": 37792, "Oftalmologia": 7034, "Eletrocardiograma": 3134, "Exames de PCCU": 0, "Teste COVID-19 Saúde Local": 0}, "2026": {"Raios-X": 1948, "Mamografia": 1278, "Ultrassom": 1613, "Análises Clínicas": 16260, "Oftalmologia": 7727, "Eletrocardiograma": 810, "Otorrinolaringologia": 28, "Teste COVID-19 Saúde Local": 0}};
+const GENERATED_AT = "02/08/2026 00:06";
+
+const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
+const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES'};
+const fmt = n => Math.round(n).toLocaleString(LOCALE_MAP[CUR_LANG]||'pt-BR');
+function mergeObj(a,b){ const out={...a}; for(const k in b){ out[k]=(out[k]||0)+b[k]; } return out; }
+function normalize(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+
+const YEARS = [...new Set(ALL_EXPEDITIONS.map(d=>d.year))].sort();
+let YEAR = 'all';
+function currentExpeditions(){ return YEAR==='all' ? ALL_EXPEDITIONS : ALL_EXPEDITIONS.filter(d=>String(d.year)===String(YEAR)); }
+function currentSpecialties(){
+  if(YEAR==='all') return Object.values(SPECIALTIES_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{});
+  return SPECIALTIES_BY_YEAR[YEAR] || {};
+}
+function currentExams(){
+  if(YEAR==='all') return Object.values(EXAMS_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{});
+  return EXAMS_BY_YEAR[YEAR] || {};
+}
+
+const CAT_KEYS = ['consultas','odonto','exames','naoMed','farm','oft','proc'];
+const CAT_COLORS = ['#0e8f6f','#173a63','#b8934a','#a9564a','#7a5ea8','#4f9e78','#3f7fa6'];
+const CAT_LABELS_I18N = {
+  pt:["Consultas","Odontologia","Exames","Enfermagem","Farmácia","Oftalmologia","Procedimentos"],
+  en:["Consultations","Dentistry","Exams","Nursing","Pharmacy","Ophthalmology","Procedures"],
+  de:["Konsultationen","Zahnmedizin","Untersuchungen","Pflege","Apotheke","Augenheilkunde","Verfahren"],
+  es:["Consultas","Odontología","Exámenes","Enfermería","Farmacia","Oftalmología","Procedimientos"]
+};
+const SPEC_I18N = {
+  en:{"Clínico Geral":"General Practice","Consultas Cirúrgicas":"Surgical Consultations","Consulta Anestésica":"Anesthesia Consultation","Pediatria":"Pediatrics","Ginecologia":"Gynecology","Dermatologia":"Dermatology","Cardiologia":"Cardiology","Otorrinolaringologia":"Otolaryngology (ENT)","Ortopedia":"Orthopedics","Endocrinologia":"Endocrinology","Infectologia":"Infectious Disease","Geriatria":"Geriatrics","Neurologia":"Neurology","Reumatologia":"Rheumatology","Urologista":"Urology","Medicina Geral Comunidade":"Community General Medicine","Psiquiatria":"Psychiatry","Gastrologia":"Gastroenterology","Mastologia":"Mastology","Proctologista":"Proctology","Pneumologia":"Pulmonology"},
+  de:{"Clínico Geral":"Allgemeinmedizin","Consultas Cirúrgicas":"Chirurgische Beratungen","Consulta Anestésica":"Anästhesieberatung","Pediatria":"Pädiatrie","Ginecologia":"Gynäkologie","Dermatologia":"Dermatologie","Cardiologia":"Kardiologie","Otorrinolaringologia":"Hals-Nasen-Ohren","Ortopedia":"Orthopädie","Endocrinologia":"Endokrinologie","Infectologia":"Infektiologie","Geriatria":"Geriatrie","Neurologia":"Neurologie","Reumatologia":"Rheumatologie","Urologista":"Urologie","Medicina Geral Comunidade":"Allgemeinmedizin (Gemeinde)","Psiquiatria":"Psychiatrie","Gastrologia":"Gastroenterologie","Mastologia":"Mastologie","Proctologista":"Proktologie","Pneumologia":"Pneumologie"},
+  es:{"Clínico Geral":"Medicina General","Consultas Cirúrgicas":"Consultas Quirúrgicas","Consulta Anestésica":"Consulta de Anestesia","Pediatria":"Pediatría","Ginecologia":"Ginecología","Dermatologia":"Dermatología","Cardiologia":"Cardiología","Otorrinolaringologia":"Otorrinolaringología","Ortopedia":"Ortopedia","Endocrinologia":"Endocrinología","Infectologia":"Infectología","Geriatria":"Geriatría","Neurologia":"Neurología","Reumatologia":"Reumatología","Urologista":"Urología","Medicina Geral Comunidade":"Medicina General Comunitaria","Psiquiatria":"Psiquiatría","Gastrologia":"Gastroenterología","Mastologia":"Mastología","Proctologista":"Proctología","Pneumologia":"Neumología"}
+};
+const EXAM_I18N = {
+  en:{"Análises Clínicas":"Clinical Lab Tests","Oftalmologia":"Ophthalmology","Ultrassom":"Ultrasound","Raios-X":"X-Ray","Mamografia":"Mammography","Eletrocardiograma":"Electrocardiogram","Exames de PCCU":"Pap Smear Tests","Teste COVID-19 Saúde Local":"Local COVID-19 Testing","Otorrinolaringologia":"Otolaryngology (ENT)"},
+  de:{"Análises Clínicas":"Laboruntersuchungen","Oftalmologia":"Augenheilkunde","Ultrassom":"Ultraschall","Raios-X":"Röntgen","Mamografia":"Mammographie","Eletrocardiograma":"Elektrokardiogramm","Exames de PCCU":"PAP-Abstrich","Teste COVID-19 Saúde Local":"Lokaler COVID-19-Test","Otorrinolaringologia":"Hals-Nasen-Ohren"},
+  es:{"Análises Clínicas":"Análisis Clínicos","Oftalmologia":"Oftalmología","Ultrassom":"Ecografía","Raios-X":"Rayos X","Mamografia":"Mamografía","Eletrocardiograma":"Electrocardiograma","Exames de PCCU":"Prueba de Papanicolaou","Teste COVID-19 Saúde Local":"Prueba Local de COVID-19","Otorrinolaringologia":"Otorrinolaringología"}
+};
+function trSpec(name){ return (SPEC_I18N[CUR_LANG] && SPEC_I18N[CUR_LANG][name]) || name; }
+function trExam(name){ return (EXAM_I18N[CUR_LANG] && EXAM_I18N[CUR_LANG][name]) || name; }
+function catLabels(){ return CAT_LABELS_I18N[CUR_LANG] || CAT_LABELS_I18N.pt; }
+
+/* ================= i18n ================= */
+const I18N = {
+ pt:{brandTitle:"Barco Hospital São João XXIII",brandSub:"Painel Executivo de Expedições · Amazonas",live:"Fonte: planilha oficial",yearAll:"Todos os anos",updatedPrefix:"Atualizado em ",
+  navDash:"Painel",navSpec:"Especialidades",navExam:"Exames",navMun:"Municípios",navAI:"Insights",navInfo:"Sobre",
+  gauge1Title:"Cobertura de Saúde",gauge1Sub:"% do atendimento geral que é saúde",
+  gauge2Title:"Participação da Odontologia",gauge2Sub:"% do atendimento em saúde",
+  bigGeralL:"Atendimento Geral",bigSaudeL:"Em Saúde",
+  miniExpL:"Expedições",miniMunL:"Municípios",miniAvgL:"Média/Expedição",miniAlimL:"Refeições",
+  stackTitle:"Atendimento por Expedição · por Categoria",stackSub:"Composição de cada expedição, empilhada por tipo de atendimento",
+  top5Title:"Top 5 Especialidades Médicas",top5Sub:"Maior volume de consultas no período",
+  donutTitle:"Distribuição por Categoria",donutSub:"Participação de cada categoria no total",
+  areaTitle:"Evolução do Atendimento Geral",areaSub:"Ao longo das expedições, na ordem em que ocorreram",
+  specTitle:"Especialidades Médicas",specNote:"Volume de consultas por especialidade, considerando o período selecionado.",
+  examTitle:"Exames por Tipo",examNote:"Distribuição dos exames realizados, considerando o período selecionado.",
+  voyageTitle:"Rota das Expedições",voyageNote:"Cada nó é um município atendido, na ordem em que o barco navegou.",
+  rankTitle:"Ranking de Municípios · Atendimento Geral",rankNote:"Soma do período selecionado por município (municípios revisitados aparecem somados).",
+  colMun:"Município",colExp:"Expedições",colGeral:"Atendimento Geral",
+  insightsAutoTitle:"Destaques Automáticos",insightsAutoSub:"Gerados a partir dos dados do período selecionado",
+  aiTitle:"Assistente de Dados",aiSub:"Pergunte sobre especialidades, exames, categorias ou municípios — cálculo instantâneo, sem depender de internet.",
+  aiPlaceholder:"Ex.: Qual a média de consultas cirúrgicas?",aiAskBtn:"Perguntar",
+  dqTitle:"Nota de qualidade de dados —",dqBody:"Todos os valores deste painel foram extraídos linha por linha, coluna por coluna, diretamente da planilha oficial, com leitura programática — sem digitação manual.",
+  prodTitle:"Como atualizar após cada expedição —",prodBody:"Rode gerar_dashboard.py apontando para a planilha .ods atualizada. O script detecta automaticamente todas as abas de ano (2025, 2026, 2027...), recalcula tudo e gera um novo dashboard.html pronto para publicar. Nenhuma edição de código é necessária.",
+  chips:["Média de consultas cirúrgicas","Qual especialidade teve mais consultas?","Qual o exame mais realizado?","Compare os anos"],
+  top10Title:"Top 10 Municípios · Atendimento Geral",
+  top10Sub:"Os 10 municípios com maior volume total no período selecionado",
+  infoGauge1:"Percentual do atendimento geral (saúde + alimentação) que corresponde a atendimento em saúde. Calculado como Total de Saúde ÷ Total Geral.",
+  infoGauge2:"Percentual do atendimento em saúde que é odontologia. Mostra o peso da odontologia frente às demais categorias de saúde.",
+  infoStack:"Cada barra é uma expedição. As cores mostram como o atendimento daquela expedição se divide entre consultas, odontologia, exames, enfermagem, farmácia, oftalmologia e procedimentos.",
+  infoTop5:"As 5 especialidades médicas com maior número de consultas somadas no período selecionado.",
+  infoDonut:"Participação percentual de cada categoria de atendimento (consultas, odontologia, exames etc.) no total do período selecionado.",
+  infoArea:"Total geral de atendimentos de cada expedição, na ordem cronológica em que ocorreram.",
+  infoSpec:"Volume total de consultas por especialidade médica no período selecionado, do maior para o menor.",
+  infoExam:"Volume de cada tipo de exame realizado no período selecionado.",
+  infoVoyage:"A sequência real de municípios visitados pelo barco. Clique em qualquer parada para ver todos os dados daquela expedição específica.",
+  infoRank:"Todos os municípios atendidos, somando todas as expedições no período selecionado (municípios revisitados aparecem somados).",
+  infoTop10:"Os 10 municípios com maior atendimento geral acumulado no período selecionado, com o valor exato ao lado de cada barra.",
+  ansAverage:(name,avg,total,n)=>`A média de "${name}" é de ${fmt(avg)} por expedição (total de ${fmt(total)} em ${n} expedições no período selecionado).`,
+  ansTotal:(name,total,avg)=>`O total de "${name}" no período selecionado é ${fmt(total)} (média de ${fmt(avg)} por expedição).`,
+  ansTopSpec:(name,val)=>`A especialidade com maior volume é "${name}", com ${fmt(val)} consultas no período selecionado.`,
+  ansTopExam:(name,val)=>`O exame mais realizado é "${name}", com ${fmt(val)} no período selecionado.`,
+  ansTopMun:(name,val)=>`O município com maior atendimento geral é ${name}, com ${fmt(val)}.`,
+  ansTopExp:(mun,n,val)=>`A expedição com maior volume foi a nº ${n} (${mun}), com ${fmt(val)} atendimentos gerais.`,
+  ansCompare:(y1,y2,g1,g2)=>`Em ${y1} o atendimento geral foi ${fmt(g1)}; em ${y2} foi ${fmt(g2)} — variação de ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
+  ansAverageMun:(name,mun,avg,total,n)=>`A média de "${name}" em ${mun} é de ${fmt(avg)} por expedição (total de ${fmt(total)} em ${n} expedição(ões) no período considerado).`,
+  ansTotalMun:(name,mun,total,n)=>`O total de "${name}" em ${mun} no período considerado é ${fmt(total)}, em ${n} expedição(ões).`,
+  ansNoDataMun:(mun)=>`Não encontrei expedições em ${mun} no período considerado.`,
+  ansFallback:"Não encontrei essa métrica específica. Tente perguntar sobre uma especialidade, exame, categoria (consultas, odontologia, farmácia...), município, ou use uma das sugestões abaixo."},
+ en:{brandTitle:"Barco Hospital São João XXIII",brandSub:"Expedition Executive Dashboard · Amazon",live:"Source: official spreadsheet",yearAll:"All years",updatedPrefix:"Updated on ",
+  navDash:"Dashboard",navSpec:"Specialties",navExam:"Exams",navMun:"Municipalities",navAI:"Insights",navInfo:"About",
+  gauge1Title:"Health Coverage",gauge1Sub:"% of total attendance that is health-related",
+  gauge2Title:"Dental Share",gauge2Sub:"% of health attendance",
+  bigGeralL:"Total Attendance",bigSaudeL:"Health",
+  miniExpL:"Expeditions",miniMunL:"Municipalities",miniAvgL:"Avg/Expedition",miniAlimL:"Meals",
+  stackTitle:"Attendance by Expedition · by Category",stackSub:"Composition of each expedition, stacked by attendance type",
+  top5Title:"Top 5 Medical Specialties",top5Sub:"Highest consultation volume in the period",
+  donutTitle:"Category Distribution",donutSub:"Share of each category in the total",
+  areaTitle:"Total Attendance Trend",areaSub:"Across expeditions, in the order they occurred",
+  specTitle:"Medical Specialties",specNote:"Consultation volume per specialty for the selected period.",
+  examTitle:"Exams by Type",examNote:"Distribution of exams performed for the selected period.",
+  voyageTitle:"Expedition Route",voyageNote:"Each node is a municipality served, in the order the boat navigated.",
+  rankTitle:"Municipality Ranking · Total Attendance",rankNote:"Sum of the selected period per municipality (revisited municipalities are combined).",
+  colMun:"Municipality",colExp:"Expeditions",colGeral:"Total Attendance",
+  insightsAutoTitle:"Automatic Highlights",insightsAutoSub:"Generated from the selected period's data",
+  aiTitle:"Data Assistant",aiSub:"Ask about specialties, exams, categories, or municipalities — instant calculation, no internet needed.",
+  aiPlaceholder:"E.g.: What's the average of surgical consultations?",aiAskBtn:"Ask",
+  dqTitle:"Data quality note —",dqBody:"Every figure in this dashboard was extracted row by row, column by column, directly from the official spreadsheet via programmatic reading — no manual transcription.",
+  prodTitle:"How to update after each expedition —",prodBody:"Run gerar_dashboard.py pointing to the updated .ods spreadsheet. The script automatically detects every year tab (2025, 2026, 2027...), recalculates everything, and generates a new dashboard.html ready to publish. No code editing needed.",
+  chips:["Average surgical consultations","Which specialty had the most consultations?","Which exam is performed the most?","Compare the years"],
+  top10Title:"Top 10 Municipalities · Total Attendance",
+  top10Sub:"The 10 municipalities with the highest total volume in the selected period",
+  infoGauge1:"Percentage of total attendance (health + meals) that corresponds to health care. Calculated as Total Health ÷ Total Overall.",
+  infoGauge2:"Percentage of health attendance that is dentistry. Shows the weight of dental care versus other health categories.",
+  infoStack:"Each bar is one expedition. Colors show how that expedition's attendance splits across consultations, dentistry, exams, nursing, pharmacy, ophthalmology, and procedures.",
+  infoTop5:"The 5 medical specialties with the highest combined number of consultations in the selected period.",
+  infoDonut:"Percentage share of each attendance category (consultations, dentistry, exams, etc.) in the selected period's total.",
+  infoArea:"Total attendance of each expedition, in the chronological order they occurred.",
+  infoSpec:"Total consultation volume per medical specialty in the selected period, highest to lowest.",
+  infoExam:"Volume of each type of exam performed in the selected period.",
+  infoVoyage:"The actual sequence of municipalities visited by the boat. Click any stop to see all the data for that specific expedition.",
+  infoRank:"Every municipality served, summing all expeditions in the selected period (revisited municipalities are combined).",
+  infoTop10:"The 10 municipalities with the highest cumulative total attendance in the selected period, with the exact value next to each bar.",
+  ansAverage:(name,avg,total,n)=>`The average of "${name}" is ${fmt(avg)} per expedition (total of ${fmt(total)} across ${n} expeditions in the selected period).`,
+  ansTotal:(name,total,avg)=>`The total for "${name}" in the selected period is ${fmt(total)} (average of ${fmt(avg)} per expedition).`,
+  ansTopSpec:(name,val)=>`The specialty with the highest volume is "${name}", with ${fmt(val)} consultations in the selected period.`,
+  ansTopExam:(name,val)=>`The most performed exam is "${name}", with ${fmt(val)} in the selected period.`,
+  ansTopMun:(name,val)=>`The municipality with the highest total attendance is ${name}, with ${fmt(val)}.`,
+  ansTopExp:(mun,n,val)=>`The expedition with the highest volume was #${n} (${mun}), with ${fmt(val)} total attendances.`,
+  ansCompare:(y1,y2,g1,g2)=>`In ${y1} total attendance was ${fmt(g1)}; in ${y2} it was ${fmt(g2)} — a change of ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
+  ansAverageMun:(name,mun,avg,total,n)=>`The average of "${name}" in ${mun} is ${fmt(avg)} per expedition (total of ${fmt(total)} across ${n} expedition(s) in the considered period).`,
+  ansTotalMun:(name,mun,total,n)=>`The total for "${name}" in ${mun} in the considered period is ${fmt(total)}, across ${n} expedition(s).`,
+  ansNoDataMun:(mun)=>`I couldn't find expeditions in ${mun} for the considered period.`,
+  ansFallback:"I couldn't find that specific metric. Try asking about a specialty, exam, category (consultations, dentistry, pharmacy...), municipality, or use one of the suggestions below."},
+ de:{brandTitle:"Barco Hospital São João XXIII",brandSub:"Exekutives Expeditions-Dashboard · Amazonas",live:"Quelle: offizielle Tabelle",yearAll:"Alle Jahre",updatedPrefix:"Aktualisiert am ",
+  navDash:"Dashboard",navSpec:"Fachrichtungen",navExam:"Untersuchungen",navMun:"Gemeinden",navAI:"Insights",navInfo:"Über",
+  gauge1Title:"Gesundheitsabdeckung",gauge1Sub:"% der Gesamtbehandlungen, die Gesundheit betreffen",
+  gauge2Title:"Zahnmedizin-Anteil",gauge2Sub:"% der Gesundheitsbehandlungen",
+  bigGeralL:"Gesamtbehandlungen",bigSaudeL:"Gesundheit",
+  miniExpL:"Expeditionen",miniMunL:"Gemeinden",miniAvgL:"Ø/Expedition",miniAlimL:"Mahlzeiten",
+  stackTitle:"Behandlungen pro Expedition · nach Kategorie",stackSub:"Zusammensetzung jeder Expedition, gestapelt nach Behandlungsart",
+  top5Title:"Top 5 Medizinische Fachrichtungen",top5Sub:"Höchstes Konsultationsvolumen im Zeitraum",
+  donutTitle:"Verteilung nach Kategorie",donutSub:"Anteil jeder Kategorie am Gesamtwert",
+  areaTitle:"Entwicklung der Gesamtbehandlungen",areaSub:"Über die Expeditionen hinweg, in der Reihenfolge ihres Auftretens",
+  specTitle:"Medizinische Fachrichtungen",specNote:"Anzahl der Konsultationen je Fachrichtung im gewählten Zeitraum.",
+  examTitle:"Untersuchungen nach Art",examNote:"Verteilung der durchgeführten Untersuchungen im gewählten Zeitraum.",
+  voyageTitle:"Expeditionsroute",voyageNote:"Jeder Knoten ist eine versorgte Gemeinde, in der Reihenfolge der Bootsfahrt.",
+  rankTitle:"Gemeinde-Rangliste · Gesamtbehandlungen",rankNote:"Summe des gewählten Zeitraums je Gemeinde.",
+  colMun:"Gemeinde",colExp:"Expeditionen",colGeral:"Gesamtbehandlungen",
+  insightsAutoTitle:"Automatische Highlights",insightsAutoSub:"Erstellt aus den Daten des gewählten Zeitraums",
+  aiTitle:"Datenassistent",aiSub:"Fragen Sie zu Fachrichtungen, Untersuchungen, Kategorien oder Gemeinden — sofortige Berechnung, ohne Internet.",
+  aiPlaceholder:"Z. B.: Was ist der Durchschnitt der chirurgischen Beratungen?",aiAskBtn:"Fragen",
+  dqTitle:"Hinweis zur Datenqualität —",dqBody:"Jede Zahl in diesem Dashboard wurde Zeile für Zeile, Spalte für Spalte direkt aus der offiziellen Tabelle extrahiert — ohne manuelle Übertragung.",
+  prodTitle:"Aktualisierung nach jeder Expedition —",prodBody:"Führen Sie gerar_dashboard.py mit der aktualisierten .ods-Tabelle aus. Das Skript erkennt automatisch jedes Jahres-Tab (2025, 2026, 2027...), berechnet alles neu und erstellt ein neues dashboard.html, bereit zur Veröffentlichung.",
+  chips:["Durchschnitt chirurgische Beratungen","Welche Fachrichtung hatte die meisten Konsultationen?","Welche Untersuchung wird am häufigsten durchgeführt?","Vergleiche die Jahre"],
+  top10Title:"Top 10 Gemeinden · Gesamtbehandlungen",
+  top10Sub:"Die 10 Gemeinden mit dem höchsten Gesamtvolumen im gewählten Zeitraum",
+  infoGauge1:"Prozentsatz der Gesamtbehandlungen (Gesundheit + Mahlzeiten), der auf Gesundheitsversorgung entfällt.",
+  infoGauge2:"Prozentsatz der Gesundheitsbehandlungen, der auf Zahnmedizin entfällt.",
+  infoStack:"Jeder Balken ist eine Expedition. Die Farben zeigen die Aufteilung nach Konsultationen, Zahnmedizin, Untersuchungen, Pflege, Apotheke, Augenheilkunde und Verfahren.",
+  infoTop5:"Die 5 medizinischen Fachrichtungen mit den meisten Konsultationen im gewählten Zeitraum.",
+  infoDonut:"Prozentualer Anteil jeder Kategorie am Gesamtwert des gewählten Zeitraums.",
+  infoArea:"Gesamtbehandlungen jeder Expedition, in chronologischer Reihenfolge.",
+  infoSpec:"Gesamtes Konsultationsvolumen je medizinischer Fachrichtung im gewählten Zeitraum.",
+  infoExam:"Volumen jeder Untersuchungsart im gewählten Zeitraum.",
+  infoVoyage:"Die tatsächliche Reihenfolge der vom Boot besuchten Gemeinden. Klicken Sie auf einen Stopp für alle Daten dieser Expedition.",
+  infoRank:"Alle versorgten Gemeinden, summiert über alle Expeditionen im gewählten Zeitraum.",
+  infoTop10:"Die 10 Gemeinden mit den meisten Gesamtbehandlungen im gewählten Zeitraum, mit genauem Wert neben jedem Balken.",
+  ansAverage:(name,avg,total,n)=>`Der Durchschnitt von "${name}" beträgt ${fmt(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expeditionen im gewählten Zeitraum).`,
+  ansTotal:(name,total,avg)=>`Die Gesamtzahl für "${name}" im gewählten Zeitraum beträgt ${fmt(total)} (Durchschnitt ${fmt(avg)} pro Expedition).`,
+  ansTopSpec:(name,val)=>`Die Fachrichtung mit dem höchsten Volumen ist "${name}", mit ${fmt(val)} Konsultationen im gewählten Zeitraum.`,
+  ansTopExam:(name,val)=>`Die am häufigsten durchgeführte Untersuchung ist "${name}", mit ${fmt(val)} im gewählten Zeitraum.`,
+  ansTopMun:(name,val)=>`Die Gemeinde mit den meisten Gesamtbehandlungen ist ${name}, mit ${fmt(val)}.`,
+  ansTopExp:(mun,n,val)=>`Die Expedition mit dem höchsten Volumen war Nr. ${n} (${mun}), mit ${fmt(val)} Gesamtbehandlungen.`,
+  ansCompare:(y1,y2,g1,g2)=>`${y1} betrugen die Gesamtbehandlungen ${fmt(g1)}; ${y2} waren es ${fmt(g2)} — eine Veränderung von ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
+  ansAverageMun:(name,mun,avg,total,n)=>`Der Durchschnitt von "${name}" in ${mun} beträgt ${fmt(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expedition(en) im betrachteten Zeitraum).`,
+  ansTotalMun:(name,mun,total,n)=>`Die Gesamtzahl für "${name}" in ${mun} im betrachteten Zeitraum beträgt ${fmt(total)}, über ${n} Expedition(en).`,
+  ansNoDataMun:(mun)=>`Keine Expeditionen in ${mun} im betrachteten Zeitraum gefunden.`,
+  ansFallback:"Diese Kennzahl wurde nicht gefunden. Fragen Sie nach einer Fachrichtung, Untersuchung, Kategorie, Gemeinde, oder nutzen Sie einen der Vorschläge unten."},
+ es:{brandTitle:"Barco Hospital São João XXIII",brandSub:"Panel Ejecutivo de Expediciones · Amazonas",live:"Fuente: planilla oficial",yearAll:"Todos los años",updatedPrefix:"Actualizado el ",
+  navDash:"Panel",navSpec:"Especialidades",navExam:"Exámenes",navMun:"Municipios",navAI:"Insights",navInfo:"Acerca de",
+  gauge1Title:"Cobertura de Salud",gauge1Sub:"% de la atención general que es salud",
+  gauge2Title:"Participación de Odontología",gauge2Sub:"% de la atención en salud",
+  bigGeralL:"Atención General",bigSaudeL:"En Salud",
+  miniExpL:"Expediciones",miniMunL:"Municipios",miniAvgL:"Promedio/Expedición",miniAlimL:"Comidas",
+  stackTitle:"Atención por Expedición · por Categoría",stackSub:"Composición de cada expedición, apilada por tipo de atención",
+  top5Title:"Top 5 Especialidades Médicas",top5Sub:"Mayor volumen de consultas en el período",
+  donutTitle:"Distribución por Categoría",donutSub:"Participación de cada categoría en el total",
+  areaTitle:"Evolución de la Atención General",areaSub:"A lo largo de las expediciones, en el orden en que ocurrieron",
+  specTitle:"Especialidades Médicas",specNote:"Volumen de consultas por especialidad en el período seleccionado.",
+  examTitle:"Exámenes por Tipo",examNote:"Distribución de los exámenes realizados en el período seleccionado.",
+  voyageTitle:"Ruta de las Expediciones",voyageNote:"Cada nodo es un municipio atendido, en el orden en que navegó el barco.",
+  rankTitle:"Ranking de Municipios · Atención General",rankNote:"Suma del período seleccionado por municipio.",
+  colMun:"Municipio",colExp:"Expediciones",colGeral:"Atención General",
+  insightsAutoTitle:"Destacados Automáticos",insightsAutoSub:"Generados a partir de los datos del período seleccionado",
+  aiTitle:"Asistente de Datos",aiSub:"Pregunte sobre especialidades, exámenes, categorías o municipios — cálculo instantáneo, sin depender de internet.",
+  aiPlaceholder:"Ej.: ¿Cuál es el promedio de consultas quirúrgicas?",aiAskBtn:"Preguntar",
+  dqTitle:"Nota de calidad de datos —",dqBody:"Cada cifra de este panel fue extraída fila por fila, columna por columna, directamente de la planilla oficial mediante lectura programática — sin transcripción manual.",
+  prodTitle:"Cómo actualizar después de cada expedición —",prodBody:"Ejecute gerar_dashboard.py apuntando a la planilla .ods actualizada. El script detecta automáticamente cada pestaña de año (2025, 2026, 2027...), recalcula todo y genera un nuevo dashboard.html listo para publicar.",
+  chips:["Promedio de consultas quirúrgicas","¿Qué especialidad tuvo más consultas?","¿Cuál es el examen más realizado?","Compara los años"],
+  top10Title:"Top 10 Municipios · Atención General",
+  top10Sub:"Los 10 municipios con mayor volumen total en el período seleccionado",
+  infoGauge1:"Porcentaje de la atención general (salud + alimentación) correspondiente a atención en salud.",
+  infoGauge2:"Porcentaje de la atención en salud que es odontología.",
+  infoStack:"Cada barra es una expedición. Los colores muestran cómo se divide la atención entre consultas, odontología, exámenes, enfermería, farmacia, oftalmología y procedimientos.",
+  infoTop5:"Las 5 especialidades médicas con mayor número de consultas en el período seleccionado.",
+  infoDonut:"Participación porcentual de cada categoría de atención en el total del período seleccionado.",
+  infoArea:"Atención general total de cada expedición, en el orden cronológico en que ocurrieron.",
+  infoSpec:"Volumen total de consultas por especialidad médica en el período seleccionado, de mayor a menor.",
+  infoExam:"Volumen de cada tipo de examen realizado en el período seleccionado.",
+  infoVoyage:"La secuencia real de municipios visitados por el barco. Haga clic en cualquier parada para ver todos los datos de esa expedición.",
+  infoRank:"Todos los municipios atendidos, sumando todas las expediciones en el período seleccionado.",
+  infoTop10:"Los 10 municipios con mayor atención general acumulada en el período seleccionado, con el valor exacto junto a cada barra.",
+  ansAverage:(name,avg,total,n)=>`El promedio de "${name}" es ${fmt(avg)} por expedición (total de ${fmt(total)} en ${n} expediciones en el período seleccionado).`,
+  ansTotal:(name,total,avg)=>`El total de "${name}" en el período seleccionado es ${fmt(total)} (promedio de ${fmt(avg)} por expedición).`,
+  ansTopSpec:(name,val)=>`La especialidad con mayor volumen es "${name}", con ${fmt(val)} consultas en el período seleccionado.`,
+  ansTopExam:(name,val)=>`El examen más realizado es "${name}", con ${fmt(val)} en el período seleccionado.`,
+  ansTopMun:(name,val)=>`El municipio con mayor atención general es ${name}, con ${fmt(val)}.`,
+  ansTopExp:(mun,n,val)=>`La expedición con mayor volumen fue la nº ${n} (${mun}), con ${fmt(val)} atenciones generales.`,
+  ansCompare:(y1,y2,g1,g2)=>`En ${y1} la atención general fue ${fmt(g1)}; en ${y2} fue ${fmt(g2)} — variación de ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
+  ansAverageMun:(name,mun,avg,total,n)=>`El promedio de "${name}" en ${mun} es ${fmt(avg)} por expedición (total de ${fmt(total)} en ${n} expedición(es) en el período considerado).`,
+  ansTotalMun:(name,mun,total,n)=>`El total de "${name}" en ${mun} en el período considerado es ${fmt(total)}, en ${n} expedición(es).`,
+  ansNoDataMun:(mun)=>`No encontré expediciones en ${mun} en el período considerado.`,
+  ansFallback:"No encontré esa métrica específica. Intenta preguntar sobre una especialidad, examen, categoría, municipio, o usa una de las sugerencias abajo."}
+};
+let CUR_LANG = 'pt';
+let chartsInitialized = false;
+
+function applyI18n(){
+  const t = I18N[CUR_LANG];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(t[k]!==undefined) el.innerHTML=t[k]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ const k=el.getAttribute('data-i18n-ph'); if(t[k]!==undefined) el.setAttribute('placeholder',t[k]); });
+  const upd = document.querySelector('[data-i18n-prefix="updatedPrefix"]');
+  if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
+  renderChips();
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderInsightsAuto(); }
+}
+
+/* ================= info icon popovers ================= */
+function showInfoPopover(btn, text){
+  document.querySelectorAll('.info-popover').forEach(p=>p.remove());
+  if(!text) return;
+  const pop = document.createElement('div');
+  pop.className = 'info-popover';
+  pop.textContent = text;
+  document.body.appendChild(pop);
+  const r = btn.getBoundingClientRect();
+  const top = r.bottom + window.scrollY + 6;
+  let left = r.left + window.scrollX;
+  if(left + 280 > window.innerWidth) left = window.innerWidth - 290;
+  pop.style.top = top + 'px';
+  pop.style.left = Math.max(10,left) + 'px';
+}
+document.addEventListener('click', e=>{
+  if(e.target.classList && e.target.classList.contains('info-icon')){
+    e.stopPropagation();
+    const key = e.target.getAttribute('data-info');
+    showInfoPopover(e.target, I18N[CUR_LANG][key]);
+  } else if(!e.target.closest('.info-popover')){
+    document.querySelectorAll('.info-popover').forEach(p=>p.remove());
+  }
+});
+
+/* ================= navigation ================= */
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('visible'));
+    document.getElementById('view-'+item.dataset.view).classList.add('visible');
+  });
+});
+
+/* ================= year selector (dynamic, any number of years) ================= */
+function renderYearSelector(){
+  const el = document.getElementById('yearSelect');
+  const btns = YEARS.map(y=>`<button data-year="${y}" class="${String(YEAR)===String(y)?'active':''}">${y}</button>`).join('');
+  el.innerHTML = btns + `<button data-year="all" class="${YEAR==='all'?'active':''}" data-i18n="yearAll">Todos os anos</button>`;
+  el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    YEAR = b.dataset.year;
+    renderYearSelector();
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderInsightsAuto();
+  }));
+}
+
+/* ================= gauges ================= */
+let gauge1, gauge2;
+function gaugeChart(ctxId, pct, color){
+  if(!window.HAS_CHART) return null;
+  const ctx = document.getElementById(ctxId).getContext('2d');
+  return new Chart(ctx,{type:'doughnut',
+    data:{datasets:[{data:[pct,100-pct],backgroundColor:[color,'#eceff3'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'75%',rotation:270,circumference:180,plugins:{legend:{display:false},tooltip:{enabled:false}}}
+  });
+}
+
+function renderDashboard(){
+  const exp = currentExpeditions();
+  const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude'), totalOdonto=sum(exp,'odonto'), totalAlim=sum(exp,'alim');
+  const pctSaude = totalGeral? Math.round(totalSaude/totalGeral*1000)/10 : 0;
+  const pctOdonto = totalSaude? Math.round(totalOdonto/totalSaude*1000)/10 : 0;
+  const municipios = new Set(exp.map(d=>d.mun.replace(/\s*\(.*\)/,'')));
+  const avg = exp.length? Math.round(totalGeral/exp.length):0;
+  document.getElementById('gauge1Val').textContent = pctSaude+'%';
+  document.getElementById('gauge2Val').textContent = pctOdonto+'%';
+  document.getElementById('bigGeral').textContent = fmt(totalGeral);
+  document.getElementById('bigSaude').textContent = fmt(totalSaude);
+  document.getElementById('miniExp').textContent = exp.length;
+  document.getElementById('miniMun').textContent = municipios.size;
+  document.getElementById('miniAvg').textContent = fmt(avg);
+  document.getElementById('miniAlim').textContent = fmt(totalAlim);
+  if(gauge1) gauge1.destroy(); if(gauge2) gauge2.destroy();
+  gauge1 = gaugeChart('gauge1', pctSaude, '#0e8f6f');
+  gauge2 = gaugeChart('gauge2', pctOdonto, '#b8934a');
+}
+
+function renderVoyage(){
+  const all = currentExpeditions();
+  const max = Math.max(...all.map(d=>d.geral),1);
+  document.getElementById('voyageTrack').innerHTML = all.map((d,idx)=>`
+    <div class="stop" data-idx="${idx}" title="${d.mun} — ${fmt(d.geral)}">
+      <div class="stop-num">${d.year}·${d.n}</div>
+      <div class="stop-node" style="box-shadow:0 0 ${4+10*(d.geral/max)}px rgba(184,147,74,${0.25+0.5*(d.geral/max)})"></div>
+      <div class="stop-label">${d.mun}</div>
+      <div class="stop-val mono">${fmt(d.geral)}</div>
+    </div>`).join('');
+  document.querySelectorAll('#voyageTrack .stop').forEach(el=>{
+    el.style.cursor='pointer';
+    el.addEventListener('click',()=>openExpeditionModal(all[+el.dataset.idx]));
+  });
+}
+
+function openExpeditionModal(exp){
+  const t = I18N[CUR_LANG];
+  const catL = catLabels();
+  const rows = CAT_KEYS.map((k,i)=>`<tr><td>${catL[i]}</td><td class="mono" style="text-align:right;">${fmt(exp[k])}</td></tr>`).join('');
+  const specRows = Object.entries(exp.spec||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trSpec(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
+  const examRows = Object.entries(exp.exam||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trExam(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
+  const overlay = document.createElement('div');
+  overlay.id = 'expModalOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div>
+          <div class="serif" style="font-size:1.25rem;font-weight:600;color:var(--navy);">${exp.mun}</div>
+          <div style="color:var(--muted);font-size:0.82rem;">${exp.year} · Expedição ${exp.n}</div>
+        </div>
+        <button id="expModalClose" style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--muted);">✕</button>
+      </div>
+      <div style="display:flex;gap:10px;margin:16px 0;">
+        <div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--gold);">
+          <div class="serif" style="font-size:1.3rem;font-weight:600;color:var(--navy);">${fmt(exp.geral)}</div>
+          <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">${t.bigGeralL}</div>
+        </div>
+        <div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--teal);">
+          <div class="serif" style="font-size:1.3rem;font-weight:600;color:var(--navy);">${fmt(exp.saude)}</div>
+          <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">${t.bigSaudeL}</div>
+        </div>
+      </div>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:14px 0 6px;">${t.stackTitle}</div>
+      <table style="width:100%;font-size:0.85rem;">${rows}</table>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.specTitle}</div>
+      <table style="width:100%;font-size:0.85rem;">${specRows}</table>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.examTitle}</div>
+      <table style="width:100%;font-size:0.85rem;">${examRows}</table>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('expModalClose').addEventListener('click',()=>overlay.remove());
+}
+
+let chartStacked, chartDonutCat, chartArea, chartSpecialties, chartExamsBar, chartExamsDonut, chartTop10;
+const valueLabelPlugin = {
+  id: 'valueLabel',
+  afterDatasetsDraw(chart){
+    const {ctx} = chart;
+    chart.data.datasets.forEach((ds, dsIndex)=>{
+      const meta = chart.getDatasetMeta(dsIndex);
+      meta.data.forEach((bar, i)=>{
+        const val = ds.data[i];
+        if(val===undefined || val===null) return;
+        ctx.save();
+        ctx.fillStyle = '#14202e';
+        ctx.font = "600 10px 'JetBrains Mono', monospace";
+        if(chart.options.indexAxis==='y'){
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(fmt(val), bar.x + 6, bar.y);
+        } else {
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(fmt(val), bar.x, bar.y - 4);
+        }
+        ctx.restore();
+      });
+    });
+  }
+};
+if(window.HAS_CHART){ Chart.defaults.color='#6b7688'; Chart.defaults.font.family="'Inter',sans-serif"; Chart.defaults.borderColor='rgba(15,42,74,0.06)'; }
+function destroyIfExists(c){ if(c) c.destroy(); }
+
+function buildAllCharts(){
+  renderTop5();
+  if(!window.HAS_CHART) return;
+  const exp = currentExpeditions();
+
+  destroyIfExists(chartStacked);
+  const ctx1 = document.getElementById('chartStacked').getContext('2d');
+  const catL = catLabels();
+  chartStacked = new Chart(ctx1,{type:'bar',
+    data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.mun.replace(/\s*\(.*\)/,'')),
+      datasets:CAT_KEYS.map((k,i)=>({label:catL[i],data:exp.map(x=>x[k]),backgroundColor:CAT_COLORS[i],borderRadius:3,maxBarThickness:24}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#14202e',boxWidth:10,font:{size:10}}}},
+      scales:{x:{stacked:true,ticks:{maxRotation:65,minRotation:65,font:{size:8}},grid:{display:false}},y:{stacked:true,grid:{color:'rgba(15,42,74,0.05)'}}}}
+  });
+
+  destroyIfExists(chartDonutCat);
+  const catTotals = CAT_KEYS.map(k=>sum(exp,k));
+  const ctx2 = document.getElementById('chartDonutCat').getContext('2d');
+  chartDonutCat = new Chart(ctx2,{type:'doughnut',
+    data:{labels:catL,datasets:[{data:catTotals,backgroundColor:CAT_COLORS,borderWidth:2,borderColor:'#ffffff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
+  });
+
+  destroyIfExists(chartArea);
+  const ctx3 = document.getElementById('chartArea').getContext('2d');
+  const gradFill = ctx3.createLinearGradient(0,0,0,220);
+  gradFill.addColorStop(0,'rgba(184,147,74,0.35)'); gradFill.addColorStop(1,'rgba(184,147,74,0.02)');
+  chartArea = new Chart(ctx3,{type:'line',
+    data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.n),
+      datasets:[{data:exp.map(x=>x.geral),borderColor:'#0f2a4a',backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:'#b8934a'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+  });
+
+  destroyIfExists(chartSpecialties);
+  const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  const ctx4 = document.getElementById('chartSpecialties').getContext('2d');
+  chartSpecialties = new Chart(ctx4,{type:'bar',
+    data:{labels:specSorted.map(e=>trSpec(e[0])),datasets:[{label:'Consultas',data:specSorted.map(e=>e[1]),backgroundColor:'#0f2a4a',borderRadius:5,maxBarThickness:18}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(15,42,74,0.05)'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#14202e'}}}}
+  });
+
+  destroyIfExists(chartExamsBar);
+  const examSorted = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1]);
+  const ctx5 = document.getElementById('chartExamsBar').getContext('2d');
+  chartExamsBar = new Chart(ctx5,{type:'bar',
+    data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{label:'Exames',data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderRadius:5,maxBarThickness:34}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:9},color:'#14202e'},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+  });
+
+  destroyIfExists(chartExamsDonut);
+  const ctx6 = document.getElementById('chartExamsDonut').getContext('2d');
+  chartExamsDonut = new Chart(ctx6,{type:'doughnut',
+    data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
+  });
+}
+
+function renderTop5(){
+  const sorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max = sorted.length? sorted[0][1] : 1;
+  document.getElementById('top5List').innerHTML = sorted.map(([name,val],i)=>`
+    <div class="top5-item"><div class="top5-head"><span>${i+1}. ${trSpec(name)}</span><b>${fmt(val)}</b></div>
+    <div class="top5-track"><div class="top5-fill" style="width:${(val/max*100).toFixed(0)}%"></div></div></div>`).join('');
+}
+
+function renderRanking(){
+  const map = {};
+  currentExpeditions().forEach(d=>{
+    const key = d.mun.replace(/\s*\(.*\)/,'');
+    if(!map[key]) map[key] = {geral:0,exp:0};
+    map[key].geral += d.geral; map[key].exp += 1;
+  });
+  const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral).slice(0,14);
+  const max = rows.length? rows[0][1].geral : 1;
+  document.getElementById('rankBody').innerHTML = rows.map((r,i)=>`
+    <tr><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td>
+    <td><div class="bar-cell"><span class="mono">${fmt(r[1].geral)}</span><div class="bar-track"><div class="bar-fill" style="width:${(r[1].geral/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('');
+
+  destroyIfExists(chartTop10);
+  if(window.HAS_CHART && document.getElementById('chartTop10')){
+    const top10 = rows.slice(0,10);
+    const ctxT = document.getElementById('chartTop10').getContext('2d');
+    chartTop10 = new Chart(ctxT,{type:'bar',
+      data:{labels:top10.map(r=>r[0]),datasets:[{data:top10.map(r=>r[1].geral),backgroundColor:'#0f2a4a',borderRadius:5,maxBarThickness:22}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:60}},
+        plugins:{legend:{display:false}},
+        scales:{x:{grid:{color:'rgba(15,42,74,0.05)'},ticks:{display:false}},y:{grid:{display:false},ticks:{font:{size:11},color:'#14202e'}}}},
+      plugins:[valueLabelPlugin]
+    });
+  }
+}
+
+/* ================= local insights + Q&A engine (no network, no API key, always works) ================= */
+let METRICS = [];
+function buildMetrics(){
+  METRICS = [];
+  CAT_KEYS.forEach((k,i)=>{
+    const aliasSet = new Set();
+    Object.values(CAT_LABELS_I18N).forEach(arr=>aliasSet.add(normalize(arr[i])));
+    METRICS.push({key:k,type:'category',aliases:[...aliasSet],name:()=>catLabels()[i]});
+  });
+  const MANUAL_SPEC = {
+    "Consultas Cirúrgicas":["cirurgia","cirurgico","cirurgica","cirurgicas","surgical","surgery","chirurgie","cirugia"],
+    "Consulta Anestésica":["anestesia","anestesica","anesthesia","anasthesie"],
+    "Clínico Geral":["clinica geral","clinico geral","general practice","allgemeinmedizin","medicina general","clinica medica"],
+    "Pediatria":["crianca","criancas","pediatrics","kinder"],
+    "Otorrinolaringologia":["otorrino","ouvido nariz garganta","ent","hno"],
+    "Medicina Geral Comunidade":["comunidade","community"]
+  };
+  const specNames = new Set();
+  Object.values(SPECIALTIES_BY_YEAR).forEach(o=>Object.keys(o).forEach(n=>specNames.add(n)));
+  specNames.forEach(name=>{
+    const aliasSet = new Set([normalize(name)]);
+    Object.values(SPEC_I18N).forEach(dict=>{ if(dict[name]) aliasSet.add(normalize(dict[name])); });
+    (MANUAL_SPEC[name]||[]).forEach(a=>aliasSet.add(normalize(a)));
+    METRICS.push({key:name,type:'specialty',aliases:[...aliasSet],name:()=>trSpec(name)});
+  });
+  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","xray","rontgen","rayos x"],"Eletrocardiograma":["ecg","eletro"] };
+  const examNames = new Set();
+  Object.values(EXAMS_BY_YEAR).forEach(o=>Object.keys(o).forEach(n=>examNames.add(n)));
+  examNames.forEach(name=>{
+    const aliasSet = new Set([normalize(name)]);
+    Object.values(EXAM_I18N).forEach(dict=>{ if(dict[name]) aliasSet.add(normalize(dict[name])); });
+    (MANUAL_EXAM[name]||[]).forEach(a=>aliasSet.add(normalize(a)));
+    METRICS.push({key:name,type:'exam',aliases:[...aliasSet],name:()=>trExam(name)});
+  });
+}
+const INTENT_WORDS = {
+  average:['media','average','durchschnitt','promedio','avg'],
+  top:['maior','mais','top','highest','most','hochste','mayor','mas','melhor'],
+  compare:['compare','comparar','compara','vergleich','vs','versus','diferenca','difference']
+};
+function detectIntent(nq){ for(const [i,words] of Object.entries(INTENT_WORDS)){ if(words.some(w=>nq.includes(w))) return i; } return 'total'; }
+function findMetric(nq){
+  let best=null,bestLen=0;
+  METRICS.forEach(m=>m.aliases.forEach(a=>{ if(a.length>=4 && nq.includes(a) && a.length>bestLen){ best=m; bestLen=a.length; } }));
+  return best;
+}
+function metricTotal(m){
+  if(m.type==='category') return sum(currentExpeditions(), m.key);
+  if(m.type==='specialty') return currentSpecialties()[m.key] || 0;
+  return currentExams()[m.key] || 0;
+}
+const MUN_NAMES = [...new Set(ALL_EXPEDITIONS.map(d=>d.mun))];
+function findMunicipality(nq){
+  let best=null,bestLen=0;
+  MUN_NAMES.forEach(m=>{
+    const nm = normalize(m);
+    if(nm.length>=4 && nq.includes(nm) && nm.length>bestLen){ best=m; bestLen=nm.length; }
+  });
+  return best;
+}
+function findYearInQuestion(nq){
+  const m = nq.match(/\b(20\d{2})\b/);
+  if(m && YEARS.includes(parseInt(m[1]))) return parseInt(m[1]);
+  return null;
+}
+function metricValueForExpedition(exp, metric){
+  if(metric.type==='category') return exp[metric.key]||0;
+  if(metric.type==='specialty') return (exp.spec && exp.spec[metric.key]) || 0;
+  return (exp.exam && exp.exam[metric.key]) || 0;
+}
+function resolveQuestion(question){
+  const t = I18N[CUR_LANG];
+  const nq = normalize(question);
+  const intent = detectIntent(nq);
+  const qYear = findYearInQuestion(nq);
+  const qMun = findMunicipality(nq);
+
+  // Municipality-scoped question: filter to that municipality (+ year if mentioned, else current UI filter)
+  if(qMun){
+    let scoped = ALL_EXPEDITIONS.filter(d=>d.mun===qMun);
+    if(qYear) scoped = scoped.filter(d=>d.year===qYear);
+    else if(YEAR!=='all') scoped = scoped.filter(d=>String(d.year)===String(YEAR));
+    if(!scoped.length) return t.ansNoDataMun(qMun);
+    const metric = findMetric(nq);
+    if(metric){
+      const total = scoped.reduce((a,e)=>a+metricValueForExpedition(e,metric),0);
+      const avg = total/scoped.length;
+      if(intent==='average') return t.ansAverageMun(metric.name(), qMun, avg, total, scoped.length);
+      return t.ansTotalMun(metric.name(), qMun, total, scoped.length);
+    }
+    // no specific metric: give general attendance for that municipality
+    const totalGeral = scoped.reduce((a,e)=>a+e.geral,0);
+    const avgGeral = totalGeral/scoped.length;
+    if(intent==='average') return t.ansAverageMun(t.bigGeralL, qMun, avgGeral, totalGeral, scoped.length);
+    return t.ansTotalMun(t.bigGeralL, qMun, totalGeral, scoped.length);
+  }
+
+  // Priority: "top X of a category" questions (must win over incidental metric-name substring matches)
+  if(intent==='top'){
+    if(/especialidad|specialty|fachrichtung/.test(nq)){
+      const top = Object.entries(currentSpecialties()).sort((a,b)=>b[1]-a[1])[0];
+      if(top) return t.ansTopSpec(trSpec(top[0]), top[1]);
+    }
+    if(/\bexame|\bexam\b|untersuchung|examen/.test(nq)){
+      const top = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1])[0];
+      if(top) return t.ansTopExam(trExam(top[0]), top[1]);
+    }
+    if(/municip|city|gemeinde/.test(nq)){
+      const map={}; currentExpeditions().forEach(d=>{ map[d.mun]=(map[d.mun]||0)+d.geral; });
+      const top = Object.entries(map).sort((a,b)=>b[1]-a[1])[0];
+      if(top) return t.ansTopMun(top[0], top[1]);
+    }
+    if(/expedi/.test(nq)){
+      const top = [...currentExpeditions()].sort((a,b)=>b.geral-a.geral)[0];
+      if(top) return t.ansTopExp(top.mun, top.n, top.geral);
+    }
+  }
+  if(intent==='compare' && YEARS.length>1){
+    const y1=YEARS[0], y2=YEARS[YEARS.length-1];
+    const g1=sum(ALL_EXPEDITIONS.filter(d=>d.year===y1),'geral');
+    const g2=sum(ALL_EXPEDITIONS.filter(d=>d.year===y2),'geral');
+    return t.ansCompare(y1,y2,g1,g2);
+  }
+  const metric = findMetric(nq);
+  if(metric){
+    const scoped = qYear ? ALL_EXPEDITIONS.filter(d=>d.year===qYear) : currentExpeditions();
+    const total = metric.type==='category' ? sum(scoped, metric.key)
+      : scoped.reduce((a,e)=>a+metricValueForExpedition(e,metric),0);
+    const nExp = scoped.length || 1;
+    const avg = total / nExp;
+    if(intent==='average') return t.ansAverage(metric.name(), avg, total, nExp);
+    return t.ansTotal(metric.name(), total, avg);
+  }
+  return t.ansFallback;
+}
+function renderChips(){
+  const t = I18N[CUR_LANG];
+  document.getElementById('aiChips').innerHTML = t.chips.map(c=>`<div class="ai-chip">${c}</div>`).join('');
+  document.querySelectorAll('.ai-chip').forEach(chip=>{ chip.onclick=()=>{ document.getElementById('aiInput').value=chip.textContent; askAI(); }; });
+}
+function buildAiContext(){
+  return {
+    filtro_atual_ano: YEAR,
+    expedicoes: ALL_EXPEDITIONS,
+    especialidades_por_ano: SPECIALTIES_BY_YEAR,
+    exames_por_ano: EXAMS_BY_YEAR,
+  };
+}
+async function askAI(){
+  const input = document.getElementById('aiInput');
+  const btn = document.getElementById('aiAsk');
+  const answerEl = document.getElementById('aiAnswer');
+  const q = input.value.trim();
+  if(!q) return;
+
+  if(!PROXY_URL){
+    answerEl.textContent = resolveQuestion(q);
+    return;
+  }
+
+  btn.disabled = true;
+  const prevText = btn.textContent;
+  btn.textContent = '…';
+  answerEl.textContent = '';
+  try{
+    const res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ question: q, context: buildAiContext() })
+    });
+    if(!res.ok) throw new Error('proxy_error');
+    const data = await res.json();
+    if(!data.answer) throw new Error('empty_answer');
+    answerEl.textContent = data.answer;
+  }catch(err){
+    // fallback to local pattern-matching engine, no error shown to the person
+    answerEl.textContent = resolveQuestion(q);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = prevText;
+  }
+}
+document.getElementById('aiAsk').addEventListener('click',askAI);
+document.getElementById('aiInput').addEventListener('keydown',e=>{ if(e.key==='Enter') askAI(); });
+
+function renderInsightsAuto(){
+  const t = I18N[CUR_LANG];
+  const exp = currentExpeditions();
+  const specObj = currentSpecialties(), examObj = currentExams();
+  const topSpec = Object.entries(specObj).sort((a,b)=>b[1]-a[1])[0];
+  const topExam = Object.entries(examObj).sort((a,b)=>b[1]-a[1])[0];
+  const topExp = [...exp].sort((a,b)=>b.geral-a.geral)[0];
+  const items = [];
+  if(topSpec) items.push(t.ansTopSpec(trSpec(topSpec[0]), topSpec[1]));
+  if(topExam) items.push(t.ansTopExam(trExam(topExam[0]), topExam[1]));
+  if(topExp) items.push(t.ansTopExp(topExp.mun.replace(/\s*\(.*\)/,''), topExp.n, topExp.geral));
+  if(YEARS.length>1){
+    const y1=YEARS[0], y2=YEARS[YEARS.length-1];
+    const g1=sum(ALL_EXPEDITIONS.filter(d=>d.year===y1),'geral');
+    const g2=sum(ALL_EXPEDITIONS.filter(d=>d.year===y2),'geral');
+    items.push(t.ansCompare(y1,y2,g1,g2));
+  }
+  document.getElementById('insightsList').innerHTML = items.map(i=>`<li><span class="insights-dot">●</span>${i}</li>`).join('');
+}
+
+/* ================= init ================= */
+buildMetrics();
+renderYearSelector();
+applyI18n();
+renderDashboard();
+renderVoyage();
+buildAllCharts();
+renderRanking();
+renderInsightsAuto();
+chartsInitialized = true;
+
+document.getElementById('langSel').addEventListener('change',e=>{ CUR_LANG = e.target.value; applyI18n(); });
+
+} /* end initDashboardApp */
+</script>
+</body>
+</html>
