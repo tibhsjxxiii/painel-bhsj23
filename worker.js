@@ -11,22 +11,31 @@
  * 2. No painel, vá em "Workers & Pages" → "Create" → "Create Worker"
  * 3. Dê um nome (ex: bhsjxxiii-ia) e clique em "Deploy"
  * 4. Clique em "Edit code", apague tudo, cole o conteúdo deste arquivo, e clique em "Deploy"
- * 5. Volte para o Worker, vá em "Settings" → "Variables and Secrets"
- * 6. Adicione uma variável secreta chamada ANTHROPIC_API_KEY com sua chave
- *    (crie uma chave gratuita em https://console.anthropic.com/settings/keys)
+ * 5. Volte para o Worker, vá em "Settings" → "Variables and Secrets", adicione DUAS variáveis secretas:
+ *      ANTHROPIC_API_KEY  → sua chave (crie uma em https://console.anthropic.com/settings/keys)
+ *      DASHBOARD_SECRET   → uma senha qualquer só sua, ex: "bhsj-2026-x7k9" (invente uma)
+ * 6. Troque ALLOWED_ORIGIN abaixo pelo domínio onde o painel vai ficar publicado
+ *    (ex: "https://seusite.netlify.app") — evita que outros sites usem seu proxy
  * 7. Copie a URL do seu Worker (algo como https://bhsjxxiii-ia.SEU-USUARIO.workers.dev)
- * 8. Cole essa URL na constante PROXY_URL no topo do template.html do painel
- *    e gere o dashboard novamente com gerar_dashboard.py
+ * 8. Gere o painel com:
+ *    python gerar_dashboard.py planilha.ods --proxy-url "https://SEU-WORKER.workers.dev" --proxy-secret "a MESMA senha do passo 5"
+ * 9. (Recomendado) Limite de uso: no painel do Worker, vá em "Triggers" →
+ *    "Add Rate Limiting Rule" e defina algo como "60 requisições por minuto
+ *    por IP" — protege contra uso abusivo mesmo com o segredo configurado.
+ *
+ * Segurança: mesmo que alguém descubra a URL do Worker, sem o DASHBOARD_SECRET
+ * correto (que só existe dentro do painel gerado) as requisições são recusadas.
+ * O CORS restrito impede que outros sites façam chamadas ao seu proxy pelo navegador.
  */
 
-const ALLOWED_ORIGINS = '*'; // pode restringir para o domínio do seu painel depois, ex: 'https://seusite.netlify.app'
+const ALLOWED_ORIGIN = '*'; // troque para o domínio final do seu painel, ex: 'https://seusite.netlify.app'
 
 export default {
   async fetch(request, env) {
     const corsHeaders = {
-      'Access-Control-Allow-Origin': ALLOWED_ORIGINS,
+      'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Dashboard-Secret',
     };
 
     if (request.method === 'OPTIONS') {
@@ -45,6 +54,18 @@ export default {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
+
+    // shared-secret check: blocks anyone who doesn't have the dashboard's secret,
+    // even if they discover the Worker URL
+    if (env.DASHBOARD_SECRET) {
+      const provided = request.headers.get('X-Dashboard-Secret') || '';
+      if (provided !== env.DASHBOARD_SECRET) {
+        return new Response(JSON.stringify({ error: 'unauthorized' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     try {
