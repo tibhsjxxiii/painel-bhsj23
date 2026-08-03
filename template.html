@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BHSJ XXIII — Painel Executivo de Expedições</title>
+<meta name="description" content="Painel executivo de expedições médicas fluviais do Barco Hospital São João XXIII — Amazonas, Brasil.">
+<meta property="og:title" content="Barco Hospital São João XXIII — Painel Executivo de Expedições">
+<meta property="og:description" content="Dados consolidados das expedições médicas fluviais no Amazonas: atendimentos, especialidades, exames e municípios.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230f2a4a' d='M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z'/%3E%3Cpath fill='%23b8934a' d='M6 12V6H15L18 12Z'/%3E%3Crect x='11' y='2' width='2' height='4' fill='%230f2a4a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -86,13 +91,13 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .info-popover{position:absolute;background:var(--navy);color:#fff;font-size:0.76rem;padding:10px 13px;border-radius:8px;max-width:270px;box-shadow:0 10px 28px rgba(0,0,0,0.3);z-index:9998;line-height:1.5;}
 .panel-sub{color:var(--muted);font-size:0.7rem;margin-bottom:8px;}
 
-.dash-grid{display:grid;grid-template-columns:340px 1fr;gap:10px;height:calc(100vh - 100px);}
-@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;height:auto;}.main{height:auto;overflow-y:visible;}}
-.dash-left{display:flex;flex-direction:column;gap:10px;min-height:0;height:100%;}
-.dash-right{display:flex;flex-direction:column;gap:10px;min-height:0;height:100%;}
-.dash-right>.panel{display:flex;flex-direction:column;min-height:0;flex:1;}
-.dash-right .chart-wrap{flex:1;min-height:0;}
-.dash-right .chart-wrap{flex:1;min-height:0;}
+.dash-grid-v2{display:flex;flex-direction:column;gap:10px;height:calc(100vh - 100px);}
+.breakdown-hero{flex:1.5;display:flex;flex-direction:column;min-height:0;}
+.breakdown-hero-body{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;flex:1;min-height:0;}
+.breakdown-hero-body .chart-wrap{height:100%;min-height:0;}
+#breakdownList{overflow-y:auto;padding-right:4px;}
+@media(max-width:900px){.breakdown-hero-body{grid-template-columns:1fr;}}
+@media(max-width:1100px){.dash-grid-v2{height:auto;}.main{height:auto;overflow-y:visible;}}
 
 .gauge-card{text-align:center;padding:12px 16px !important;}
 .gauge-wrap{position:relative;height:92px;}
@@ -109,9 +114,14 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .mini-stat .l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.02em;margin-top:2px;}
 
 .chart-wrap{position:relative;height:220px;}
+.chart-wrap:not(.loaded)::before{content:'';position:absolute;inset:0;border-radius:8px;background:linear-gradient(90deg,var(--panel-2) 25%,var(--navy-soft) 50%,var(--panel-2) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+@media(prefers-reduced-motion:reduce){.chart-wrap:not(.loaded)::before{animation:none;}}
 .chart-wrap.tall{height:100%;min-height:210px;}
 .chart-wrap.short{height:140px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.two-col>.panel{display:flex;flex-direction:column;min-height:0;}
+.two-col .chart-wrap{flex:1;min-height:0;}
 @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
 
 .top5-item{margin-bottom:8px;}
@@ -202,34 +212,29 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     </div>
 
     <div class="view visible" id="view-dashboard">
-      <div class="dash-grid">
-        <div class="dash-left">
-          <div class="panel gauge-card">
-            <div class="panel-title"><span data-i18n="gauge1Title">Cobertura de Saúde</span><button class="info-icon" data-info="infoGauge1">i</button></div>
-            <div class="panel-sub" data-i18n="gauge1Sub">% do atendimento geral que é saúde</div>
-            <div class="gauge-wrap"><canvas id="gauge1"></canvas><div class="gauge-value" id="gauge1Val">—</div></div>
-          </div>
-          <div class="bignum-row">
-            <div class="bignum"><div class="v mono" id="bigGeral">—</div><div class="l" data-i18n="bigGeralL">Atendimento Geral</div></div>
-            <div class="bignum"><div class="v mono" id="bigSaude">—</div><div class="l" data-i18n="bigSaudeL">Em Saúde</div></div>
-          </div>
-          <div class="panel" style="flex:1;display:flex;flex-direction:column;min-height:0;">
-            <div class="panel-title"><span data-i18n="breakdownTitle">Detalhamento de Atendimentos</span><button class="info-icon" data-info="infoBreakdown">i</button></div>
-            <div class="panel-sub" data-i18n="breakdownSub">Todas as categorias de atendimento no período selecionado</div>
-            <div class="chart-wrap" style="height:170px;flex:none;"><canvas id="chartBreakdown"></canvas></div>
-            <div id="breakdownList" style="overflow-y:auto;flex:1;margin-top:6px;"></div>
+      <div class="dash-grid-v2">
+        <div class="bignum-row">
+          <div class="bignum"><div class="v mono" id="bigGeral">—</div><div class="l" data-i18n="bigGeralL">Atendimento Geral</div></div>
+          <div class="bignum"><div class="v mono" id="bigSaude">—</div><div class="l" data-i18n="bigSaudeL">Em Saúde</div></div>
+        </div>
+        <div class="panel breakdown-hero">
+          <div class="panel-title"><span data-i18n="breakdownTitle">Detalhamento de Atendimentos</span><button class="info-icon" data-info="infoBreakdown">i</button></div>
+          <div class="panel-sub" data-i18n="breakdownSub">Todas as categorias de atendimento no período selecionado</div>
+          <div class="breakdown-hero-body">
+            <div class="chart-wrap" id="chartBreakdownWrap"><canvas id="chartBreakdown"></canvas></div>
+            <div id="breakdownList"></div>
           </div>
         </div>
-        <div class="dash-right">
+        <div class="two-col" style="flex:1;min-height:0;">
           <div class="panel">
             <div class="panel-title"><span data-i18n="areaTitle">Evolução do Atendimento Geral</span><button class="info-icon" data-info="infoArea">i</button></div>
             <div class="panel-sub" data-i18n="areaSub">Ao longo das expedições, na ordem em que ocorreram — passe o mouse para ver o município</div>
-            <div class="chart-wrap"><canvas id="chartArea"></canvas></div>
+            <div class="chart-wrap" id="chartAreaWrap"><canvas id="chartArea"></canvas></div>
           </div>
           <div class="panel">
             <div class="panel-title"><span data-i18n="examMiniTitle">Exames por Tipo</span><button class="info-icon" data-info="infoExam">i</button></div>
             <div class="panel-sub" data-i18n="examNote">Distribuição dos exames realizados, considerando o período selecionado.</div>
-            <div class="chart-wrap"><canvas id="chartExamsMini"></canvas></div>
+            <div class="chart-wrap" id="chartExamsMiniWrap"><canvas id="chartExamsMini"></canvas></div>
           </div>
         </div>
       </div>
@@ -329,11 +334,15 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
             <button id="btnExportCsvExp" class="report-btn" data-i18n="btnExportCsvExp">Baixar Expedições (CSV)</button>
             <button id="btnExportCsvSpec" class="report-btn" data-i18n="btnExportCsvSpec">Baixar Especialidades (CSV)</button>
             <button id="btnExportCsvExam" class="report-btn" data-i18n="btnExportCsvExam">Baixar Exames (CSV)</button>
+            <button id="btnExportJson" class="report-btn" data-i18n="btnExportJson">Baixar Tudo (JSON)</button>
           </div>
         </div>
       </div>
     </div>
-    <footer class="app-footer no-print" data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: __GENERATED_AT__</footer>
+    <footer class="app-footer">
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: __GENERATED_AT__</div>
+      <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
+    </footer>
   </main>
 </div>
 
@@ -418,7 +427,9 @@ const I18N = {
   btnExportCsvExp:"Baixar Expedições (CSV)",
   btnExportCsvSpec:"Baixar Especialidades (CSV)",
   btnExportCsvExam:"Baixar Exames (CSV)",
+  btnExportJson:"Baixar Tudo (JSON)",
   footerText:"Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: {date}",
+  footerLgpd:"Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.",
   reportIntro:(n,g,s,m)=>`No período selecionado, o Barco Hospital São João XXIII realizou ${n} expedições, atendendo ${m} municípios ribeirinhos, com um total de ${fmt(g)} atendimentos gerais, dos quais ${fmt(s)} foram atendimentos em saúde.`,
   gauge1Title:"Cobertura de Saúde",gauge1Sub:"% do atendimento geral que é saúde",
   gauge2Title:"Participação da Odontologia",gauge2Sub:"% do atendimento em saúde",
@@ -461,6 +472,7 @@ const I18N = {
   catTriagem:"Triagem / Enfermagem",
   catMedicamento:"Entrega de Medicamento",
   catAlimentacao:"Alimentação",
+  catInternacao:"Internação Clínica/Cirúrgica",
   voyageSpecNote:"Passe o mouse em qualquer parada para ver as especialidades daquela expedição",
   voyageExamNote:"Passe o mouse em qualquer parada para ver os exames daquela expedição",
   infoVoyageSpec:"Mesma rota das expedições, mas ao passar o mouse mostra as especialidades médicas realizadas naquela expedição específica.",
@@ -494,7 +506,9 @@ const I18N = {
   btnExportCsvExp:"Download Expeditions (CSV)",
   btnExportCsvSpec:"Download Specialties (CSV)",
   btnExportCsvExam:"Download Exams (CSV)",
+  btnExportJson:"Download All (JSON)",
   footerText:"Source: official expedition spreadsheet · Row-by-row programmatic extraction · Last updated: {date}",
+  footerLgpd:"This dashboard contains only aggregated attendance data (counts), with no personally identifiable patient information.",
   reportIntro:(n,g,s,m)=>`In the selected period, Barco Hospital São João XXIII carried out ${n} expeditions, serving ${m} riverside municipalities, with a total of ${fmt(g)} overall attendances, of which ${fmt(s)} were health attendances.`,
   gauge1Title:"Health Coverage",gauge1Sub:"% of total attendance that is health-related",
   gauge2Title:"Dental Share",gauge2Sub:"% of health attendance",
@@ -537,6 +551,7 @@ const I18N = {
   catTriagem:"Triage / Nursing",
   catMedicamento:"Medication Delivery",
   catAlimentacao:"Meals",
+  catInternacao:"Clinical/Surgical Hospitalization",
   voyageSpecNote:"Hover over any stop to see the specialties from that expedition",
   voyageExamNote:"Hover over any stop to see the exams from that expedition",
   infoVoyageSpec:"Same expedition route, but hovering shows the medical specialties performed on that specific expedition.",
@@ -570,7 +585,9 @@ const I18N = {
   btnExportCsvExp:"Expeditionen herunterladen (CSV)",
   btnExportCsvSpec:"Fachrichtungen herunterladen (CSV)",
   btnExportCsvExam:"Untersuchungen herunterladen (CSV)",
+  btnExportJson:"Alles herunterladen (JSON)",
   footerText:"Quelle: offizielle Expeditionstabelle · Zeilenweise programmatische Extraktion · Letzte Aktualisierung: {date}",
+  footerLgpd:"Dieses Dashboard enthält nur aggregierte Behandlungsdaten (Zählungen), ohne personenbezogene Patientendaten.",
   reportIntro:(n,g,s,m)=>`Im gewählten Zeitraum führte das Barco Hospital São João XXIII ${n} Expeditionen durch und versorgte ${m} Flussgemeinden mit insgesamt ${fmt(g)} Gesamtbehandlungen, davon ${fmt(s)} Gesundheitsbehandlungen.`,
   gauge1Title:"Gesundheitsabdeckung",gauge1Sub:"% der Gesamtbehandlungen, die Gesundheit betreffen",
   gauge2Title:"Zahnmedizin-Anteil",gauge2Sub:"% der Gesundheitsbehandlungen",
@@ -613,6 +630,7 @@ const I18N = {
   catTriagem:"Triage / Pflege",
   catMedicamento:"Medikamentenausgabe",
   catAlimentacao:"Mahlzeiten",
+  catInternacao:"Klinische/Chirurgische Einweisung",
   voyageSpecNote:"Fahren Sie über einen Stopp, um die Fachrichtungen dieser Expedition zu sehen",
   voyageExamNote:"Fahren Sie über einen Stopp, um die Untersuchungen dieser Expedition zu sehen",
   infoVoyageSpec:"Dieselbe Expeditionsroute, aber beim Überfahren werden die medizinischen Fachrichtungen dieser Expedition angezeigt.",
@@ -646,7 +664,9 @@ const I18N = {
   btnExportCsvExp:"Descargar Expediciones (CSV)",
   btnExportCsvSpec:"Descargar Especialidades (CSV)",
   btnExportCsvExam:"Descargar Exámenes (CSV)",
+  btnExportJson:"Descargar Todo (JSON)",
   footerText:"Fuente: planilla oficial de expediciones · Extracción programática, fila por fila · Última actualización: {date}",
+  footerLgpd:"Este panel contiene solo datos agregados de atención (recuentos), sin ninguna información personal identificable de pacientes.",
   reportIntro:(n,g,s,m)=>`En el período seleccionado, el Barco Hospital São João XXIII realizó ${n} expediciones, atendiendo ${m} municipios ribereños, con un total de ${fmt(g)} atenciones generales, de las cuales ${fmt(s)} fueron atenciones en salud.`,
   gauge1Title:"Cobertura de Salud",gauge1Sub:"% de la atención general que es salud",
   gauge2Title:"Participación de Odontología",gauge2Sub:"% de la atención en salud",
@@ -689,6 +709,7 @@ const I18N = {
   catTriagem:"Triaje / Enfermería",
   catMedicamento:"Entrega de Medicamento",
   catAlimentacao:"Alimentación",
+  catInternacao:"Internación Clínica/Quirúrgica",
   voyageSpecNote:"Pase el mouse sobre cualquier parada para ver las especialidades de esa expedición",
   voyageExamNote:"Pase el mouse sobre cualquier parada para ver los exámenes de esa expedición",
   infoVoyageSpec:"La misma ruta de expediciones, pero al pasar el mouse muestra las especialidades médicas de esa expedición específica.",
@@ -823,12 +844,8 @@ function gaugeChart(ctxId, pct, color){
 function renderDashboard(){
   const exp = currentExpeditions();
   const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude');
-  const pctSaude = totalGeral? Math.round(totalSaude/totalGeral*1000)/10 : 0;
-  document.getElementById('gauge1Val').textContent = pctSaude+'%';
   document.getElementById('bigGeral').textContent = fmt(totalGeral);
   document.getElementById('bigSaude').textContent = fmt(totalSaude);
-  if(gauge1) gauge1.destroy();
-  gauge1 = gaugeChart('gauge1', pctSaude, '#0e8f6f');
 }
 
 function renderVoyage(){
@@ -902,6 +919,7 @@ function openExpeditionModal(exp){
   const detailRows = `
     <tr><td>${t.procCirBaixa}</td><td class="mono" style="text-align:right;">${fmt(exp.cirBaixa||0)}</td></tr>
     <tr><td>${t.procCirMedia}</td><td class="mono" style="text-align:right;">${fmt(exp.cirMedia||0)}</td></tr>
+    <tr><td>${t.catInternacao}</td><td class="mono" style="text-align:right;">${fmt(exp.internClinCir||0)}</td></tr>
     <tr><td>${t.procOdontoL}</td><td class="mono" style="text-align:right;">${fmt(exp.procOdonto||0)}</td></tr>
     <tr><td>${t.consultaOdontoL}</td><td class="mono" style="text-align:right;">${fmt(exp.consultaOdonto||0)}</td></tr>`;
   const specRows = Object.entries(exp.spec||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trSpec(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
@@ -954,7 +972,7 @@ const valueLabelPlugin = {
         if(val===undefined || val===null) return;
         ctx.save();
         ctx.fillStyle = '#14202e';
-        ctx.font = "600 10px 'JetBrains Mono', monospace";
+        ctx.font = "700 11px 'JetBrains Mono', monospace";
         if(chart.options.indexAxis==='y'){
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
@@ -971,6 +989,7 @@ const valueLabelPlugin = {
 };
 if(window.HAS_CHART){ Chart.defaults.color='#6b7688'; Chart.defaults.font.family="'Inter',sans-serif"; Chart.defaults.borderColor='rgba(15,42,74,0.06)'; }
 function destroyIfExists(c){ if(c) c.destroy(); }
+function markLoaded(canvasId){ const el=document.getElementById(canvasId); const wrap = el && el.closest('.chart-wrap'); if(wrap) wrap.classList.add('loaded'); }
 
 function buildAllCharts(){
   if(!window.HAS_CHART) return;
@@ -990,6 +1009,7 @@ function buildAllCharts(){
       }}},
       scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
   });
+  markLoaded('chartArea');
 
   destroyIfExists(chartExamsMini);
   const examSorted = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1]);
@@ -1000,6 +1020,7 @@ function buildAllCharts(){
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
         scales:{x:{ticks:{font:{size:8},color:'#14202e',maxRotation:30,minRotation:0},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
     });
+    markLoaded('chartExamsMini');
   }
 
   destroyIfExists(chartBreakdown);
@@ -1011,6 +1032,7 @@ function buildAllCharts(){
       {label:t.procCirMedia, val:sum(exp,'cirMedia'), color:'#a9564a'},
       {label:t.procCirBaixa, val:sum(exp,'cirBaixa'), color:'#e0917f'},
       {label:t.procOdontoL, val:sum(exp,'procOdonto'), color:'#b8934a'},
+      {label:t.catInternacao, val:sum(exp,'internClinCir'), color:'#2f6d4e'},
       {label:t.catTriagem, val:sum(exp,'naoMed'), color:'#7a5ea8'},
       {label:t.consultaOdontoL, val:sum(exp,'consultaOdonto'), color:'#d9c07e'},
       {label:t.catMedicamento, val:sum(exp,'farm'), color:'#4f9e78'},
@@ -1018,11 +1040,12 @@ function buildAllCharts(){
     ].sort((a,b)=>b.val-a.val);
     const ctxBD = document.getElementById('chartBreakdown').getContext('2d');
     chartBreakdown = new Chart(ctxBD,{type:'bar',
-      data:{labels:BREAKDOWN.map(p=>p.label),datasets:[{data:BREAKDOWN.map(p=>p.val),backgroundColor:BREAKDOWN.map(p=>p.color),borderRadius:4,maxBarThickness:14}]},
-      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{ticks:{display:false},grid:{color:'rgba(15,42,74,0.05)'}},y:{grid:{display:false},ticks:{font:{size:9},color:'#14202e'}}}},
+      data:{labels:BREAKDOWN.map(p=>p.label),datasets:[{data:BREAKDOWN.map(p=>p.val),backgroundColor:BREAKDOWN.map(p=>p.color),borderRadius:4,maxBarThickness:22}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,layout:{padding:{right:74}},plugins:{legend:{display:false}},
+        scales:{x:{ticks:{display:false},grid:{color:'rgba(15,42,74,0.05)'}},y:{grid:{display:false},ticks:{font:{size:11},color:'#14202e'}}}},
       plugins:[valueLabelPlugin]
     });
+    markLoaded('chartBreakdown');
     const maxB = BREAKDOWN.length? BREAKDOWN[0].val : 1;
     document.getElementById('breakdownList').innerHTML = BREAKDOWN.map(p=>`
       <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:0.76rem;">
@@ -1040,6 +1063,7 @@ function buildAllCharts(){
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{grid:{color:'rgba(15,42,74,0.05)'}},y:{grid:{display:false},ticks:{font:{size:10},color:'#14202e'}}}}
   });
+  markLoaded('chartSpecialties');
 
   destroyIfExists(chartExamsBar);
   const ctx5 = document.getElementById('chartExamsBar').getContext('2d');
@@ -1048,6 +1072,7 @@ function buildAllCharts(){
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{ticks:{font:{size:9},color:'#14202e'},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
   });
+  markLoaded('chartExamsBar');
 
   destroyIfExists(chartExamsDonut);
   const ctx6 = document.getElementById('chartExamsDonut').getContext('2d');
@@ -1055,6 +1080,7 @@ function buildAllCharts(){
     data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
   });
+  markLoaded('chartExamsDonut');
 }
 
 function renderRanking(){
@@ -1081,6 +1107,7 @@ function renderRanking(){
         scales:{x:{grid:{color:'rgba(15,42,74,0.05)'},ticks:{display:false}},y:{grid:{display:false},ticks:{font:{size:11},color:'#14202e'}}}},
       plugins:[valueLabelPlugin]
     });
+    markLoaded('chartTop10');
   }
 }
 
@@ -1317,8 +1344,8 @@ function downloadCsv(filename, rows){
 }
 function exportExpeditionsCsv(){
   const exp = currentExpeditions();
-  const header = ['Ano','Expedição','Município','Consultas','Oftalmologia','Odontologia','Não Médicas','Exames','Internações','Procedimentos','Farmácia','Alimentação','Saúde','Geral','Cirurgia Baixa','Cirurgia Média','Procedimento Odontológico','Consulta Odontológica'];
-  const rows = [header, ...exp.map(d=>[d.year,d.n,d.mun,d.consultas,d.oft,d.odonto,d.naoMed,d.exames,d.intern,d.proc,d.farm,d.alim,d.saude,d.geral,d.cirBaixa,d.cirMedia,d.procOdonto,d.consultaOdonto])];
+  const header = ['Ano','Expedição','Município','Consultas','Oftalmologia','Odontologia','Não Médicas','Exames','Internações','Procedimentos','Farmácia','Alimentação','Saúde','Geral','Cirurgia Baixa','Cirurgia Média','Internação Clínica/Cirúrgica','Procedimento Odontológico','Consulta Odontológica'];
+  const rows = [header, ...exp.map(d=>[d.year,d.n,d.mun,d.consultas,d.oft,d.odonto,d.naoMed,d.exames,d.intern,d.proc,d.farm,d.alim,d.saude,d.geral,d.cirBaixa,d.cirMedia,d.internClinCir,d.procOdonto,d.consultaOdonto])];
   downloadCsv('expedicoes_'+YEAR+'.csv', rows);
 }
 function exportSpecialtiesCsv(){
@@ -1329,10 +1356,26 @@ function exportExamsCsv(){
   const rows = [['Exame','Total'], ...Object.entries(currentExams()).sort((a,b)=>b[1]-a[1])];
   downloadCsv('exames_'+YEAR+'.csv', rows);
 }
+function exportJson(){
+  const payload = {
+    gerado_em: GENERATED_AT,
+    filtro_ano: YEAR,
+    expedicoes: currentExpeditions(),
+    especialidades: currentSpecialties(),
+    exames: currentExams(),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'dados_bhsjxxiii_'+YEAR+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 document.getElementById('btnExportPdf').addEventListener('click',()=>window.print());
 document.getElementById('btnExportCsvExp').addEventListener('click',exportExpeditionsCsv);
 document.getElementById('btnExportCsvSpec').addEventListener('click',exportSpecialtiesCsv);
 document.getElementById('btnExportCsvExam').addEventListener('click',exportExamsCsv);
+document.getElementById('btnExportJson').addEventListener('click',exportJson);
 
 /* ================= init ================= */
 buildMetrics();

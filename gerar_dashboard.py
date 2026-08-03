@@ -21,6 +21,57 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_PATH = os.path.join(SCRIPT_DIR, "template.html")
 
 
+import statistics
+
+
+def run_quality_checks(all_expeditions, data_by_year):
+    warnings = []
+
+    for year, d in data_by_year.items():
+        exps = d["expeditions"]
+        if not exps:
+            warnings.append(f"Ano {year}: nenhuma expedição válida encontrada.")
+            continue
+
+        # zero/blank totals
+        for e in exps:
+            if e["geral"] == 0:
+                warnings.append(f"{year} · Expedição {e['n']} ({e['mun']}): Atendimento Geral está zerado.")
+            if not e["mun"] or e["mun"].strip() == "":
+                warnings.append(f"{year} · Expedição {e['n']}: nome de município vazio.")
+
+        # outliers vs the year's own median (catches transcription-style errors)
+        gerais = [e["geral"] for e in exps if e["geral"] > 0]
+        if len(gerais) >= 3:
+            med = statistics.median(gerais)
+            for e in exps:
+                if e["geral"] > 0 and (e["geral"] > med * 2.2 or e["geral"] < med * 0.35):
+                    warnings.append(
+                        f"{year} · Expedição {e['n']} ({e['mun']}): Atendimento Geral = {e['geral']:,} "
+                        f"foge muito da mediana do ano ({med:,.0f}) — vale conferir na planilha."
+                        .replace(",", ".")
+                    )
+
+        # duplicate expedition numbers within the same year
+        seen = {}
+        for e in exps:
+            seen[e["n"]] = seen.get(e["n"], 0) + 1
+        for n, count in seen.items():
+            if count > 1:
+                warnings.append(f"{year}: número de expedição {n} aparece {count} vezes (deveria ser único).")
+
+        # internal consistency: Geral should equal Saúde + Alimentação (as verified in the source spreadsheet)
+        for e in exps:
+            expected = e["saude"] + e["alim"]
+            if e["geral"] > 0 and abs(e["geral"] - expected) > max(2, e["geral"] * 0.02):
+                warnings.append(
+                    f"{year} · Expedição {e['n']} ({e['mun']}): Total Geral ({e['geral']}) não bate com "
+                    f"Saúde + Alimentação ({expected}) — confira a planilha."
+                )
+
+    return warnings
+
+
 def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     if not os.path.isfile(ods_path):
         print(f"❌ Arquivo não encontrado: {ods_path}")
@@ -50,6 +101,16 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     if not os.path.isfile(TEMPLATE_PATH):
         print(f"❌ Arquivo de template não encontrado: {TEMPLATE_PATH}")
         sys.exit(1)
+
+    print()
+    print("🔍 Verificando qualidade dos dados...")
+    warnings = run_quality_checks(all_expeditions, data_by_year)
+    if warnings:
+        print(f"⚠️  {len(warnings)} ponto(s) de atenção encontrados (o arquivo será gerado mesmo assim):")
+        for w in warnings:
+            print(f"   • {w}")
+    else:
+        print("   ✓ Nenhuma inconsistência encontrada.")
 
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     generated_at = datetime.now().strftime("%d/%m/%Y %H:%M")

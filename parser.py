@@ -144,6 +144,7 @@ def parse_year_sheet(df, year):
         "Cirurgias de Média Complexidade": "cirMedia",
         "Procedimentos Odontológicos": "procOdonto",
         "Consulta Odontológica": "consultaOdonto",
+        "Internações Clinicas/ Cirurgicas": "internClinCir",
     }
     detail_totals = {key: {} for key in DETAIL_LABELS.values()}
     for label, key in DETAIL_LABELS.items():
@@ -174,6 +175,7 @@ def parse_year_sheet(df, year):
             "cirMedia": detail_totals["cirMedia"].get(c, 0),
             "procOdonto": detail_totals["procOdonto"].get(c, 0),
             "consultaOdonto": detail_totals["consultaOdonto"].get(c, 0),
+            "internClinCir": detail_totals["internClinCir"].get(c, 0),
             "spec": specialties_per_col[c],
             "exam": exams_per_col[c],
         })
