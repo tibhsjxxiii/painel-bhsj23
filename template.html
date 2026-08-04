@@ -32,6 +32,33 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .report-btn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;font-family:'Inter';font-size:0.85rem;transition:background .15s;}
 .report-btn:hover{background:var(--navy-2);}
 
+.report-doc{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:40px 46px;box-shadow:var(--shadow);}
+.report-doc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.report-doc-brand{display:flex;align-items:center;gap:12px;}
+.report-doc-logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(155deg,var(--navy),var(--navy-2));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.report-doc-org{font-family:'Fraunces';font-weight:700;font-size:1.05rem;color:var(--navy);}
+.report-doc-sub{font-size:0.75rem;color:var(--muted);}
+.report-doc-badge{font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);border-radius:100px;padding:4px 12px;font-weight:600;}
+.report-doc-title{font-family:'Fraunces';font-size:1.55rem;font-weight:600;color:var(--navy);margin:22px 0 8px;text-align:center;}
+.report-doc-meta{display:flex;justify-content:center;gap:34px;font-size:0.82rem;color:var(--muted);margin-bottom:16px;}
+.report-doc-meta strong{color:var(--text);}
+.report-doc-rule{border:none;border-top:2px solid var(--gold);margin:14px 0 28px;}
+.report-section{margin-bottom:28px;break-inside:avoid;}
+.report-section h2{font-family:'Fraunces';font-size:1.02rem;font-weight:600;color:var(--navy);margin-bottom:11px;border-bottom:1px solid var(--line);padding-bottom:7px;}
+.report-section p{font-size:0.9rem;line-height:1.8;color:var(--text);}
+.report-section table{width:100%;border-collapse:collapse;font-size:0.83rem;}
+.report-section th{text-align:left;background:var(--navy-soft);color:var(--navy);font-weight:600;padding:8px 10px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.03em;}
+.report-section td{padding:7px 10px;border-bottom:1px solid var(--line);}
+.report-section tbody tr:nth-child(even) td{background:var(--panel-2);}
+.report-doc-footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:0.68rem;color:var(--muted-2);text-align:center;line-height:1.7;}
+
+@media print{
+  @page{margin:1.8cm;}
+  .report-doc{border:none;box-shadow:none;padding:0;}
+  .report-section{page-break-inside:avoid;}
+  .report-doc-title{font-size:1.35rem;}
+}
+
 @media print{
   body{background:#fff;}
   .sidebar,.mobile-nav-toggle,.sidebar-backdrop,.topbar-controls,.no-print,#errBanner{display:none !important;}
@@ -133,7 +160,8 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .voyage{overflow-x:auto;padding:14px 4px 20px;}
 .voyage-track{display:flex;position:relative;min-width:max-content;padding:20px 10px;}
 .voyage-track::before{content:'';position:absolute;top:50%;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--navy),var(--gold),var(--navy),transparent);opacity:0.35;}
-.stop{display:flex;flex-direction:column;align-items:center;width:98px;flex-shrink:0;position:relative;}
+.stop{display:flex;flex-direction:column;align-items:center;width:112px;flex-shrink:0;position:relative;}
+.stop-date{font-size:0.6rem;color:var(--muted-2);margin-top:2px;text-align:center;line-height:1.2;}
 .stop-node{width:13px;height:13px;border-radius:50%;background:var(--panel);border:2px solid var(--navy);position:relative;z-index:2;transition:all .2s;}
 .stop:hover .stop-node{border-color:var(--gold);box-shadow:0 0 10px var(--gold);transform:scale(1.3);}
 .stop-label{font-size:0.65rem;color:var(--muted);margin-top:10px;text-align:center;line-height:1.3;}
@@ -183,7 +211,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     <button class="nav-item" data-view="specialties"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v7a6 6 0 0012 0V4"/><path d="M9 4V2M15 4V2"/><circle cx="18" cy="15" r="3"/></svg><span data-i18n="navSpec">Especialidades</span></button>
     <button class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></button>
     <button class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></button>
-    <button class="nav-item" data-view="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg><span data-i18n="navAI">Insights</span></button>
     <button class="nav-item" data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg><span data-i18n="navReport">Relatório</span></button>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-live"></div>
@@ -293,39 +320,8 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       </div>
     </div>
 
-    <div class="view" id="view-ai">
-      <div class="stack">
-        <div class="panel">
-          <div class="panel-title" data-i18n="insightsAutoTitle">Destaques Automáticos</div>
-          <div class="panel-sub" data-i18n="insightsAutoSub">Gerados a partir dos dados do período selecionado</div>
-          <ul class="insights-list" id="insightsList"></ul>
-        </div>
-        <div class="panel">
-          <div class="ai-head">
-            <div class="ai-orb"></div>
-            <div><div class="panel-title" data-i18n="aiTitle" style="margin-bottom:2px;">Assistente de Dados</div><div class="panel-sub" data-i18n="aiSub" style="margin-bottom:0;">Pergunte sobre especialidades, exames, categorias ou municípios — cálculo instantâneo, sem depender de internet.</div></div>
-          </div>
-          <div class="ai-input-row">
-            <input id="aiInput" type="text" data-i18n-ph="aiPlaceholder" placeholder="Ex.: Qual a média de consultas cirúrgicas?">
-            <button id="aiAsk" data-i18n="aiAskBtn">Perguntar</button>
-          </div>
-          <div class="ai-chips" id="aiChips"></div>
-          <div id="aiAnswer"></div>
-        </div>
-      </div>
-    </div>
-
     <div class="view" id="view-report">
       <div class="stack">
-        <div class="panel" id="reportPrintArea">
-          <div class="panel-title" data-i18n="reportTitle">Resumo Executivo</div>
-          <div class="panel-sub" data-i18n="reportSub">Gerado automaticamente a partir do período selecionado</div>
-          <div id="reportSummary" style="font-size:0.92rem;line-height:1.7;color:var(--text);margin-top:8px;"></div>
-          <table style="margin-top:18px;" id="reportTable">
-            <thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead>
-            <tbody id="reportRankBody"></tbody>
-          </table>
-        </div>
         <div class="panel no-print">
           <div class="panel-title" data-i18n="reportExportTitle">Exportar</div>
           <div class="panel-sub" data-i18n="reportExportSub">Baixe os dados do período selecionado ou gere um PDF para impressão/anexo</div>
@@ -335,6 +331,76 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
             <button id="btnExportCsvSpec" class="report-btn" data-i18n="btnExportCsvSpec">Baixar Especialidades (CSV)</button>
             <button id="btnExportCsvExam" class="report-btn" data-i18n="btnExportCsvExam">Baixar Exames (CSV)</button>
             <button id="btnExportJson" class="report-btn" data-i18n="btnExportJson">Baixar Tudo (JSON)</button>
+          </div>
+        </div>
+
+        <div class="report-doc" id="reportPrintArea">
+          <div class="report-doc-header">
+            <div class="report-doc-brand">
+              <div class="report-doc-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 12V6H15L18 12" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 6V3" stroke="#fff" stroke-width="1.7"/></svg></div>
+              <div>
+                <div class="report-doc-org">Barco Hospital São João XXIII</div>
+                <div class="report-doc-sub" data-i18n="reportDocSub">Expedições Médicas Fluviais · Estado do Amazonas, Brasil</div>
+              </div>
+            </div>
+            <div class="report-doc-badge" data-i18n="reportDocConfidential">Documento Oficial</div>
+          </div>
+
+          <h1 class="report-doc-title" data-i18n="reportDocTitle">Relatório Executivo de Expedições</h1>
+          <div class="report-doc-meta">
+            <div><strong data-i18n="reportPeriodLabel">Período:</strong> <span id="reportPeriod"></span></div>
+            <div><strong data-i18n="reportGenLabel">Emitido em:</strong> <span id="reportGenDate"></span></div>
+          </div>
+          <hr class="report-doc-rule">
+
+          <section class="report-section">
+            <h2>1. <span data-i18n="reportS1">Resumo Executivo</span></h2>
+            <p id="reportSummary"></p>
+          </section>
+
+          <section class="report-section">
+            <h2>2. <span data-i18n="reportS2">Indicadores Principais</span></h2>
+            <table>
+              <thead><tr><th data-i18n="reportColIndicador">Indicador</th><th data-i18n="reportColValor">Valor</th></tr></thead>
+              <tbody id="reportKpiBody"></tbody>
+            </table>
+          </section>
+
+          <section class="report-section">
+            <h2>3. <span data-i18n="reportS3">Detalhamento por Categoria de Atendimento</span></h2>
+            <table>
+              <thead><tr><th data-i18n="reportColCategoria">Categoria</th><th data-i18n="colGeral">Total</th><th data-i18n="reportColPct">% do Geral</th></tr></thead>
+              <tbody id="reportBreakdownBody"></tbody>
+            </table>
+          </section>
+
+          <section class="report-section">
+            <h2>4. <span data-i18n="reportS4">Ranking de Municípios Atendidos</span></h2>
+            <table>
+              <thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead>
+              <tbody id="reportRankBody"></tbody>
+            </table>
+          </section>
+
+          <section class="report-section">
+            <h2>5. <span data-i18n="reportS5">Especialidades Médicas</span></h2>
+            <table>
+              <thead><tr><th data-i18n="reportColEspecialidade">Especialidade</th><th data-i18n="reportColConsultas">Consultas</th></tr></thead>
+              <tbody id="reportSpecBody"></tbody>
+            </table>
+          </section>
+
+          <section class="report-section">
+            <h2>6. <span data-i18n="reportS6">Exames Realizados</span></h2>
+            <table>
+              <thead><tr><th data-i18n="reportColExame">Exame</th><th data-i18n="colGeral">Total</th></tr></thead>
+              <tbody id="reportExamBody"></tbody>
+            </table>
+          </section>
+
+          <div class="report-doc-footer">
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: __GENERATED_AT__</div>
+            <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
@@ -422,6 +488,24 @@ const I18N = {
   reportTitle:"Resumo Executivo",
   reportSub:"Gerado automaticamente a partir do período selecionado",
   reportExportTitle:"Exportar",
+  reportDocSub:"Expedições Médicas Fluviais · Estado do Amazonas, Brasil",
+  reportDocConfidential:"Documento Oficial",
+  reportDocTitle:"Relatório Executivo de Expedições",
+  reportPeriodLabel:"Período:",
+  reportGenLabel:"Emitido em:",
+  reportS1:"Resumo Executivo",
+  reportS2:"Indicadores Principais",
+  reportS3:"Detalhamento por Categoria de Atendimento",
+  reportS4:"Ranking de Municípios Atendidos",
+  reportS5:"Especialidades Médicas",
+  reportS6:"Exames Realizados",
+  reportColIndicador:"Indicador",
+  reportColValor:"Valor",
+  reportColCategoria:"Categoria",
+  reportColPct:"% do Geral",
+  reportColEspecialidade:"Especialidade",
+  reportColConsultas:"Consultas",
+  reportColExame:"Exame",
   reportExportSub:"Baixe os dados do período selecionado ou gere um PDF para impressão/anexo",
   btnExportPdf:"Exportar PDF",
   btnExportCsvExp:"Baixar Expedições (CSV)",
@@ -501,6 +585,24 @@ const I18N = {
   reportTitle:"Executive Summary",
   reportSub:"Automatically generated from the selected period",
   reportExportTitle:"Export",
+  reportDocSub:"River Medical Expeditions · Amazonas State, Brazil",
+  reportDocConfidential:"Official Document",
+  reportDocTitle:"Executive Expedition Report",
+  reportPeriodLabel:"Period:",
+  reportGenLabel:"Issued on:",
+  reportS1:"Executive Summary",
+  reportS2:"Key Indicators",
+  reportS3:"Attendance by Category",
+  reportS4:"Municipality Ranking",
+  reportS5:"Medical Specialties",
+  reportS6:"Exams Performed",
+  reportColIndicador:"Indicator",
+  reportColValor:"Value",
+  reportColCategoria:"Category",
+  reportColPct:"% of Total",
+  reportColEspecialidade:"Specialty",
+  reportColConsultas:"Consultations",
+  reportColExame:"Exam",
   reportExportSub:"Download the selected period's data or generate a PDF for printing/attaching",
   btnExportPdf:"Export PDF",
   btnExportCsvExp:"Download Expeditions (CSV)",
@@ -580,6 +682,24 @@ const I18N = {
   reportTitle:"Zusammenfassung",
   reportSub:"Automatisch aus dem gewählten Zeitraum erstellt",
   reportExportTitle:"Exportieren",
+  reportDocSub:"Medizinische Flussexpeditionen · Bundesstaat Amazonas, Brasilien",
+  reportDocConfidential:"Offizielles Dokument",
+  reportDocTitle:"Exekutiver Expeditionsbericht",
+  reportPeriodLabel:"Zeitraum:",
+  reportGenLabel:"Ausgestellt am:",
+  reportS1:"Zusammenfassung",
+  reportS2:"Hauptindikatoren",
+  reportS3:"Behandlungen nach Kategorie",
+  reportS4:"Gemeinde-Rangliste",
+  reportS5:"Medizinische Fachrichtungen",
+  reportS6:"Durchgeführte Untersuchungen",
+  reportColIndicador:"Indikator",
+  reportColValor:"Wert",
+  reportColCategoria:"Kategorie",
+  reportColPct:"% der Gesamtzahl",
+  reportColEspecialidade:"Fachrichtung",
+  reportColConsultas:"Konsultationen",
+  reportColExame:"Untersuchung",
   reportExportSub:"Laden Sie die Daten des gewählten Zeitraums herunter oder erstellen Sie ein PDF zum Drucken/Anhängen",
   btnExportPdf:"PDF exportieren",
   btnExportCsvExp:"Expeditionen herunterladen (CSV)",
@@ -659,6 +779,24 @@ const I18N = {
   reportTitle:"Resumen Ejecutivo",
   reportSub:"Generado automáticamente a partir del período seleccionado",
   reportExportTitle:"Exportar",
+  reportDocSub:"Expediciones Médicas Fluviales · Estado de Amazonas, Brasil",
+  reportDocConfidential:"Documento Oficial",
+  reportDocTitle:"Informe Ejecutivo de Expediciones",
+  reportPeriodLabel:"Período:",
+  reportGenLabel:"Emitido el:",
+  reportS1:"Resumen Ejecutivo",
+  reportS2:"Indicadores Principales",
+  reportS3:"Desglose por Categoría de Atención",
+  reportS4:"Ranking de Municipios Atendidos",
+  reportS5:"Especialidades Médicas",
+  reportS6:"Exámenes Realizados",
+  reportColIndicador:"Indicador",
+  reportColValor:"Valor",
+  reportColCategoria:"Categoría",
+  reportColPct:"% del Total",
+  reportColEspecialidade:"Especialidad",
+  reportColConsultas:"Consultas",
+  reportColExame:"Examen",
   reportExportSub:"Descargue los datos del período seleccionado o genere un PDF para imprimir/adjuntar",
   btnExportPdf:"Exportar PDF",
   btnExportCsvExp:"Descargar Expediciones (CSV)",
@@ -744,8 +882,7 @@ function applyI18n(){
   if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
   const footerEl = document.querySelector('[data-i18n="footerText"]');
   if(footerEl && t.footerText) footerEl.textContent = t.footerText.replace('{date}', GENERATED_AT);
-  renderChips();
-  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderInsightsAuto(); renderReport(); }
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderReport(); }
 }
 
 /* ================= mobile nav toggle ================= */
@@ -825,7 +962,7 @@ function renderYearSelector(){
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     YEAR = b.dataset.year;
     renderYearSelector();
-    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderInsightsAuto(); renderReport();
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderReport();
     writeUrlState();
   }));
 }
@@ -852,10 +989,11 @@ function renderVoyage(){
   const all = currentExpeditions();
   const max = Math.max(...all.map(d=>d.geral),1);
   document.getElementById('voyageTrack').innerHTML = all.map((d,idx)=>`
-    <div class="stop" data-idx="${idx}" title="${d.mun} — ${fmt(d.geral)}">
+    <div class="stop" data-idx="${idx}" title="${d.mun}${d.data? ' — '+d.data : ''} — ${fmt(d.geral)}">
       <div class="stop-num">${d.year}·${d.n}</div>
       <div class="stop-node" style="box-shadow:0 0 ${4+10*(d.geral/max)}px rgba(184,147,74,${0.25+0.5*(d.geral/max)})"></div>
       <div class="stop-label">${d.mun}</div>
+      ${d.data? `<div class="stop-date">${d.data}</div>` : ''}
       <div class="stop-val mono">${fmt(d.geral)}</div>
     </div>`).join('');
   document.querySelectorAll('#voyageTrack .stop').forEach(el=>{
@@ -897,7 +1035,7 @@ function showContextTooltip(el, exp, type){
   pop.id = 'contextTooltip';
   pop.style.maxHeight = '260px';
   pop.style.overflowY = 'auto';
-  pop.innerHTML = `<div style="font-weight:700;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.25);padding-bottom:5px;">${exp.mun} · ${exp.year}·${exp.n}</div>${rows}`;
+  pop.innerHTML = `<div style="font-weight:700;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.25);padding-bottom:5px;">${exp.mun} · ${exp.year}·${exp.n}${exp.data? ' · '+exp.data : ''}</div>${rows}`;
   document.body.appendChild(pop);
   const r = el.getBoundingClientRect();
   let left = r.left + window.scrollX - 90;
@@ -932,7 +1070,7 @@ function openExpeditionModal(exp){
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <div>
           <div class="serif" style="font-size:1.25rem;font-weight:600;color:var(--navy);">${exp.mun}</div>
-          <div style="color:var(--muted);font-size:0.82rem;">${exp.year} · Expedição ${exp.n}</div>
+          <div style="color:var(--muted);font-size:0.82rem;">${exp.year} · Expedição ${exp.n}${exp.data? ' · '+exp.data : ''}</div>
         </div>
         <button id="expModalClose" style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--muted);">✕</button>
       </div>
@@ -1293,8 +1431,7 @@ async function askAI(){
     btn.textContent = prevText;
   }
 }
-document.getElementById('aiAsk').addEventListener('click',askAI);
-document.getElementById('aiInput').addEventListener('keydown',e=>{ if(e.key==='Enter') askAI(); });
+
 
 function renderInsightsAuto(){
   const t = I18N[CUR_LANG];
@@ -1320,14 +1457,57 @@ function renderInsightsAuto(){
 function renderReport(){
   const t = I18N[CUR_LANG];
   const exp = currentExpeditions();
-  const totalGeral = sum(exp,'geral'), totalSaude = sum(exp,'saude');
+  const totalGeral = sum(exp,'geral'), totalSaude = sum(exp,'saude'), totalAlim = sum(exp,'alim');
   const municipios = new Set(exp.map(d=>d.mun));
-  document.getElementById('reportSummary').innerHTML = `<p>${t.reportIntro(exp.length, totalGeral, totalSaude, municipios.size)}</p>`;
+  const avgPerExp = exp.length? totalGeral/exp.length : 0;
 
+  // period label
+  let periodLabel = YEAR==='all' ? (YEARS.length? YEARS[0]+'–'+YEARS[YEARS.length-1] : '—') : String(YEAR);
+  document.getElementById('reportPeriod').textContent = periodLabel;
+  document.getElementById('reportGenDate').textContent = GENERATED_AT;
+
+  document.getElementById('reportSummary').textContent = t.reportIntro(exp.length, totalGeral, totalSaude, municipios.size);
+
+  // KPIs
+  const kpis = [
+    [t.miniExpL, exp.length],
+    [t.miniMunL, municipios.size],
+    [t.bigGeralL, fmt(totalGeral)],
+    [t.bigSaudeL, fmt(totalSaude)],
+    [t.miniAlimL, fmt(totalAlim)],
+    [t.miniAvgL, fmt(Math.round(avgPerExp))],
+  ];
+  document.getElementById('reportKpiBody').innerHTML = kpis.map(([k,v])=>`<tr><td>${k}</td><td class="mono">${v}</td></tr>`).join('');
+
+  // category breakdown with %
+  const BREAKDOWN = [
+    [t.catEspecialidade, sum(exp,'consultas')],
+    [t.catExames, sum(exp,'exames')],
+    [t.procCirMedia, sum(exp,'cirMedia')],
+    [t.procCirBaixa, sum(exp,'cirBaixa')],
+    [t.procOdontoL, sum(exp,'procOdonto')],
+    [t.catInternacao, sum(exp,'internClinCir')],
+    [t.catTriagem, sum(exp,'naoMed')],
+    [t.consultaOdontoL, sum(exp,'consultaOdonto')],
+    [t.catMedicamento, sum(exp,'farm')],
+    [t.catAlimentacao, sum(exp,'alim')],
+  ].sort((a,b)=>b[1]-a[1]);
+  document.getElementById('reportBreakdownBody').innerHTML = BREAKDOWN.map(([k,v])=>
+    `<tr><td>${k}</td><td class="mono">${fmt(v)}</td><td class="mono">${totalGeral? (v/totalGeral*100).toFixed(1) : '0.0'}%</td></tr>`).join('');
+
+  // ranking
   const map = {};
   exp.forEach(d=>{ if(!map[d.mun]) map[d.mun]={geral:0,exp:0}; map[d.mun].geral+=d.geral; map[d.mun].exp+=1; });
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
   document.getElementById('reportRankBody').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`).join('');
+
+  // specialties
+  const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('reportSpecBody').innerHTML = specSorted.map(([n,v])=>`<tr><td>${trSpec(n)}</td><td class="mono">${fmt(v)}</td></tr>`).join('');
+
+  // exams
+  const examSorted = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('reportExamBody').innerHTML = examSorted.map(([n,v])=>`<tr><td>${trExam(n)}</td><td class="mono">${fmt(v)}</td></tr>`).join('');
 }
 
 function downloadCsv(filename, rows){
@@ -1387,7 +1567,7 @@ renderDashboard();
 renderVoyage();
 buildAllCharts();
 renderRanking();
-renderInsightsAuto();
+
 renderReport();
 chartsInitialized = true;
 

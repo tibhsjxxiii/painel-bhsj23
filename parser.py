@@ -96,6 +96,7 @@ def parse_year_sheet(df, year):
     cols = [c for c in cols if totals["geral"].get(c, 0) > 0]
 
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
+    datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
 
     # specialties: rows strictly between "Consultas Médicas" and "Total de Consultas"
     specialties = {}
@@ -160,6 +161,7 @@ def parse_year_sheet(df, year):
             "year": year,
             "n": expedition_number(exp_cols[c], c),
             "mun": municipios[c],
+            "data": datas[c],
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),

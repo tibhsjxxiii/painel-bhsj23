@@ -13,6 +13,7 @@ código é necessária de um ano para o outro.
 import sys
 import os
 import json
+import re
 import argparse
 from datetime import datetime
 from parser import extract_all_years
@@ -68,6 +69,16 @@ def run_quality_checks(all_expeditions, data_by_year):
                     f"{year} · Expedição {e['n']} ({e['mun']}): Total Geral ({e['geral']}) não bate com "
                     f"Saúde + Alimentação ({expected}) — confira a planilha."
                 )
+
+        # date string year should match the expedition's actual year (catches typos in the source spreadsheet)
+        for e in exps:
+            if e.get("data"):
+                found_years = re.findall(r'(20\d{2})', e["data"])
+                if found_years and str(year) not in found_years:
+                    warnings.append(
+                        f"{year} · Expedição {e['n']} ({e['mun']}): data informada é \"{e['data']}\", "
+                        f"que não contém o ano {year} — confira a planilha."
+                    )
 
     return warnings
 
