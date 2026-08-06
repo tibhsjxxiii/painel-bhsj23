@@ -157,8 +157,9 @@ if __name__ == "__main__":
                               help="Caminho para o arquivo .ods (padrão: EXPEDICOES_BHSJXXIII_2025_2026.ods na mesma pasta)")
     parser_args.add_argument("-o", "--output", default="dashboard.html",
                               help="Nome do arquivo de saída (padrão: dashboard.html)")
-    parser_args.add_argument("--proxy-url", default="",
-                              help="URL do Cloudflare Worker (veja worker.js) para ativar a IA completa")
+    parser_args.add_argument("--proxy-url", default="https://painel-bhsj23.alsf.workers.dev",
+                              help="URL do Cloudflare Worker (veja worker.js) para ativar a IA completa. "
+                                   "Use --proxy-url \"\" para gerar sem IA de proxy (só o motor local).")
     parser_args.add_argument("--proxy-secret", default="",
                               help="Senha compartilhada com o Worker (DASHBOARD_SECRET) para proteger o proxy")
     args = parser_args.parse_args()
