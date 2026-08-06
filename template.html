@@ -554,8 +554,13 @@ const YEARS = [...new Set(ALL_EXPEDITIONS.map(d=>d.year))].sort();
 let YEAR = 'all';
 function currentExpeditions(){ return YEAR==='all' ? ALL_EXPEDITIONS : ALL_EXPEDITIONS.filter(d=>String(d.year)===String(YEAR)); }
 function currentSpecialties(){
-  if(YEAR==='all') return Object.values(SPECIALTIES_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{});
-  return SPECIALTIES_BY_YEAR[YEAR] || {};
+  const base = YEAR==='all' ? Object.values(SPECIALTIES_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{}) : (SPECIALTIES_BY_YEAR[YEAR] || {});
+  // Oftalmologia é contabilizada como categoria própria na planilha (não dentro do bloco de
+  // Consultas Médicas), mas tem peso de especialidade — mesclamos aqui para que apareça em
+  // "Especialidades Médicas", no Relatório e no PDF, com consultas e exames sempre visíveis.
+  const oftTotal = sum(currentExpeditions(), 'oft');
+  if(oftTotal > 0) return { ...base, "Oftalmologia (Consulta)": oftTotal };
+  return base;
 }
 function currentExams(){
   if(YEAR==='all') return Object.values(EXAMS_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{});
@@ -585,9 +590,9 @@ function parseExpMonth(dataStr){
   return (month>=1 && month<=12) ? month : null;
 }
 const SPEC_I18N = {
-  en:{"Clínico Geral":"General Practice","Consultas Cirúrgicas":"Surgical Consultations","Consulta Anestésica":"Anesthesia Consultation","Pediatria":"Pediatrics","Ginecologia":"Gynecology","Dermatologia":"Dermatology","Cardiologia":"Cardiology","Otorrinolaringologia":"Otolaryngology (ENT)","Ortopedia":"Orthopedics","Endocrinologia":"Endocrinology","Infectologia":"Infectious Disease","Geriatria":"Geriatrics","Neurologia":"Neurology","Reumatologia":"Rheumatology","Urologista":"Urology","Medicina Geral Comunidade":"Community General Medicine","Psiquiatria":"Psychiatry","Gastrologia":"Gastroenterology","Mastologia":"Mastology","Proctologista":"Proctology","Pneumologia":"Pulmonology"},
-  de:{"Clínico Geral":"Allgemeinmedizin","Consultas Cirúrgicas":"Chirurgische Beratungen","Consulta Anestésica":"Anästhesieberatung","Pediatria":"Pädiatrie","Ginecologia":"Gynäkologie","Dermatologia":"Dermatologie","Cardiologia":"Kardiologie","Otorrinolaringologia":"Hals-Nasen-Ohren","Ortopedia":"Orthopädie","Endocrinologia":"Endokrinologie","Infectologia":"Infektiologie","Geriatria":"Geriatrie","Neurologia":"Neurologie","Reumatologia":"Rheumatologie","Urologista":"Urologie","Medicina Geral Comunidade":"Allgemeinmedizin (Gemeinde)","Psiquiatria":"Psychiatrie","Gastrologia":"Gastroenterologie","Mastologia":"Mastologie","Proctologista":"Proktologie","Pneumologia":"Pneumologie"},
-  es:{"Clínico Geral":"Medicina General","Consultas Cirúrgicas":"Consultas Quirúrgicas","Consulta Anestésica":"Consulta de Anestesia","Pediatria":"Pediatría","Ginecologia":"Ginecología","Dermatologia":"Dermatología","Cardiologia":"Cardiología","Otorrinolaringologia":"Otorrinolaringología","Ortopedia":"Ortopedia","Endocrinologia":"Endocrinología","Infectologia":"Infectología","Geriatria":"Geriatría","Neurologia":"Neurología","Reumatologia":"Reumatología","Urologista":"Urología","Medicina Geral Comunidade":"Medicina General Comunitaria","Psiquiatria":"Psiquiatría","Gastrologia":"Gastroenterología","Mastologia":"Mastología","Proctologista":"Proctología","Pneumologia":"Neumología"}
+  en:{"Oftalmologia (Consulta)":"Ophthalmology (Consultation)","Clínico Geral":"General Practice","Consultas Cirúrgicas":"Surgical Consultations","Consulta Anestésica":"Anesthesia Consultation","Pediatria":"Pediatrics","Ginecologia":"Gynecology","Dermatologia":"Dermatology","Cardiologia":"Cardiology","Otorrinolaringologia":"Otolaryngology (ENT)","Ortopedia":"Orthopedics","Endocrinologia":"Endocrinology","Infectologia":"Infectious Disease","Geriatria":"Geriatrics","Neurologia":"Neurology","Reumatologia":"Rheumatology","Urologista":"Urology","Medicina Geral Comunidade":"Community General Medicine","Psiquiatria":"Psychiatry","Gastrologia":"Gastroenterology","Mastologia":"Mastology","Proctologista":"Proctology","Pneumologia":"Pulmonology","Oftalmologia (Consulta)":"Ophthalmology (Consultation)"},
+  de:{"Oftalmologia (Consulta)":"Augenheilkunde (Konsultation)","Clínico Geral":"Allgemeinmedizin","Consultas Cirúrgicas":"Chirurgische Beratungen","Consulta Anestésica":"Anästhesieberatung","Pediatria":"Pädiatrie","Ginecologia":"Gynäkologie","Dermatologia":"Dermatologie","Cardiologia":"Kardiologie","Otorrinolaringologia":"Hals-Nasen-Ohren","Ortopedia":"Orthopädie","Endocrinologia":"Endokrinologie","Infectologia":"Infektiologie","Geriatria":"Geriatrie","Neurologia":"Neurologie","Reumatologia":"Rheumatologie","Urologista":"Urologie","Medicina Geral Comunidade":"Allgemeinmedizin (Gemeinde)","Psiquiatria":"Psychiatrie","Gastrologia":"Gastroenterologie","Mastologia":"Mastologie","Proctologista":"Proktologie","Pneumologia":"Pneumologie","Oftalmologia (Consulta)":"Augenheilkunde (Konsultation)"},
+  es:{"Oftalmologia (Consulta)":"Oftalmología (Consulta)","Clínico Geral":"Medicina General","Consultas Cirúrgicas":"Consultas Quirúrgicas","Consulta Anestésica":"Consulta de Anestesia","Pediatria":"Pediatría","Ginecologia":"Ginecología","Dermatologia":"Dermatología","Cardiologia":"Cardiología","Otorrinolaringologia":"Otorrinolaringología","Ortopedia":"Ortopedia","Endocrinologia":"Endocrinología","Infectologia":"Infectología","Geriatria":"Geriatría","Neurologia":"Neurología","Reumatologia":"Reumatología","Urologista":"Urología","Medicina Geral Comunidade":"Medicina General Comunitaria","Psiquiatria":"Psiquiatría","Gastrologia":"Gastroenterología","Mastologia":"Mastología","Proctologista":"Proctología","Pneumologia":"Neumología","Oftalmologia (Consulta)":"Oftalmología (Consulta)"}
 };
 const EXAM_I18N = {
   en:{"Análises Clínicas":"Clinical Lab Tests","Oftalmologia":"Ophthalmology","Ultrassom":"Ultrasound","Raios-X":"X-Ray","Mamografia":"Mammography","Eletrocardiograma":"Electrocardiogram","Exames de PCCU":"Pap Smear Tests","Teste COVID-19 Saúde Local":"Local COVID-19 Testing","Otorrinolaringologia":"Otolaryngology (ENT)"},
@@ -714,6 +719,7 @@ const I18N = {
   lastExpExames:"Exames Realizados",
   lastExpOdonto:"Procedimentos Odontológicos",
   lastExpCirurgias:"Cirurgias Realizadas",
+  lastExpExportPdf:"Exportar esta Expedição em PDF",
   procMiniTitle:"Cirurgias e Procedimentos Odontológicos",
   procMiniSub:"Cirurgias de média e baixa complexidade comparadas aos procedimentos odontológicos",
   infoProcMini:"Compara o volume de cirurgias de baixa complexidade, cirurgias de média complexidade e procedimentos odontológicos (categoria separada da consulta odontológica comum) no período selecionado.",
@@ -726,7 +732,9 @@ const I18N = {
   ansTopSpec:(name,val)=>`A especialidade com maior volume é "${name}", com ${fmt(val)} consultas no período selecionado.`,
   ansTopExam:(name,val)=>`O exame mais realizado é "${name}", com ${fmt(val)} no período selecionado.`,
   ansTopMun:(name,val)=>`O município com maior atendimento geral é ${name}, com ${fmt(val)}.`,
+  ansTopMunMetric:(metric,name,val)=>`O município com maior volume em "${metric}" é ${name}, com ${fmt(val)}.`,
   ansTopExp:(mun,n,val)=>`A expedição com maior volume foi a nº ${n} (${mun}), com ${fmt(val)} atendimentos gerais.`,
+  ansTopExpMetric:(metric,mun,n,val)=>`A expedição com maior volume em "${metric}" foi a nº ${n} (${mun}), com ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`Em ${y1} o atendimento geral foi ${fmt(g1)}; em ${y2} foi ${fmt(g2)} — variação de ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
   ansAverageMun:(name,mun,avg,total,n)=>`A média de "${name}" em ${mun} é de ${fmt(avg)} por expedição (total de ${fmt(total)} em ${n} expedição(ões) no período considerado).`,
   ansTotalMun:(name,mun,total,n)=>`O total de "${name}" em ${mun} no período considerado é ${fmt(total)}, em ${n} expedição(ões).`,
@@ -846,6 +854,7 @@ const I18N = {
   lastExpExames:"Exams Performed",
   lastExpOdonto:"Dental Procedures",
   lastExpCirurgias:"Surgeries Performed",
+  lastExpExportPdf:"Export this Expedition to PDF",
   procMiniTitle:"Surgeries and Dental Procedures",
   procMiniSub:"Medium and low-complexity surgeries compared to dental procedures",
   infoProcMini:"Compares the volume of low-complexity surgeries, medium-complexity surgeries, and dental procedures (a separate category from routine dental consultations) in the selected period.",
@@ -858,7 +867,9 @@ const I18N = {
   ansTopSpec:(name,val)=>`The specialty with the highest volume is "${name}", with ${fmt(val)} consultations in the selected period.`,
   ansTopExam:(name,val)=>`The most performed exam is "${name}", with ${fmt(val)} in the selected period.`,
   ansTopMun:(name,val)=>`The municipality with the highest total attendance is ${name}, with ${fmt(val)}.`,
+  ansTopMunMetric:(metric,name,val)=>`The municipality with the highest volume in "${metric}" is ${name}, with ${fmt(val)}.`,
   ansTopExp:(mun,n,val)=>`The expedition with the highest volume was #${n} (${mun}), with ${fmt(val)} total attendances.`,
+  ansTopExpMetric:(metric,mun,n,val)=>`The expedition with the highest volume in "${metric}" was #${n} (${mun}), with ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`In ${y1} total attendance was ${fmt(g1)}; in ${y2} it was ${fmt(g2)} — a change of ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
   ansAverageMun:(name,mun,avg,total,n)=>`The average of "${name}" in ${mun} is ${fmt(avg)} per expedition (total of ${fmt(total)} across ${n} expedition(s) in the considered period).`,
   ansTotalMun:(name,mun,total,n)=>`The total for "${name}" in ${mun} in the considered period is ${fmt(total)}, across ${n} expedition(s).`,
@@ -978,6 +989,7 @@ const I18N = {
   lastExpExames:"Durchgeführte Untersuchungen",
   lastExpOdonto:"Zahnärztliche Verfahren",
   lastExpCirurgias:"Durchgeführte Operationen",
+  lastExpExportPdf:"Diese Expedition als PDF exportieren",
   procMiniTitle:"Operationen und zahnärztliche Eingriffe",
   procMiniSub:"Operationen mittlerer und niedriger Komplexität im Vergleich zu zahnärztlichen Eingriffen",
   infoProcMini:"Vergleicht das Volumen von Operationen niedriger Komplexität, mittlerer Komplexität und zahnärztlichen Eingriffen (getrennt von der regulären Zahnkonsultation) im gewählten Zeitraum.",
@@ -990,7 +1002,9 @@ const I18N = {
   ansTopSpec:(name,val)=>`Die Fachrichtung mit dem höchsten Volumen ist "${name}", mit ${fmt(val)} Konsultationen im gewählten Zeitraum.`,
   ansTopExam:(name,val)=>`Die am häufigsten durchgeführte Untersuchung ist "${name}", mit ${fmt(val)} im gewählten Zeitraum.`,
   ansTopMun:(name,val)=>`Die Gemeinde mit den meisten Gesamtbehandlungen ist ${name}, mit ${fmt(val)}.`,
+  ansTopMunMetric:(metric,name,val)=>`Die Gemeinde mit dem höchsten Volumen bei "${metric}" ist ${name}, mit ${fmt(val)}.`,
   ansTopExp:(mun,n,val)=>`Die Expedition mit dem höchsten Volumen war Nr. ${n} (${mun}), mit ${fmt(val)} Gesamtbehandlungen.`,
+  ansTopExpMetric:(metric,mun,n,val)=>`Die Expedition mit dem höchsten Volumen bei "${metric}" war Nr. ${n} (${mun}), mit ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`${y1} betrugen die Gesamtbehandlungen ${fmt(g1)}; ${y2} waren es ${fmt(g2)} — eine Veränderung von ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
   ansAverageMun:(name,mun,avg,total,n)=>`Der Durchschnitt von "${name}" in ${mun} beträgt ${fmt(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expedition(en) im betrachteten Zeitraum).`,
   ansTotalMun:(name,mun,total,n)=>`Die Gesamtzahl für "${name}" in ${mun} im betrachteten Zeitraum beträgt ${fmt(total)}, über ${n} Expedition(en).`,
@@ -1110,6 +1124,7 @@ const I18N = {
   lastExpExames:"Exámenes Realizados",
   lastExpOdonto:"Procedimientos Odontológicos",
   lastExpCirurgias:"Cirugías Realizadas",
+  lastExpExportPdf:"Exportar esta Expedición en PDF",
   procMiniTitle:"Cirugías y Procedimientos Odontológicos",
   procMiniSub:"Cirugías de mediana y baja complejidad comparadas con los procedimientos odontológicos",
   infoProcMini:"Compara el volumen de cirugías de baja complejidad, cirugías de mediana complejidad y procedimientos odontológicos (categoría separada de la consulta odontológica común) en el período seleccionado.",
@@ -1122,7 +1137,9 @@ const I18N = {
   ansTopSpec:(name,val)=>`La especialidad con mayor volumen es "${name}", con ${fmt(val)} consultas en el período seleccionado.`,
   ansTopExam:(name,val)=>`El examen más realizado es "${name}", con ${fmt(val)} en el período seleccionado.`,
   ansTopMun:(name,val)=>`El municipio con mayor atención general es ${name}, con ${fmt(val)}.`,
+  ansTopMunMetric:(metric,name,val)=>`El municipio con mayor volumen en "${metric}" es ${name}, con ${fmt(val)}.`,
   ansTopExp:(mun,n,val)=>`La expedición con mayor volumen fue la nº ${n} (${mun}), con ${fmt(val)} atenciones generales.`,
+  ansTopExpMetric:(metric,mun,n,val)=>`La expedición con mayor volumen en "${metric}" fue la nº ${n} (${mun}), con ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`En ${y1} la atención general fue ${fmt(g1)}; en ${y2} fue ${fmt(g2)} — variación de ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
   ansAverageMun:(name,mun,avg,total,n)=>`El promedio de "${name}" en ${mun} es ${fmt(avg)} por expedición (total de ${fmt(total)} en ${n} expedición(es) en el período considerado).`,
   ansTotalMun:(name,mun,total,n)=>`El total de "${name}" en ${mun} en el período considerado es ${fmt(total)}, en ${n} expedición(es).`,
@@ -1478,10 +1495,17 @@ function openLastExpeditionModal(){
           ${resultRows}
         </div>
       </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;">
+        <button id="lastExpModalExportPdf" class="report-btn" style="display:flex;align-items:center;gap:7px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span data-i18n="lastExpExportPdf">Exportar esta Expedição em PDF</span>
+        </button>
+      </div>
     </div>`;
   document.body.appendChild(overlay);
   overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
   document.getElementById('lastExpModalClose').addEventListener('click', ()=>overlay.remove());
+  document.getElementById('lastExpModalExportPdf').addEventListener('click', ()=>exportExpeditionPdf(exp));
 }
 document.getElementById('btnLastExp').addEventListener('click', openLastExpeditionModal);
 (function wireAiPanel(){
@@ -1754,9 +1778,19 @@ function buildExamAvgChart(){
 let METRICS = [];
 function buildMetrics(){
   METRICS = [];
+  const MANUAL_CAT = {
+    consultas:["consulta","consultas medicas","medical consultation"],
+    odonto:["odontologico","odontologica","odontologicos","odontologicas","dentista","dental","dentario","dentaria","zahnmedizinisch","dentistry"],
+    exames:["exame","examen","examenes","untersuchungen"],
+    naoMed:["enfermagem","triagem","nursing","pflege"],
+    farm:["farmaceutico","farmaceutica","medicamento","medicamentos","remedio","remedios","medication","medicines"],
+    oft:["oftalmologico","oftalmologica","oftalmologicos","oftalmologicas","olhos","vista","eye","eyes","augen"],
+    proc:["procedimento","procedimentos","procedure"]
+  };
   CAT_KEYS.forEach((k,i)=>{
     const aliasSet = new Set();
     Object.values(CAT_LABELS_I18N).forEach(arr=>aliasSet.add(normalize(arr[i])));
+    (MANUAL_CAT[k]||[]).forEach(a=>aliasSet.add(normalize(a)));
     METRICS.push({key:k,type:'category',aliases:[...aliasSet],name:()=>catLabels()[i]});
   });
   const MANUAL_SPEC = {
@@ -1858,13 +1892,23 @@ function resolveQuestion(question){
       if(top) return t.ansTopExam(trExam(top[0]), top[1]);
     }
     if(/municip|city|gemeinde/.test(nq)){
-      const map={}; currentExpeditions().forEach(d=>{ map[d.mun]=(map[d.mun]||0)+d.geral; });
+      const metricMun = findMetric(nq);
+      const map={};
+      currentExpeditions().forEach(d=>{
+        const v = metricMun ? metricValueForExpedition(d, metricMun) : d.geral;
+        map[d.mun]=(map[d.mun]||0)+v;
+      });
       const top = Object.entries(map).sort((a,b)=>b[1]-a[1])[0];
-      if(top) return t.ansTopMun(top[0], top[1]);
+      if(top) return metricMun ? t.ansTopMunMetric(metricMun.name(), top[0], top[1]) : t.ansTopMun(top[0], top[1]);
     }
     if(/expedi/.test(nq)){
-      const top = [...currentExpeditions()].sort((a,b)=>b.geral-a.geral)[0];
-      if(top) return t.ansTopExp(top.mun, top.n, top.geral);
+      const metricExp = findMetric(nq);
+      const top = metricExp
+        ? [...currentExpeditions()].sort((a,b)=>metricValueForExpedition(b,metricExp)-metricValueForExpedition(a,metricExp))[0]
+        : [...currentExpeditions()].sort((a,b)=>b.geral-a.geral)[0];
+      if(top) return metricExp
+        ? t.ansTopExpMetric(metricExp.name(), top.mun, top.n, metricValueForExpedition(top,metricExp))
+        : t.ansTopExp(top.mun, top.n, top.geral);
     }
   }
   if(intent==='compare' && YEARS.length>1){
@@ -2133,6 +2177,120 @@ async function exportPdfDocument(){
   doc.save('relatorio_bhsjxxiii_'+YEAR+'.pdf');
 }
 document.getElementById('btnExportPdf').addEventListener('click',exportPdfDocument);
+
+async function exportExpeditionPdf(exp){
+  const btn = document.getElementById('lastExpModalExportPdf');
+  const original = btn ? btn.innerHTML : null;
+  if(btn){ btn.disabled = true; btn.innerHTML = '…'; }
+  const ok = await ensureJsPDF();
+  if(btn){ btn.disabled = false; btn.innerHTML = original; }
+  const t = I18N[CUR_LANG];
+  if(!ok){ window.print(); return; }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4'});
+  const ml = 15, pageW = 210;
+  let y;
+
+  doc.setFillColor(15,42,74); doc.rect(0,0,pageW,12,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(255,255,255);
+  doc.text('Barco Hospital São João XXIII', ml, 8);
+
+  y = 26;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(90,100,115);
+  doc.text(t.lastExpTitle, pageW/2, y, {align:'center'});
+  y += 9;
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(15,42,74);
+  doc.text(`${exp.mun} — ${t.colExp} ${exp.n}`, pageW/2, y, {align:'center'});
+  y += 8;
+  doc.setDrawColor(184,147,74); doc.setLineWidth(0.8);
+  doc.line(ml, y, pageW-ml, y);
+  y += 12;
+
+  const dias = parseExpDurationDays(exp.data);
+  const infoRows = [
+    [t.colMun, exp.mun],
+    [t.lastExpPeriodo, exp.data || '—'],
+    [t.lastExpStatus, t.lastExpStatusConcluida],
+  ];
+  if(dias) infoRows.push([t.lastExpDias, String(dias)]);
+
+  doc.autoTable({
+    startY: y, body: infoRows, theme:'plain',
+    styles:{fontSize:10, textColor:30, cellPadding:{top:2,bottom:2,left:0,right:4}},
+    columnStyles:{0:{fontStyle:'bold', textColor:[15,42,74], cellWidth:45}},
+    margin:{left:ml, right:ml}
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  const cirurgias = (exp.cirBaixa||0) + (exp.cirMedia||0);
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(15,42,74);
+  doc.text(t.lastExpResultados, ml, y);
+  y += 3;
+  doc.autoTable({
+    startY: y,
+    head: [[t.reportColIndicador, t.reportColValor]],
+    body: [
+      [t.lastExpAtendTotais, fmt(exp.geral||0)],
+      [t.lastExpConsultas, fmt(exp.consultas||0)],
+      [t.lastExpExames, fmt(exp.exames||0)],
+      [t.lastExpOdonto, fmt(exp.procOdonto||0)],
+      [t.lastExpCirurgias, fmt(cirurgias)],
+      [t.procCirBaixa, fmt(exp.cirBaixa||0)],
+      [t.procCirMedia, fmt(exp.cirMedia||0)],
+      [t.catInternacao, fmt(exp.internClinCir||0)],
+    ],
+    theme:'striped',
+    headStyles:{fillColor:[15,42,74], textColor:255, fontSize:9, halign:'left'},
+    bodyStyles:{fontSize:9, textColor:30}, alternateRowStyles:{fillColor:[247,246,243]},
+    margin:{left:ml, right:ml}
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  const specEntries = Object.entries(exp.spec||{}).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  if(specEntries.length){
+    if(y > 250){ doc.addPage(); y = 20; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(15,42,74);
+    doc.text(t.specTitle, ml, y);
+    y += 3;
+    doc.autoTable({
+      startY: y, head:[[t.reportColEspecialidade, t.reportColConsultas]],
+      body: specEntries.map(([k,v])=>[trSpec(k), fmt(v)]),
+      theme:'striped', headStyles:{fillColor:[15,42,74], textColor:255, fontSize:9, halign:'left'},
+      bodyStyles:{fontSize:9, textColor:30}, alternateRowStyles:{fillColor:[247,246,243]},
+      margin:{left:ml, right:ml}
+    });
+    y = doc.lastAutoTable.finalY + 10;
+  }
+
+  const examEntries = Object.entries(exp.exam||{}).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
+  if(examEntries.length){
+    if(y > 250){ doc.addPage(); y = 20; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(15,42,74);
+    doc.text(t.examTitle || t.navExams || 'Exames', ml, y);
+    y += 3;
+    doc.autoTable({
+      startY: y, head:[[t.reportColExame, t.colGeral]],
+      body: examEntries.map(([k,v])=>[trExam(k), fmt(v)]),
+      theme:'striped', headStyles:{fillColor:[15,42,74], textColor:255, fontSize:9, halign:'left'},
+      bodyStyles:{fontSize:9, textColor:30}, alternateRowStyles:{fillColor:[247,246,243]},
+      margin:{left:ml, right:ml}
+    });
+  }
+
+  const pageCount = doc.internal.getNumberOfPages();
+  const footerText = document.querySelector('[data-i18n="footerText"]').textContent;
+  const lgpdText = document.querySelector('[data-i18n="footerLgpd"]').textContent;
+  for(let i=1;i<=pageCount;i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(150,150,150);
+    doc.text(footerText, pageW/2, 287, {align:'center'});
+    doc.text(lgpdText, pageW/2, 291, {align:'center'});
+    doc.text(`${i} / ${pageCount}`, pageW-ml, 291, {align:'right'});
+  }
+
+  doc.save(`expedicao_${exp.year}_${exp.n}_${normalize(exp.mun).replace(/\s+/g,'_')}.pdf`);
+}
 document.getElementById('btnExportCsvExp').addEventListener('click',exportExpeditionsCsv);
 document.getElementById('btnExportCsvSpec').addEventListener('click',exportSpecialtiesCsv);
 document.getElementById('btnExportCsvExam').addEventListener('click',exportExamsCsv);
