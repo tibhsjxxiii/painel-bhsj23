@@ -148,15 +148,15 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     else:
         print(f"   Assistente de IA: modo local (sem proxy configurado — use --proxy-url para ativar)")
     print()
-    print("➡  Agora é só publicar o dashboard.html (ex: arrastar no https://app.netlify.com/drop)")
+    print(f"➡  Agora é só publicar o {output_path} (ex: arrastar a pasta no https://app.netlify.com/drop)")
 
 
 if __name__ == "__main__":
     parser_args = argparse.ArgumentParser(description="Gera o painel executivo a partir da planilha de expedições.")
     parser_args.add_argument("planilha", nargs="?", default="EXPEDICOES_BHSJXXIII_2025_2026.ods",
                               help="Caminho para o arquivo .ods (padrão: EXPEDICOES_BHSJXXIII_2025_2026.ods na mesma pasta)")
-    parser_args.add_argument("-o", "--output", default="dashboard.html",
-                              help="Nome do arquivo de saída (padrão: dashboard.html)")
+    parser_args.add_argument("-o", "--output", default="index.html",
+                              help="Nome do arquivo de saída (padrão: index.html, pronto para publicar sem precisar renomear)")
     parser_args.add_argument("--proxy-url", default="https://painel-bhsj23.alsf.workers.dev",
                               help="URL do Cloudflare Worker (veja worker.js) para ativar a IA completa. "
                                    "Use --proxy-url \"\" para gerar sem IA de proxy (só o motor local).")

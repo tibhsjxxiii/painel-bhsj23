@@ -59,7 +59,7 @@ if not %GEN_RESULT%==0 (
 )
 
 echo Painel gerado com sucesso! Abrindo no navegador...
-start "" "dashboard.html"
+start "" "index.html"
 
 echo.
 echo Tudo pronto. Voce pode fechar esta janela.
