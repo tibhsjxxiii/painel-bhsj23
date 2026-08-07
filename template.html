@@ -547,6 +547,7 @@ const GENERATED_AT = "__GENERATED_AT__";
 const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
 const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES'};
 const fmt = n => Math.round(n).toLocaleString(LOCALE_MAP[CUR_LANG]||'pt-BR');
+const fmtAvg = n => (Math.round(n*10)/10).toLocaleString(LOCALE_MAP[CUR_LANG]||'pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1});
 function mergeObj(a,b){ const out={...a}; for(const k in b){ out[k]=(out[k]||0)+b[k]; } return out; }
 function normalize(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 
@@ -1461,9 +1462,14 @@ function openLastExpeditionModal(){
   const rows = [
     [ `<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/>`, t.lastExpAtendTotais, exp.geral ],
     [ `<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>`, t.lastExpConsultas, exp.consultas ],
+    [ `<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>`, catLabels()[CAT_KEYS.indexOf('oft')], exp.oft ],
     [ `<path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/>`, t.lastExpExames, exp.exames ],
     [ `<path d="M12 5c-2 0-3 1.5-3 3.5C9 11 12 13 12 13s3-2 3-4.5C15 6.5 14 5 12 5z"/><path d="M8 13v2a4 4 0 004 4 4 4 0 004-4v-2"/>`, t.lastExpOdonto, exp.procOdonto ],
+    [ `<path d="M12 5c-2 0-3 1.5-3 3.5C9 11 12 13 12 13s3-2 3-4.5C15 6.5 14 5 12 5z"/><path d="M8 13v2a4 4 0 004 4 4 4 0 004-4v-2"/>`, t.consultaOdontoL, exp.consultaOdonto ],
     [ `<path d="M4 20L14.5 9.5"/><path d="M13 5l6 6-2 2-6-6z"/><circle cx="6.5" cy="17.5" r="2.2"/>`, t.lastExpCirurgias, cirurgias ],
+    [ `<path d="M4 21v-6a4 4 0 014-4h8a4 4 0 014 4v6"/><path d="M4 21h16"/><path d="M9 11V7a3 3 0 016 0v4"/>`, t.catInternacao, exp.internClinCir ],
+    [ `<path d="M6 2h12l-1 5H7L6 2z"/><path d="M7 7l-2 13a2 2 0 002 2h10a2 2 0 002-2L17 7"/>`, t.catAlimentacao, exp.alim ],
+    [ `<path d="M10.5 20.5L3.5 13.5a5 5 0 017-7l7 7a5 5 0 01-7 7z"/><path d="M8.5 8.5l7 7"/>`, t.catMedicamento, exp.farm ],
   ];
   const resultRows = rows.map(([icon,label,val])=>`
     <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);">
@@ -1703,6 +1709,8 @@ function buildExamAvgChart(){
   destroyIfExists(chartExamAvg);
   const ctx = document.getElementById('chartExamAvg').getContext('2d');
   const labels = EXAM_AVG_TYPES.map(trExam);
+  const avgTooltip = { callbacks:{ label:(item)=> `${item.dataset.label ? item.dataset.label+': ' : ''}${fmtAvg(item.parsed.y!==undefined?item.parsed.y:item.parsed)}` } };
+  const avgYTicks = { callback:(v)=>fmtAvg(v) };
 
   if(EXAM_AVG_MODE === 'ano'){
     const years = YEAR === 'all' ? YEARS : [YEAR];
@@ -1710,12 +1718,12 @@ function buildExamAvgChart(){
     const datasets = years.map((y,i)=>{
       const yExp = ALL_EXPEDITIONS.filter(d=>String(d.year)===String(y));
       const n = yExp.length || 1;
-      return {label:String(y), data:EXAM_AVG_TYPES.map(k=> yExp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/n ), backgroundColor:palette[i%palette.length], borderRadius:5, maxBarThickness:26};
+      return {label:String(y), data:EXAM_AVG_TYPES.map(k=> Math.round((yExp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/n)*10)/10 ), backgroundColor:palette[i%palette.length], borderRadius:5, maxBarThickness:26};
     });
     chartExamAvg = new Chart(ctx,{type:'bar',
       data:{labels, datasets},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}}},
-        scales:{x:{ticks:{font:{size:9},color:'#14202e',maxRotation:20},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},tooltip:avgTooltip},
+        scales:{x:{ticks:{font:{size:9},color:'#14202e',maxRotation:20},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:'rgba(15,42,74,0.05)'}}}}
     });
   } else if(EXAM_AVG_MODE === 'mes'){
     const months = monthLabels();
@@ -1726,22 +1734,22 @@ function buildExamAvgChart(){
     });
     const datasets = EXAM_AVG_TYPES.map((k,i)=>({
       label: trExam(k),
-      data: buckets.map(b=> b.exp.length ? b.exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/b.exp.length : 0),
+      data: buckets.map(b=> b.exp.length ? Math.round((b.exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/b.exp.length)*10)/10 : 0),
       borderColor: EXAM_AVG_COLORS[i], backgroundColor: EXAM_AVG_COLORS[i], tension:0.3, pointRadius:2
     }));
     chartExamAvg = new Chart(ctx,{type:'line',
       data:{labels:months, datasets},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:9}}}},
-        scales:{x:{ticks:{font:{size:9}},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:9}}},tooltip:avgTooltip},
+        scales:{x:{ticks:{font:{size:9}},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:'rgba(15,42,74,0.05)'}}}}
     });
   } else {
     const exp = currentExpeditions();
     const n = exp.length || 1;
-    const data = EXAM_AVG_TYPES.map(k=> exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/n );
+    const data = EXAM_AVG_TYPES.map(k=> Math.round((exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/n)*10)/10 );
     chartExamAvg = new Chart(ctx,{type:'bar',
       data:{labels, datasets:[{data, backgroundColor:EXAM_AVG_COLORS, borderRadius:5, maxBarThickness:34}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{ticks:{font:{size:9},color:'#14202e'},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:avgTooltip},
+        scales:{x:{ticks:{font:{size:9},color:'#14202e'},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:'rgba(15,42,74,0.05)'}}}}
     });
   }
   markLoaded('chartExamAvg');
@@ -2233,12 +2241,16 @@ async function exportExpeditionPdf(exp){
     body: [
       [t.lastExpAtendTotais, fmt(exp.geral||0)],
       [t.lastExpConsultas, fmt(exp.consultas||0)],
+      [catLabels()[CAT_KEYS.indexOf('oft')], fmt(exp.oft||0)],
       [t.lastExpExames, fmt(exp.exames||0)],
       [t.lastExpOdonto, fmt(exp.procOdonto||0)],
+      [t.consultaOdontoL, fmt(exp.consultaOdonto||0)],
       [t.lastExpCirurgias, fmt(cirurgias)],
       [t.procCirBaixa, fmt(exp.cirBaixa||0)],
       [t.procCirMedia, fmt(exp.cirMedia||0)],
       [t.catInternacao, fmt(exp.internClinCir||0)],
+      [t.catAlimentacao, fmt(exp.alim||0)],
+      [t.catMedicamento, fmt(exp.farm||0)],
     ],
     theme:'striped',
     headStyles:{fillColor:[15,42,74], textColor:255, fontSize:9, halign:'left'},
