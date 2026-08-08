@@ -411,6 +411,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </div>
           <div class="ai-chips" id="aiChips"></div>
           <div id="aiAnswer"></div>
+          <div id="aiSourceBadge" style="display:none;margin-top:8px;font-size:0.7rem;letter-spacing:0.03em;"></div>
         </div>
       </div>
     </div>
@@ -658,6 +659,9 @@ const I18N = {
   aiPlaceholder:"Ex.: Qual a média de consultas cirúrgicas?",aiAskBtn:"Perguntar",
   infoInsightsAuto:"Destaques calculados automaticamente a partir dos dados do período selecionado: especialidade e exame mais realizados, expedição com maior atendimento, e comparação entre anos quando houver mais de um ano disponível.",
   infoAI:"Assistente que responde perguntas sobre os dados do painel. Funciona localmente por padrão (sem depender de internet); se um proxy de IA estiver configurado, usa IA generativa para perguntas mais livres, com o motor local como reserva automática em caso de falha.",
+  aiSrcOnline:"IA online (Claude) respondeu",
+  aiSrcLocalNoProxy:"Motor local — IA online não configurada",
+  aiSrcLocalFallback:"Motor local — IA online falhou",
   dqTitle:"Nota de qualidade de dados —",dqBody:"Todos os valores deste painel foram extraídos linha por linha, coluna por coluna, diretamente da planilha oficial, com leitura programática — sem digitação manual.",
   prodTitle:"Como atualizar após cada expedição —",prodBody:"Rode gerar_dashboard.py apontando para a planilha .ods atualizada. O script detecta automaticamente todas as abas de ano (2025, 2026, 2027...), recalcula tudo e gera um novo dashboard.html pronto para publicar. Nenhuma edição de código é necessária.",
   chips:["Média de consultas cirúrgicas","Qual especialidade teve mais consultas?","Qual o exame mais realizado?","Compare os anos"],
@@ -794,6 +798,9 @@ const I18N = {
   aiPlaceholder:"E.g.: What's the average of surgical consultations?",aiAskBtn:"Ask",
   infoInsightsAuto:"Highlights calculated automatically from the selected period's data: top specialty and exam, expedition with the highest attendance, and a year-over-year comparison when more than one year is available.",
   infoAI:"Assistant that answers questions about the dashboard's data. Works locally by default (no internet required); if an AI proxy is configured, it uses generative AI for more open-ended questions, with the local engine as an automatic fallback if that fails.",
+  aiSrcOnline:"Online AI (Claude) answered",
+  aiSrcLocalNoProxy:"Local engine — online AI not configured",
+  aiSrcLocalFallback:"Local engine — online AI failed",
   dqTitle:"Data quality note —",dqBody:"Every figure in this dashboard was extracted row by row, column by column, directly from the official spreadsheet via programmatic reading — no manual transcription.",
   prodTitle:"How to update after each expedition —",prodBody:"Run gerar_dashboard.py pointing to the updated .ods spreadsheet. The script automatically detects every year tab (2025, 2026, 2027...), recalculates everything, and generates a new dashboard.html ready to publish. No code editing needed.",
   chips:["Average surgical consultations","Which specialty had the most consultations?","Which exam is performed the most?","Compare the years"],
@@ -930,6 +937,9 @@ const I18N = {
   aiPlaceholder:"Z. B.: Was ist der Durchschnitt der chirurgischen Beratungen?",aiAskBtn:"Fragen",
   infoInsightsAuto:"Automatisch berechnete Highlights aus den Daten des gewählten Zeitraums: häufigste Fachrichtung und Untersuchung, Expedition mit der höchsten Inanspruchnahme und ein Jahresvergleich, sofern mehr als ein Jahr verfügbar ist.",
   infoAI:"Assistent, der Fragen zu den Paneldaten beantwortet. Funktioniert standardmäßig lokal (ohne Internet); falls ein KI-Proxy konfiguriert ist, nutzt er generative KI für offenere Fragen, wobei die lokale Engine bei einem Fehler automatisch als Ausweichlösung dient.",
+  aiSrcOnline:"Online-KI (Claude) hat geantwortet",
+  aiSrcLocalNoProxy:"Lokale Engine — Online-KI nicht konfiguriert",
+  aiSrcLocalFallback:"Lokale Engine — Online-KI fehlgeschlagen",
   dqTitle:"Hinweis zur Datenqualität —",dqBody:"Jede Zahl in diesem Dashboard wurde Zeile für Zeile, Spalte für Spalte direkt aus der offiziellen Tabelle extrahiert — ohne manuelle Übertragung.",
   prodTitle:"Aktualisierung nach jeder Expedition —",prodBody:"Führen Sie gerar_dashboard.py mit der aktualisierten .ods-Tabelle aus. Das Skript erkennt automatisch jedes Jahres-Tab (2025, 2026, 2027...), berechnet alles neu und erstellt ein neues dashboard.html, bereit zur Veröffentlichung.",
   chips:["Durchschnitt chirurgische Beratungen","Welche Fachrichtung hatte die meisten Konsultationen?","Welche Untersuchung wird am häufigsten durchgeführt?","Vergleiche die Jahre"],
@@ -1066,6 +1076,9 @@ const I18N = {
   aiPlaceholder:"Ej.: ¿Cuál es el promedio de consultas quirúrgicas?",aiAskBtn:"Preguntar",
   infoInsightsAuto:"Destacados calculados automáticamente a partir de los datos del período seleccionado: especialidad y examen más realizados, expedición con mayor atención y comparación entre años cuando hay más de un año disponible.",
   infoAI:"Asistente que responde preguntas sobre los datos del panel. Funciona localmente por defecto (sin depender de internet); si hay un proxy de IA configurado, usa IA generativa para preguntas más abiertas, con el motor local como respaldo automático en caso de falla.",
+  aiSrcOnline:"IA en línea (Claude) respondió",
+  aiSrcLocalNoProxy:"Motor local — IA en línea no configurada",
+  aiSrcLocalFallback:"Motor local — la IA en línea falló",
   dqTitle:"Nota de calidad de datos —",dqBody:"Cada cifra de este panel fue extraída fila por fila, columna por columna, directamente de la planilla oficial mediante lectura programática — sin transcripción manual.",
   prodTitle:"Cómo actualizar después de cada expedición —",prodBody:"Ejecute gerar_dashboard.py apuntando a la planilla .ods actualizada. El script detecta automáticamente cada pestaña de año (2025, 2026, 2027...), recalcula todo y genera un nuevo dashboard.html listo para publicar.",
   chips:["Promedio de consultas quirúrgicas","¿Qué especialidad tuvo más consultas?","¿Cuál es el examen más realizado?","Compara los años"],
@@ -1985,11 +1998,29 @@ async function askAI(){
   const input = document.getElementById('aiInput');
   const btn = document.getElementById('aiAsk');
   const answerEl = document.getElementById('aiAnswer');
+  const badgeEl = document.getElementById('aiSourceBadge');
+  const t = I18N[CUR_LANG];
   const q = input.value.trim();
   if(!q) return;
 
+  function showBadge(kind, detail){
+    if(!badgeEl) return;
+    badgeEl.style.display = 'block';
+    if(kind==='online'){
+      badgeEl.style.color = 'var(--teal)';
+      badgeEl.textContent = '● ' + t.aiSrcOnline;
+    } else if(kind==='local-no-proxy'){
+      badgeEl.style.color = 'var(--muted)';
+      badgeEl.textContent = '● ' + t.aiSrcLocalNoProxy;
+    } else {
+      badgeEl.style.color = '#a9564a';
+      badgeEl.textContent = '● ' + t.aiSrcLocalFallback + (detail ? ` (${detail})` : '');
+    }
+  }
+
   if(!PROXY_URL){
     answerEl.textContent = resolveQuestion(q);
+    showBadge('local-no-proxy');
     return;
   }
 
@@ -1997,19 +2028,26 @@ async function askAI(){
   const prevText = btn.textContent;
   btn.textContent = '…';
   answerEl.textContent = '';
+  if(badgeEl) badgeEl.style.display = 'none';
   try{
     const res = await fetch(PROXY_URL, {
       method: 'POST',
       headers: {'Content-Type':'application/json', 'X-Dashboard-Secret': PROXY_SECRET},
       body: JSON.stringify({ question: q, context: buildAiContext() })
     });
-    if(!res.ok) throw new Error('proxy_error');
+    if(!res.ok){
+      let detail = `HTTP ${res.status}`;
+      try{ const errBody = await res.json(); if(errBody && errBody.error) detail = errBody.error; }catch(_e){}
+      throw new Error(detail);
+    }
     const data = await res.json();
-    if(!data.answer) throw new Error('empty_answer');
+    if(!data.answer) throw new Error('resposta vazia do proxy');
     answerEl.textContent = data.answer;
+    showBadge('online');
   }catch(err){
-    // fallback to local pattern-matching engine, no error shown to the person
+    // fallback to local pattern-matching engine — but now the reason is shown, not hidden
     answerEl.textContent = resolveQuestion(q);
+    showBadge('fallback', err.message);
   }finally{
     btn.disabled = false;
     btn.textContent = prevText;
