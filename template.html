@@ -728,7 +728,8 @@ const I18N = {
   procCirMedia:"Cirurgia de Média Complexidade",
   procOdontoL:"Procedimento Odontológico",
   consultaOdontoL:"Consulta Odontológica",
-  ansAverage:(name,avg,total,n)=>`A média de "${name}" é de ${fmt(avg)} por expedição (total de ${fmt(total)} em ${n} expedições no período selecionado).`,
+  ansAverage:(name,avg,total,n)=>`A média de "${name}" é de ${fmtAvg(avg)} por expedição (total de ${fmt(total)} em ${n} expedições no período selecionado).`,
+  ansCount:(n,year)=>`Foram registradas ${fmt(n)} expedições${year?` em ${year}`:' no período selecionado'}.`,
   ansTotal:(name,total,avg)=>`O total de "${name}" no período selecionado é ${fmt(total)} (média de ${fmt(avg)} por expedição).`,
   ansTopSpec:(name,val)=>`A especialidade com maior volume é "${name}", com ${fmt(val)} consultas no período selecionado.`,
   ansTopExam:(name,val)=>`O exame mais realizado é "${name}", com ${fmt(val)} no período selecionado.`,
@@ -737,7 +738,7 @@ const I18N = {
   ansTopExp:(mun,n,val)=>`A expedição com maior volume foi a nº ${n} (${mun}), com ${fmt(val)} atendimentos gerais.`,
   ansTopExpMetric:(metric,mun,n,val)=>`A expedição com maior volume em "${metric}" foi a nº ${n} (${mun}), com ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`Em ${y1} o atendimento geral foi ${fmt(g1)}; em ${y2} foi ${fmt(g2)} — variação de ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
-  ansAverageMun:(name,mun,avg,total,n)=>`A média de "${name}" em ${mun} é de ${fmt(avg)} por expedição (total de ${fmt(total)} em ${n} expedição(ões) no período considerado).`,
+  ansAverageMun:(name,mun,avg,total,n)=>`A média de "${name}" em ${mun} é de ${fmtAvg(avg)} por expedição (total de ${fmt(total)} em ${n} expedição(ões) no período considerado).`,
   ansTotalMun:(name,mun,total,n)=>`O total de "${name}" em ${mun} no período considerado é ${fmt(total)}, em ${n} expedição(ões).`,
   ansNoDataMun:(mun)=>`Não encontrei expedições em ${mun} no período considerado.`,
   ansFallback:"Não encontrei essa métrica específica. Tente perguntar sobre uma especialidade, exame, categoria (consultas, odontologia, farmácia...), município, ou use uma das sugestões abaixo."},
@@ -863,7 +864,8 @@ const I18N = {
   procCirMedia:"Medium-Complexity Surgery",
   procOdontoL:"Dental Procedure",
   consultaOdontoL:"Dental Consultation",
-  ansAverage:(name,avg,total,n)=>`The average of "${name}" is ${fmt(avg)} per expedition (total of ${fmt(total)} across ${n} expeditions in the selected period).`,
+  ansAverage:(name,avg,total,n)=>`The average of "${name}" is ${fmtAvg(avg)} per expedition (total of ${fmt(total)} across ${n} expeditions in the selected period).`,
+  ansCount:(n,year)=>`${fmt(n)} expeditions were recorded${year?` in ${year}`:' in the selected period'}.`,
   ansTotal:(name,total,avg)=>`The total for "${name}" in the selected period is ${fmt(total)} (average of ${fmt(avg)} per expedition).`,
   ansTopSpec:(name,val)=>`The specialty with the highest volume is "${name}", with ${fmt(val)} consultations in the selected period.`,
   ansTopExam:(name,val)=>`The most performed exam is "${name}", with ${fmt(val)} in the selected period.`,
@@ -872,7 +874,7 @@ const I18N = {
   ansTopExp:(mun,n,val)=>`The expedition with the highest volume was #${n} (${mun}), with ${fmt(val)} total attendances.`,
   ansTopExpMetric:(metric,mun,n,val)=>`The expedition with the highest volume in "${metric}" was #${n} (${mun}), with ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`In ${y1} total attendance was ${fmt(g1)}; in ${y2} it was ${fmt(g2)} — a change of ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
-  ansAverageMun:(name,mun,avg,total,n)=>`The average of "${name}" in ${mun} is ${fmt(avg)} per expedition (total of ${fmt(total)} across ${n} expedition(s) in the considered period).`,
+  ansAverageMun:(name,mun,avg,total,n)=>`The average of "${name}" in ${mun} is ${fmtAvg(avg)} per expedition (total of ${fmt(total)} across ${n} expedition(s) in the considered period).`,
   ansTotalMun:(name,mun,total,n)=>`The total for "${name}" in ${mun} in the considered period is ${fmt(total)}, across ${n} expedition(s).`,
   ansNoDataMun:(mun)=>`I couldn't find expeditions in ${mun} for the considered period.`,
   ansFallback:"I couldn't find that specific metric. Try asking about a specialty, exam, category (consultations, dentistry, pharmacy...), municipality, or use one of the suggestions below."},
@@ -998,7 +1000,8 @@ const I18N = {
   procCirMedia:"Operation mittlerer Komplexität",
   procOdontoL:"Zahnärztlicher Eingriff",
   consultaOdontoL:"Zahnkonsultation",
-  ansAverage:(name,avg,total,n)=>`Der Durchschnitt von "${name}" beträgt ${fmt(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expeditionen im gewählten Zeitraum).`,
+  ansAverage:(name,avg,total,n)=>`Der Durchschnitt von "${name}" beträgt ${fmtAvg(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expeditionen im gewählten Zeitraum).`,
+  ansCount:(n,year)=>`Es wurden ${fmt(n)} Expeditionen erfasst${year?` im Jahr ${year}`:' im gewählten Zeitraum'}.`,
   ansTotal:(name,total,avg)=>`Die Gesamtzahl für "${name}" im gewählten Zeitraum beträgt ${fmt(total)} (Durchschnitt ${fmt(avg)} pro Expedition).`,
   ansTopSpec:(name,val)=>`Die Fachrichtung mit dem höchsten Volumen ist "${name}", mit ${fmt(val)} Konsultationen im gewählten Zeitraum.`,
   ansTopExam:(name,val)=>`Die am häufigsten durchgeführte Untersuchung ist "${name}", mit ${fmt(val)} im gewählten Zeitraum.`,
@@ -1007,7 +1010,7 @@ const I18N = {
   ansTopExp:(mun,n,val)=>`Die Expedition mit dem höchsten Volumen war Nr. ${n} (${mun}), mit ${fmt(val)} Gesamtbehandlungen.`,
   ansTopExpMetric:(metric,mun,n,val)=>`Die Expedition mit dem höchsten Volumen bei "${metric}" war Nr. ${n} (${mun}), mit ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`${y1} betrugen die Gesamtbehandlungen ${fmt(g1)}; ${y2} waren es ${fmt(g2)} — eine Veränderung von ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
-  ansAverageMun:(name,mun,avg,total,n)=>`Der Durchschnitt von "${name}" in ${mun} beträgt ${fmt(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expedition(en) im betrachteten Zeitraum).`,
+  ansAverageMun:(name,mun,avg,total,n)=>`Der Durchschnitt von "${name}" in ${mun} beträgt ${fmtAvg(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expedition(en) im betrachteten Zeitraum).`,
   ansTotalMun:(name,mun,total,n)=>`Die Gesamtzahl für "${name}" in ${mun} im betrachteten Zeitraum beträgt ${fmt(total)}, über ${n} Expedition(en).`,
   ansNoDataMun:(mun)=>`Keine Expeditionen in ${mun} im betrachteten Zeitraum gefunden.`,
   ansFallback:"Diese Kennzahl wurde nicht gefunden. Fragen Sie nach einer Fachrichtung, Untersuchung, Kategorie, Gemeinde, oder nutzen Sie einen der Vorschläge unten."},
@@ -1133,7 +1136,8 @@ const I18N = {
   procCirMedia:"Cirugía de Mediana Complejidad",
   procOdontoL:"Procedimiento Odontológico",
   consultaOdontoL:"Consulta Odontológica",
-  ansAverage:(name,avg,total,n)=>`El promedio de "${name}" es ${fmt(avg)} por expedición (total de ${fmt(total)} en ${n} expediciones en el período seleccionado).`,
+  ansAverage:(name,avg,total,n)=>`El promedio de "${name}" es ${fmtAvg(avg)} por expedición (total de ${fmt(total)} en ${n} expediciones en el período seleccionado).`,
+  ansCount:(n,year)=>`Se registraron ${fmt(n)} expediciones${year?` en ${year}`:' en el período seleccionado'}.`,
   ansTotal:(name,total,avg)=>`El total de "${name}" en el período seleccionado es ${fmt(total)} (promedio de ${fmt(avg)} por expedición).`,
   ansTopSpec:(name,val)=>`La especialidad con mayor volumen es "${name}", con ${fmt(val)} consultas en el período seleccionado.`,
   ansTopExam:(name,val)=>`El examen más realizado es "${name}", con ${fmt(val)} en el período seleccionado.`,
@@ -1142,7 +1146,7 @@ const I18N = {
   ansTopExp:(mun,n,val)=>`La expedición con mayor volumen fue la nº ${n} (${mun}), con ${fmt(val)} atenciones generales.`,
   ansTopExpMetric:(metric,mun,n,val)=>`La expedición con mayor volumen en "${metric}" fue la nº ${n} (${mun}), con ${fmt(val)}.`,
   ansCompare:(y1,y2,g1,g2)=>`En ${y1} la atención general fue ${fmt(g1)}; en ${y2} fue ${fmt(g2)} — variación de ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
-  ansAverageMun:(name,mun,avg,total,n)=>`El promedio de "${name}" en ${mun} es ${fmt(avg)} por expedición (total de ${fmt(total)} en ${n} expedición(es) en el período considerado).`,
+  ansAverageMun:(name,mun,avg,total,n)=>`El promedio de "${name}" en ${mun} es ${fmtAvg(avg)} por expedición (total de ${fmt(total)} en ${n} expedición(es) en el período considerado).`,
   ansTotalMun:(name,mun,total,n)=>`El total de "${name}" en ${mun} en el período considerado es ${fmt(total)}, en ${n} expedición(es).`,
   ansNoDataMun:(mun)=>`No encontré expediciones en ${mun} en el período considerado.`,
   ansFallback:"No encontré esa métrica específica. Intenta preguntar sobre una especialidad, examen, categoría, municipio, o usa una de las sugerencias abajo."}
@@ -1802,10 +1806,10 @@ function buildMetrics(){
     METRICS.push({key:k,type:'category',aliases:[...aliasSet],name:()=>catLabels()[i]});
   });
   const MANUAL_SPEC = {
-    "Consultas Cirúrgicas":["cirurgia","cirurgico","cirurgica","cirurgicas","surgical","surgery","chirurgie","cirugia"],
+    "Consultas Cirúrgicas":["consulta cirurgica","consultas cirurgicas","surgical consultation","chirurgische beratung","consulta quirurgica"],
     "Consulta Anestésica":["anestesia","anestesica","anesthesia","anasthesie"],
     "Clínico Geral":["clinica geral","clinico geral","general practice","allgemeinmedizin","medicina general","clinica medica"],
-    "Pediatria":["crianca","criancas","pediatrics","kinder"],
+    "Pediatria":["crianca","criancas","pediatrics","kinder","pediatrico","pediatrica","pediatricos","pediatricas"],
     "Otorrinolaringologia":["otorrino","ouvido nariz garganta","ent","hno"],
     "Medicina Geral Comunidade":["comunidade","community"]
   };
@@ -1817,7 +1821,7 @@ function buildMetrics(){
     (MANUAL_SPEC[name]||[]).forEach(a=>aliasSet.add(normalize(a)));
     METRICS.push({key:name,type:'specialty',aliases:[...aliasSet],name:()=>trSpec(name)});
   });
-  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","xray","rontgen","rayos x"],"Eletrocardiograma":["ecg","eletro"] };
+  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","raio-x","xray","x-ray","rontgen","rayos x"],"Eletrocardiograma":["ecg","eletro"],"Ultrassom":["ultrassons","ultrasound","ecografia","echographie"],"Mamografia":["mamografias","mammography","mamographie"] };
   const examNames = new Set();
   Object.values(EXAMS_BY_YEAR).forEach(o=>Object.keys(o).forEach(n=>examNames.add(n)));
   examNames.forEach(name=>{
@@ -1826,9 +1830,29 @@ function buildMetrics(){
     (MANUAL_EXAM[name]||[]).forEach(a=>aliasSet.add(normalize(a)));
     METRICS.push({key:name,type:'exam',aliases:[...aliasSet],name:()=>trExam(name)});
   });
+  const cirAliases = ["cirurgia","cirurgias","cirurgico","cirurgica","cirurgicas","operacao","operacoes","procedimento cirurgico","procedimentos cirurgicos","surgery","surgeries","operation","chirurgie","operation chirurgicale","cirugia","cirugias","operacion"];
+  METRICS.push({key:'cirRealizada', type:'procedure', aliases:cirAliases.map(normalize), name:()=>I18N[CUR_LANG].lastExpCirurgias});
+
+  METRICS.push({key:'geral', type:'procedure', name:()=>I18N[CUR_LANG].bigGeralL,
+    aliases:["atendimento geral","atendimentos gerais","atendimento total","total de atendimentos","total geral dos atendimentos","total geral de atendimentos","total attendance","gesamtbehandlungen","atencion general"].map(normalize)});
+  METRICS.push({key:'saude', type:'procedure', name:()=>I18N[CUR_LANG].bigSaudeL,
+    aliases:["atendimento em saude","atendimentos em saude","total de saude","geral de saude","total geral de saude","em saude","health attendance","gesundheitsversorgung","atencion en salud"].map(normalize)});
+  METRICS.push({key:'alim', type:'procedure', name:()=>I18N[CUR_LANG].catAlimentacao,
+    aliases:["entrega de alimentacao","alimentacao","distribuicao de alimentos","alimentos","meals","meal delivery","food delivery","comida","essen","lebensmittel","alimentacion"].map(normalize)});
+  METRICS.push({key:'internClinCir', type:'procedure', name:()=>I18N[CUR_LANG].catInternacao,
+    aliases:["internacao clinica cirurgica","internacoes clinicas e cirurgicas","internacao clinica e cirurgica","internacao hospitalar","hospitalizacao","internacao","clinical hospitalization","hospitalisierung","hospitalizacion"].map(normalize)});
+  METRICS.push({key:'procOdonto', type:'procedure', name:()=>I18N[CUR_LANG].procOdontoL,
+    aliases:["procedimento odontologico","procedimentos odontologicos","dental procedure","dental procedures","zahnbehandlung","procedimiento odontologico"].map(normalize)});
+  METRICS.push({key:'consultaOdonto', type:'procedure', name:()=>I18N[CUR_LANG].consultaOdontoL,
+    aliases:["consulta odontologica","consultas odontologicas","dental consultation","dental consultations","zahnkonsultation","consulta odontologica"].map(normalize)});
+  METRICS.push({key:'cirBaixa', type:'procedure', name:()=>I18N[CUR_LANG].procCirBaixa,
+    aliases:["cirurgia de baixa complexidade","cirurgias de baixa complexidade","baixa complexidade","low complexity surgery","low-complexity surgery","niedrige komplexitat","baja complejidad"].map(normalize)});
+  METRICS.push({key:'cirMedia', type:'procedure', name:()=>I18N[CUR_LANG].procCirMedia,
+    aliases:["cirurgia de media complexidade","cirurgias de media complexidade","media complexidade","medium complexity surgery","mittlere komplexitat","media complejidad"].map(normalize)});
 }
 const INTENT_WORDS = {
   average:['media','average','durchschnitt','promedio','avg'],
+  count:['quantas expedicoes','quantas expedicões','numero de expedicoes','numero de expedições','quantidade de expedicoes','how many expeditions','number of expeditions','anzahl der expeditionen','cuantas expediciones'],
   top:['maior','mais','top','highest','most','hochste','mayor','mas','melhor'],
   compare:['compare','comparar','compara','vergleich','vs','versus','diferenca','difference']
 };
@@ -1860,6 +1884,7 @@ function findYearInQuestion(nq){
 function metricValueForExpedition(exp, metric){
   if(metric.type==='category') return exp[metric.key]||0;
   if(metric.type==='specialty') return (exp.spec && exp.spec[metric.key]) || 0;
+  if(metric.type==='procedure') return metric.key==='cirRealizada' ? (exp.cirBaixa||0)+(exp.cirMedia||0) : (exp[metric.key]||0);
   return (exp.exam && exp.exam[metric.key]) || 0;
 }
 function resolveQuestion(question){
@@ -1901,8 +1926,9 @@ function resolveQuestion(question){
     }
     if(/municip|city|gemeinde/.test(nq)){
       const metricMun = findMetric(nq);
+      const baseMun = qYear ? ALL_EXPEDITIONS.filter(d=>d.year===qYear) : currentExpeditions();
       const map={};
-      currentExpeditions().forEach(d=>{
+      baseMun.forEach(d=>{
         const v = metricMun ? metricValueForExpedition(d, metricMun) : d.geral;
         map[d.mun]=(map[d.mun]||0)+v;
       });
@@ -1911,13 +1937,18 @@ function resolveQuestion(question){
     }
     if(/expedi/.test(nq)){
       const metricExp = findMetric(nq);
+      const baseExp = qYear ? ALL_EXPEDITIONS.filter(d=>d.year===qYear) : currentExpeditions();
       const top = metricExp
-        ? [...currentExpeditions()].sort((a,b)=>metricValueForExpedition(b,metricExp)-metricValueForExpedition(a,metricExp))[0]
-        : [...currentExpeditions()].sort((a,b)=>b.geral-a.geral)[0];
+        ? [...baseExp].sort((a,b)=>metricValueForExpedition(b,metricExp)-metricValueForExpedition(a,metricExp))[0]
+        : [...baseExp].sort((a,b)=>b.geral-a.geral)[0];
       if(top) return metricExp
         ? t.ansTopExpMetric(metricExp.name(), top.mun, top.n, metricValueForExpedition(top,metricExp))
         : t.ansTopExp(top.mun, top.n, top.geral);
     }
+  }
+  if(intent==='count'){
+    const scoped = qYear ? ALL_EXPEDITIONS.filter(d=>d.year===qYear) : currentExpeditions();
+    return t.ansCount(scoped.length, qYear);
   }
   if(intent==='compare' && YEARS.length>1){
     const y1=YEARS[0], y2=YEARS[YEARS.length-1];
