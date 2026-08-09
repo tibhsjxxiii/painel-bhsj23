@@ -543,6 +543,41 @@ const PROXY_SECRET = "__PROXY_SECRET__";
 const ALL_EXPEDITIONS = __ALL_EXPEDITIONS__;
 const SPECIALTIES_BY_YEAR = __SPECIALTIES_BY_YEAR__;
 const EXAMS_BY_YEAR = __EXAMS_BY_YEAR__;
+
+// Data-entry in the source spreadsheet sometimes varies the capitalization of the same specialty/exam
+// name across different expedition columns (e.g. "Medicina Geral Comunidade" vs "medicina geral
+// comunidade"). Left as-is, this silently splits one specialty into two separate entries everywhere
+// (charts, reports, Q&A totals). We canonicalize casing once, here, at load time, so every part of
+// the app — including per-expedition breakdowns — sees a single merged entry.
+(function canonicalizeLabelCasing(){
+  function buildCanonMap(dictOfDicts){
+    const canon = {};
+    Object.values(dictOfDicts).forEach(yearDict=>{
+      Object.keys(yearDict).forEach(k=>{
+        const lk = k.toLowerCase().trim();
+        if(!(lk in canon)) canon[lk] = k;
+      });
+    });
+    return canon;
+  }
+  function mergeDict(obj, canon){
+    const out = {};
+    Object.entries(obj).forEach(([k,v])=>{
+      const lk = k.toLowerCase().trim();
+      const ck = canon[lk] || k;
+      out[ck] = (out[ck]||0) + v;
+    });
+    return out;
+  }
+  const specCanon = buildCanonMap(SPECIALTIES_BY_YEAR);
+  const examCanon = buildCanonMap(EXAMS_BY_YEAR);
+  Object.keys(SPECIALTIES_BY_YEAR).forEach(y=>{ SPECIALTIES_BY_YEAR[y] = mergeDict(SPECIALTIES_BY_YEAR[y], specCanon); });
+  Object.keys(EXAMS_BY_YEAR).forEach(y=>{ EXAMS_BY_YEAR[y] = mergeDict(EXAMS_BY_YEAR[y], examCanon); });
+  ALL_EXPEDITIONS.forEach(exp=>{
+    if(exp.spec) exp.spec = mergeDict(exp.spec, specCanon);
+    if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
+  });
+})();
 const GENERATED_AT = "__GENERATED_AT__";
 
 const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
@@ -552,21 +587,60 @@ const fmtAvg = n => (Math.round(n*10)/10).toLocaleString(LOCALE_MAP[CUR_LANG]||'
 function mergeObj(a,b){ const out={...a}; for(const k in b){ out[k]=(out[k]||0)+b[k]; } return out; }
 function normalize(s){ return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
 
+function levenshtein(a, b){
+  if(a === b) return 0;
+  const al = a.length, bl = b.length;
+  if(al === 0) return bl;
+  if(bl === 0) return al;
+  let prev = new Array(bl+1);
+  for(let j=0;j<=bl;j++) prev[j] = j;
+  for(let i=1;i<=al;i++){
+    const cur = [i];
+    for(let j=1;j<=bl;j++){
+      const cost = a[i-1]===b[j-1] ? 0 : 1;
+      cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+    }
+    prev = cur;
+  }
+  return prev[bl];
+}
+function typoTolerance(len){ return len<=4 ? 0 : len<=14 ? 1 : 2; } // longer words tolerate more typo'd characters
+// fuzzy word-level match: does the question contain a word close enough (by edit distance) to every word of `phrase`?
+function fuzzyIncludes(nq, phrase){
+  const clean = s => s.replace(/[^\p{L}\p{N}]/gu, '');
+  const qWords = nq.split(/\s+/).map(clean).filter(w=>w.length>=4);
+  const pWords = phrase.split(/\s+/).map(clean).filter(w=>w.length>=4);
+  if(!pWords.length) return false;
+  return pWords.every(pw => qWords.some(qw => Math.abs(qw.length-pw.length)<=2 && levenshtein(qw,pw)<=typoTolerance(pw.length)));
+}
+
 const YEARS = [...new Set(ALL_EXPEDITIONS.map(d=>d.year))].sort();
 let YEAR = 'all';
 function currentExpeditions(){ return YEAR==='all' ? ALL_EXPEDITIONS : ALL_EXPEDITIONS.filter(d=>String(d.year)===String(YEAR)); }
+function mergeCaseInsensitive(obj){
+  const seen = {}; // normalized-lowercase -> canonical key actually used in output
+  const out = {};
+  Object.entries(obj).forEach(([k,v])=>{
+    const lk = k.toLowerCase().trim();
+    if(!(lk in seen)) seen[lk] = k; // first-seen casing becomes canonical
+    const canon = seen[lk];
+    out[canon] = (out[canon]||0) + v;
+  });
+  return out;
+}
 function currentSpecialties(){
   const base = YEAR==='all' ? Object.values(SPECIALTIES_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{}) : (SPECIALTIES_BY_YEAR[YEAR] || {});
+  const merged = mergeCaseInsensitive(base);
   // Oftalmologia é contabilizada como categoria própria na planilha (não dentro do bloco de
   // Consultas Médicas), mas tem peso de especialidade — mesclamos aqui para que apareça em
   // "Especialidades Médicas", no Relatório e no PDF, com consultas e exames sempre visíveis.
   const oftTotal = sum(currentExpeditions(), 'oft');
-  if(oftTotal > 0) return { ...base, "Oftalmologia (Consulta)": oftTotal };
-  return base;
+  if(oftTotal > 0) return { ...merged, "Oftalmologia (Consulta)": oftTotal };
+  return merged;
 }
 function currentExams(){
-  if(YEAR==='all') return Object.values(EXAMS_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{});
-  return EXAMS_BY_YEAR[YEAR] || {};
+  if(YEAR==='all') return mergeCaseInsensitive(Object.values(EXAMS_BY_YEAR).reduce((acc,o)=>mergeObj(acc,o),{}));
+  return mergeCaseInsensitive(EXAMS_BY_YEAR[YEAR] || {});
 }
 
 const CAT_KEYS = ['consultas','odonto','exames','naoMed','farm','oft','proc'];
@@ -1834,7 +1908,9 @@ function buildMetrics(){
     (MANUAL_SPEC[name]||[]).forEach(a=>aliasSet.add(normalize(a)));
     METRICS.push({key:name,type:'specialty',aliases:[...aliasSet],name:()=>trSpec(name)});
   });
-  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","raio-x","xray","x-ray","rontgen","rayos x"],"Eletrocardiograma":["ecg","eletro"],"Ultrassom":["ultrassons","ultrasound","ecografia","echographie"],"Mamografia":["mamografias","mammography","mamographie"] };
+  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","raio-x","xray","x-ray","rontgen","rayos x"],"Eletrocardiograma":["ecg","eletro"],"Ultrassom":["ultrassons","ultrasound","ecografia","echographie"],"Mamografia":["mamografias","mammography","mamographie"],
+    "Oftalmologia":["exame de oftalmologia","exames oftalmologicos","exame oftalmologico","eye exam","eye test","augenuntersuchung","examen oftalmologico","fundoscopia","fundo de olho"],
+    "Otorrinolaringologia":["exame de otorrinolaringologia","exames otorrinolaringologicos","exame otorrinolaringologico","ent exam","hno untersuchung","examen otorrinolaringologico"] };
   const examNames = new Set();
   Object.values(EXAMS_BY_YEAR).forEach(o=>Object.keys(o).forEach(n=>examNames.add(n)));
   examNames.forEach(name=>{
@@ -1849,7 +1925,7 @@ function buildMetrics(){
   METRICS.push({key:'geral', type:'procedure', name:()=>I18N[CUR_LANG].bigGeralL,
     aliases:["atendimento geral","atendimentos gerais","atendimento total","total de atendimentos","total geral dos atendimentos","total geral de atendimentos","total attendance","gesamtbehandlungen","atencion general"].map(normalize)});
   METRICS.push({key:'saude', type:'procedure', name:()=>I18N[CUR_LANG].bigSaudeL,
-    aliases:["atendimento em saude","atendimentos em saude","total de saude","geral de saude","total geral de saude","em saude","health attendance","gesundheitsversorgung","atencion en salud"].map(normalize)});
+    aliases:["total de atendimentos em saude","total de atendimento em saude","atendimento em saude","atendimentos em saude","total de saude","geral de saude","total geral de saude","em saude","health attendance","total health attendance","gesundheitsversorgung","atencion en salud"].map(normalize)});
   METRICS.push({key:'alim', type:'procedure', name:()=>I18N[CUR_LANG].catAlimentacao,
     aliases:["entrega de alimentacao","alimentacao","distribuicao de alimentos","alimentos","meals","meal delivery","food delivery","comida","essen","lebensmittel","alimentacion"].map(normalize)});
   METRICS.push({key:'internClinCir', type:'procedure', name:()=>I18N[CUR_LANG].catInternacao,
@@ -1862,6 +1938,18 @@ function buildMetrics(){
     aliases:["cirurgia de baixa complexidade","cirurgias de baixa complexidade","baixa complexidade","low complexity surgery","low-complexity surgery","niedrige komplexitat","baja complejidad"].map(normalize)});
   METRICS.push({key:'cirMedia', type:'procedure', name:()=>I18N[CUR_LANG].procCirMedia,
     aliases:["cirurgia de media complexidade","cirurgias de media complexidade","media complexidade","medium complexity surgery","mittlere komplexitat","media complejidad"].map(normalize)});
+
+  // resolve alias collisions: if a specialty/exam metric shares an exact alias with a category/procedure
+  // metric (e.g. "Oftalmologia" exists both as a headline attendance category and as an exam type),
+  // the headline metric keeps that word and the detail metric falls back to its remaining, more specific aliases.
+  const headlineAliases = new Set();
+  METRICS.filter(m=>m.type==='category'||m.type==='procedure').forEach(m=>m.aliases.forEach(a=>headlineAliases.add(a)));
+  METRICS.forEach(m=>{
+    if(m.type==='specialty' || m.type==='exam'){
+      const filtered = m.aliases.filter(a=>!headlineAliases.has(a));
+      if(filtered.length) m.aliases = filtered;
+    }
+  });
 }
 const INTENT_WORDS = {
   average:['media','average','durchschnitt','promedio','avg'],
@@ -1869,11 +1957,24 @@ const INTENT_WORDS = {
   top:['maior','mais','top','highest','most','hochste','mayor','mas','melhor'],
   compare:['compare','comparar','compara','vergleich','vs','versus','diferenca','difference']
 };
-function detectIntent(nq){ for(const [i,words] of Object.entries(INTENT_WORDS)){ if(words.some(w=>nq.includes(w))) return i; } return 'total'; }
+function detectIntent(nq){
+  const nqForIntent = nq.replace(/(media|baixa)\s*complexidade/g, '');
+  for(const [i,words] of Object.entries(INTENT_WORDS)){
+    if(words.some(w=>nqForIntent.includes(w))) return i;
+  }
+  return 'total';
+}
 function findMetric(nq){
-  let best=null,bestLen=0;
-  METRICS.forEach(m=>m.aliases.forEach(a=>{ if(a.length>=4 && nq.includes(a) && a.length>bestLen){ best=m; bestLen=a.length; } }));
-  return best;
+  let bestExact=null, bestExactLen=0;
+  METRICS.forEach(m=>m.aliases.forEach(a=>{ if(a.length>=4 && nq.includes(a) && a.length>bestExactLen){ bestExact=m; bestExactLen=a.length; } }));
+  let bestFuzzy=null, bestFuzzyLen=0;
+  METRICS.forEach(m=>m.aliases.forEach(a=>{ if(a.length>=7 && fuzzyIncludes(nq,a) && a.length>bestFuzzyLen){ bestFuzzy=m; bestFuzzyLen=a.length; } }));
+  // a fuzzy (typo-tolerant) match only overrides an exact one when it's on a clearly longer,
+  // more specific phrase — this lets typos in long compound phrases still resolve correctly,
+  // while preventing short, similarly-spelled medical terms (e.g. Neurologia/Pneumologia) from
+  // being confused with each other when the question was actually typed correctly.
+  if(bestFuzzy && (!bestExact || bestFuzzyLen > bestExactLen*1.4)) return bestFuzzy;
+  return bestExact || bestFuzzy;
 }
 function metricTotal(m){
   if(m.type==='category') return sum(currentExpeditions(), m.key);
@@ -1882,12 +1983,18 @@ function metricTotal(m){
 }
 const MUN_NAMES = [...new Set(ALL_EXPEDITIONS.map(d=>d.mun))];
 function findMunicipality(nq){
-  let best=null,bestLen=0;
+  let bestExact=null, bestExactLen=0;
   MUN_NAMES.forEach(m=>{
     const nm = normalize(m);
-    if(nm.length>=4 && nq.includes(nm) && nm.length>bestLen){ best=m; bestLen=nm.length; }
+    if(nm.length>=4 && nq.includes(nm) && nm.length>bestExactLen){ bestExact=m; bestExactLen=nm.length; }
   });
-  return best;
+  let bestFuzzy=null, bestFuzzyLen=0;
+  MUN_NAMES.forEach(m=>{
+    const nm = normalize(m);
+    if(nm.length>=4 && fuzzyIncludes(nq,nm) && nm.length>bestFuzzyLen){ bestFuzzy=m; bestFuzzyLen=nm.length; }
+  });
+  if(bestFuzzy && bestFuzzyLen >= bestExactLen) return bestFuzzy;
+  return bestExact || bestFuzzy;
 }
 function findYearInQuestion(nq){
   const m = nq.match(/\b(20\d{2})\b/);
@@ -1929,14 +2036,6 @@ function resolveQuestion(question){
 
   // Priority: "top X of a category" questions (must win over incidental metric-name substring matches)
   if(intent==='top'){
-    if(/especialidad|specialty|fachrichtung/.test(nq)){
-      const top = Object.entries(currentSpecialties()).sort((a,b)=>b[1]-a[1])[0];
-      if(top) return t.ansTopSpec(trSpec(top[0]), top[1]);
-    }
-    if(/\bexame|\bexam\b|untersuchung|examen/.test(nq)){
-      const top = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1])[0];
-      if(top) return t.ansTopExam(trExam(top[0]), top[1]);
-    }
     if(/municip|city|gemeinde/.test(nq)){
       const metricMun = findMetric(nq);
       const baseMun = qYear ? ALL_EXPEDITIONS.filter(d=>d.year===qYear) : currentExpeditions();
@@ -1957,6 +2056,14 @@ function resolveQuestion(question){
       if(top) return metricExp
         ? t.ansTopExpMetric(metricExp.name(), top.mun, top.n, metricValueForExpedition(top,metricExp))
         : t.ansTopExp(top.mun, top.n, top.geral);
+    }
+    if(/especialidad|specialty|fachrichtung/.test(nq)){
+      const top = Object.entries(currentSpecialties()).sort((a,b)=>b[1]-a[1])[0];
+      if(top) return t.ansTopSpec(trSpec(top[0]), top[1]);
+    }
+    if(/\bexame|\bexam\b|untersuchung|examen/.test(nq)){
+      const top = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1])[0];
+      if(top) return t.ansTopExam(trExam(top[0]), top[1]);
     }
   }
   if(intent==='count'){
@@ -2037,7 +2144,7 @@ async function askAI(){
     });
     if(!res.ok){
       let detail = `HTTP ${res.status}`;
-      try{ const errBody = await res.json(); if(errBody && errBody.error) detail = errBody.error; }catch(_e){}
+      try{ const errBody = await res.json(); if(errBody){ detail = errBody.error || detail; if(errBody.detail) detail += ': ' + String(errBody.detail).slice(0,200); } }catch(_e){}
       throw new Error(detail);
     }
     const data = await res.json();
