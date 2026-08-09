@@ -234,7 +234,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 09/08/2026 14:05</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 09/08/2026 19:46</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -495,14 +495,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 09/08/2026 14:05</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 09/08/2026 19:46</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 09/08/2026 14:05</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 09/08/2026 19:46</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -578,7 +578,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "09/08/2026 14:05";
+const GENERATED_AT = "09/08/2026 19:46";
 
 const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
 const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES'};
@@ -592,17 +592,19 @@ function levenshtein(a, b){
   const al = a.length, bl = b.length;
   if(al === 0) return bl;
   if(bl === 0) return al;
-  let prev = new Array(bl+1);
-  for(let j=0;j<=bl;j++) prev[j] = j;
+  const d = [];
+  for(let i=0;i<=al;i++) d[i] = [i];
+  for(let j=0;j<=bl;j++) d[0][j] = j;
   for(let i=1;i<=al;i++){
-    const cur = [i];
     for(let j=1;j<=bl;j++){
       const cost = a[i-1]===b[j-1] ? 0 : 1;
-      cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+cost);
+      d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+cost);
+      if(i>1 && j>1 && a[i-1]===b[j-2] && a[i-2]===b[j-1]){
+        d[i][j] = Math.min(d[i][j], d[i-2][j-2]+1); // adjacent transposition (e.g. "teh"->"the") counts as one edit
+      }
     }
-    prev = cur;
   }
-  return prev[bl];
+  return d[al][bl];
 }
 function typoTolerance(len){ return len<=4 ? 0 : len<=14 ? 1 : 2; } // longer words tolerate more typo'd characters
 // fuzzy word-level match: does the question contain a word close enough (by edit distance) to every word of `phrase`?
@@ -611,6 +613,7 @@ function fuzzyIncludes(nq, phrase){
   const qWords = nq.split(/\s+/).map(clean).filter(w=>w.length>=4);
   const pWords = phrase.split(/\s+/).map(clean).filter(w=>w.length>=4);
   if(!pWords.length) return false;
+  if(pWords.length===1 && pWords[0].length<8) return false; // avoid coincidental short single-word matches
   return pWords.every(pw => qWords.some(qw => Math.abs(qw.length-pw.length)<=2 && levenshtein(qw,pw)<=typoTolerance(pw.length)));
 }
 
@@ -808,6 +811,12 @@ const I18N = {
   consultaOdontoL:"Consulta Odontológica",
   ansAverage:(name,avg,total,n)=>`A média de "${name}" é de ${fmtAvg(avg)} por expedição (total de ${fmt(total)} em ${n} expedições no período selecionado).`,
   ansCount:(n,year)=>`Foram registradas ${fmt(n)} expedições${year?` em ${year}`:' no período selecionado'}.`,
+  ansMunCountByMetric:(n,total,metric,list,neg)=>{
+    const base = neg
+      ? `${fmt(n)} de ${fmt(total)} municípios não tiveram "${metric}" registrado no período selecionado`
+      : `${fmt(n)} de ${fmt(total)} municípios tiveram "${metric}" registrado no período selecionado`;
+    return base + (list.length<=10 ? (list.length? `: ${list.join(', ')}.` : '.') : '.');
+  },
   ansTotal:(name,total,avg)=>`O total de "${name}" no período selecionado é ${fmt(total)} (média de ${fmt(avg)} por expedição).`,
   ansTopSpec:(name,val)=>`A especialidade com maior volume é "${name}", com ${fmt(val)} consultas no período selecionado.`,
   ansTopExam:(name,val)=>`O exame mais realizado é "${name}", com ${fmt(val)} no período selecionado.`,
@@ -947,6 +956,12 @@ const I18N = {
   consultaOdontoL:"Dental Consultation",
   ansAverage:(name,avg,total,n)=>`The average of "${name}" is ${fmtAvg(avg)} per expedition (total of ${fmt(total)} across ${n} expeditions in the selected period).`,
   ansCount:(n,year)=>`${fmt(n)} expeditions were recorded${year?` in ${year}`:' in the selected period'}.`,
+  ansMunCountByMetric:(n,total,metric,list,neg)=>{
+    const base = neg
+      ? `${fmt(n)} of ${fmt(total)} municipalities had no "${metric}" recorded in the selected period`
+      : `${fmt(n)} of ${fmt(total)} municipalities had "${metric}" recorded in the selected period`;
+    return base + (list.length<=10 ? (list.length? `: ${list.join(', ')}.` : '.') : '.');
+  },
   ansTotal:(name,total,avg)=>`The total for "${name}" in the selected period is ${fmt(total)} (average of ${fmt(avg)} per expedition).`,
   ansTopSpec:(name,val)=>`The specialty with the highest volume is "${name}", with ${fmt(val)} consultations in the selected period.`,
   ansTopExam:(name,val)=>`The most performed exam is "${name}", with ${fmt(val)} in the selected period.`,
@@ -1086,6 +1101,12 @@ const I18N = {
   consultaOdontoL:"Zahnkonsultation",
   ansAverage:(name,avg,total,n)=>`Der Durchschnitt von "${name}" beträgt ${fmtAvg(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expeditionen im gewählten Zeitraum).`,
   ansCount:(n,year)=>`Es wurden ${fmt(n)} Expeditionen erfasst${year?` im Jahr ${year}`:' im gewählten Zeitraum'}.`,
+  ansMunCountByMetric:(n,total,metric,list,neg)=>{
+    const base = neg
+      ? `${fmt(n)} von ${fmt(total)} Gemeinden hatten im gewählten Zeitraum kein erfasstes "${metric}"`
+      : `${fmt(n)} von ${fmt(total)} Gemeinden hatten im gewählten Zeitraum "${metric}" erfasst`;
+    return base + (list.length<=10 ? (list.length? `: ${list.join(', ')}.` : '.') : '.');
+  },
   ansTotal:(name,total,avg)=>`Die Gesamtzahl für "${name}" im gewählten Zeitraum beträgt ${fmt(total)} (Durchschnitt ${fmt(avg)} pro Expedition).`,
   ansTopSpec:(name,val)=>`Die Fachrichtung mit dem höchsten Volumen ist "${name}", mit ${fmt(val)} Konsultationen im gewählten Zeitraum.`,
   ansTopExam:(name,val)=>`Die am häufigsten durchgeführte Untersuchung ist "${name}", mit ${fmt(val)} im gewählten Zeitraum.`,
@@ -1225,6 +1246,12 @@ const I18N = {
   consultaOdontoL:"Consulta Odontológica",
   ansAverage:(name,avg,total,n)=>`El promedio de "${name}" es ${fmtAvg(avg)} por expedición (total de ${fmt(total)} en ${n} expediciones en el período seleccionado).`,
   ansCount:(n,year)=>`Se registraron ${fmt(n)} expediciones${year?` en ${year}`:' en el período seleccionado'}.`,
+  ansMunCountByMetric:(n,total,metric,list,neg)=>{
+    const base = neg
+      ? `${fmt(n)} de ${fmt(total)} municipios no tuvieron "${metric}" registrado en el período seleccionado`
+      : `${fmt(n)} de ${fmt(total)} municipios tuvieron "${metric}" registrado en el período seleccionado`;
+    return base + (list.length<=10 ? (list.length? `: ${list.join(', ')}.` : '.') : '.');
+  },
   ansTotal:(name,total,avg)=>`El total de "${name}" en el período seleccionado es ${fmt(total)} (promedio de ${fmt(avg)} por expedición).`,
   ansTopSpec:(name,val)=>`La especialidad con mayor volumen es "${name}", con ${fmt(val)} consultas en el período seleccionado.`,
   ansTopExam:(name,val)=>`El examen más realizado es "${name}", con ${fmt(val)} en el período seleccionado.`,
@@ -1883,7 +1910,7 @@ function buildMetrics(){
     exames:["exame","examen","examenes","untersuchungen"],
     naoMed:["enfermagem","triagem","nursing","pflege"],
     farm:["farmaceutico","farmaceutica","medicamento","medicamentos","remedio","remedios","medication","medicines"],
-    oft:["oftalmologico","oftalmologica","oftalmologicos","oftalmologicas","olhos","vista","eye","eyes","augen"],
+    oft:["oftalmologico","oftalmologica","oftalmologicos","oftalmologicas","olhos","eye","eyes","augen"],
     proc:["procedimento","procedimentos","procedure"]
   };
   CAT_KEYS.forEach((k,i)=>{
@@ -1908,7 +1935,7 @@ function buildMetrics(){
     (MANUAL_SPEC[name]||[]).forEach(a=>aliasSet.add(normalize(a)));
     METRICS.push({key:name,type:'specialty',aliases:[...aliasSet],name:()=>trSpec(name)});
   });
-  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","raio-x","xray","x-ray","rontgen","rayos x"],"Eletrocardiograma":["ecg","eletro"],"Ultrassom":["ultrassons","ultrasound","ecografia","echographie"],"Mamografia":["mamografias","mammography","mamographie"],
+  const MANUAL_EXAM = { "Análises Clínicas":["laboratorio","exame de sangue","blood test","labor"],"Raios-X":["raio x","raiox","raio-x","xray","x-ray","rontgen","radiografia"],"Eletrocardiograma":["ecg","eletro"],"Ultrassom":["ultrassons","ultrasound","ecografia","echographie"],"Mamografia":["mamografias","mammography","mamographie"],
     "Oftalmologia":["exame de oftalmologia","exames oftalmologicos","exame oftalmologico","eye exam","eye test","augenuntersuchung","examen oftalmologico","fundoscopia","fundo de olho"],
     "Otorrinolaringologia":["exame de otorrinolaringologia","exames otorrinolaringologicos","exame otorrinolaringologico","ent exam","hno untersuchung","examen otorrinolaringologico"] };
   const examNames = new Set();
@@ -1988,13 +2015,13 @@ function findMunicipality(nq){
     const nm = normalize(m);
     if(nm.length>=4 && nq.includes(nm) && nm.length>bestExactLen){ bestExact=m; bestExactLen=nm.length; }
   });
+  if(bestExact) return bestExact; // exact match is always reliable for known place names — never let fuzzy override it
   let bestFuzzy=null, bestFuzzyLen=0;
   MUN_NAMES.forEach(m=>{
     const nm = normalize(m);
     if(nm.length>=4 && fuzzyIncludes(nq,nm) && nm.length>bestFuzzyLen){ bestFuzzy=m; bestFuzzyLen=nm.length; }
   });
-  if(bestFuzzy && bestFuzzyLen >= bestExactLen) return bestFuzzy;
-  return bestExact || bestFuzzy;
+  return bestFuzzy;
 }
 function findYearInQuestion(nq){
   const m = nq.match(/\b(20\d{2})\b/);
@@ -2032,6 +2059,24 @@ function resolveQuestion(question){
     const avgGeral = totalGeral/scoped.length;
     if(intent==='average') return t.ansAverageMun(t.bigGeralL, qMun, avgGeral, totalGeral, scoped.length);
     return t.ansTotalMun(t.bigGeralL, qMun, totalGeral, scoped.length);
+  }
+
+  // "How many/which municipalities did NOT have X" or "DID have X" — a count/list question about
+  // municipalities filtered by whether a metric was zero or nonzero, not a single top/total value.
+  if(/municip|city|gemeinde/.test(nq)){
+    const isNegated = /(nao\s*(teve|tiveram|tem|houve|apresentou|registrou)|sem\b|nenhum|zero|not\s*have|didn.?t\s*have|no\s*(record|attendance)|ohne|kein|sin\b|no\s*tuvieron)/.test(nq);
+    const isCountPhrasing = /quant[ao]s?\s*municip|how many municipalit|wie viele gemeinde|cuant[ao]s?\s*municipio|quais municip|which municipalit|welche gemeinde|que municipio/.test(nq);
+    if(isCountPhrasing || isNegated){
+      const metricZ = findMetric(nq);
+      const baseZ = qYear ? ALL_EXPEDITIONS.filter(d=>d.year===qYear) : currentExpeditions();
+      const map = {};
+      [...new Set(baseZ.map(d=>d.mun))].forEach(m=>{ map[m]=0; });
+      baseZ.forEach(d=>{ map[d.mun] += metricZ ? metricValueForExpedition(d,metricZ) : d.geral; });
+      const wantZero = isNegated;
+      const matchMuns = Object.entries(map).filter(([k,v])=> wantZero ? v===0 : v>0).map(([k])=>k).sort();
+      const metricName = metricZ ? metricZ.name() : t.bigGeralL;
+      return t.ansMunCountByMetric(matchMuns.length, Object.keys(map).length, metricName, matchMuns, wantZero);
+    }
   }
 
   // Priority: "top X of a category" questions (must win over incidental metric-name substring matches)
