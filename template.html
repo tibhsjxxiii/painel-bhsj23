@@ -32,7 +32,15 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .report-btn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;font-family:'Inter';font-size:0.85rem;transition:background .15s;}
 .report-btn:hover{background:var(--navy-2);}
 
-.report-doc{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:40px 46px;box-shadow:var(--shadow);}
+.report-doc{
+  --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0; --line:#e7e5df;
+  --panel-2:#fbfaf7; --navy-soft:#e8edf3; --navy:#0f2a4a; --navy-2:#173a63;
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:40px 46px;box-shadow:var(--shadow);
+}
+.modal-card-light{
+  --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0; --line:#e7e5df;
+  --panel-2:#fbfaf7; --navy-soft:#e8edf3; --navy:#0f2a4a; --navy-2:#173a63; --gold:#b8934a; --teal:#0e8f6f; --teal-dim:rgba(14,143,111,0.10);
+}
 .report-doc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .report-doc-brand{display:flex;align-items:center;gap:12px;}
 .report-doc-logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(155deg,var(--navy),var(--navy-2));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -219,6 +227,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     <button class="nav-item" data-view="specialties"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v7a6 6 0 0012 0V4"/><path d="M9 4V2M15 4V2"/><circle cx="18" cy="15" r="3"/></svg><span data-i18n="navSpec">Especialidades</span></button>
     <button class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></button>
     <button class="nav-item" data-view="cirurgias"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20L14.5 9.5"/><path d="M13 5l6 6-2 2-6-6z"/><circle cx="6.5" cy="17.5" r="2.2"/></svg><span data-i18n="navCir">Cirurgias</span></button>
+    <button class="nav-item" data-view="navegacao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polygon points="16,8 12,12 8,16 12,12" fill="currentColor" stroke="none"/></svg><span data-i18n="navNavegacao">Navegação</span></button>
     <button class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></button>
     <button class="nav-item" data-view="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 14l.75 2.25L22 17l-2.25.75L19 20l-.75-2.25L16 17l2.25-.75L19 14z"/></svg><span data-i18n="navAI">Insights</span></button>
     <button class="nav-item" data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg><span data-i18n="navReport">Relatório</span></button>
@@ -257,6 +266,13 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <div class="bignum-row">
           <div class="bignum"><div class="v mono" id="bigGeral">—</div><div class="delta" id="bigGeralDelta"></div><div class="l" data-i18n="bigGeralL">Atendimento Geral</div></div>
           <div class="bignum"><div class="v mono" id="bigSaude">—</div><div class="delta" id="bigSaudeDelta"></div><div class="l" data-i18n="bigSaudeL">Em Saúde</div></div>
+        </div>
+        <div class="panel" id="tripInfoPanel" style="display:none;border-left:3px solid var(--teal);padding:12px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+            <span style="font-family:'Fraunces';font-size:0.8rem;font-weight:600;color:var(--navy);" data-i18n="tripInfoTitle">Viagens da Expedição</span>
+            <button class="info-icon" data-info="infoTripInfo">i</button>
+          </div>
+          <div id="tripInfoRow" style="display:flex;gap:24px;flex-wrap:wrap;"></div>
         </div>
         <div class="panel breakdown-hero">
           <div class="panel-title"><span data-i18n="breakdownTitle">Detalhamento de Atendimentos</span><button class="info-icon" data-info="infoBreakdown">i</button><div class="chart-type-toggle" data-chart-key="breakdown">
@@ -362,6 +378,37 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <div class="panel-sub" data-i18n="cirTop10Sub">Soma de cirurgias de média + baixa complexidade no período selecionado (municípios revisitados aparecem somados)</div>
           <div class="chart-wrap" style="height:320px;"><canvas id="chartCirTop10"></canvas></div>
           <table style="margin-top:14px;"><thead><tr><th data-i18n="colMun">Município</th><th data-i18n="cirColMedia">Cirurgia Média</th><th data-i18n="cirColBaixa">Cirurgia Pequena</th><th data-i18n="cirColTotal">Total</th></tr></thead><tbody id="cirRankBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-navegacao">
+      <div class="stack">
+        <div class="bignum-row">
+          <div class="bignum"><div class="v mono" id="bigNavHoras">—</div><div class="l" data-i18n="navBigHoras">Horas Navegando</div></div>
+          <div class="bignum"><div class="v mono" id="bigNavDias">—</div><div class="l" data-i18n="navBigDias">Média de Dias por Expedição</div></div>
+          <div class="bignum"><div class="v mono" id="bigNavIncidente">—</div><div class="l" data-i18n="navBigIncidente">Horas Perdidas (Incidentes)</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="navMapTitle">Mapa das Expedições</span><button class="info-icon" data-info="infoNavMap">i</button></div>
+          <div class="panel-sub" data-i18n="navMapSub">Clique num ponto para ver as expedições, datas e horas de navegação daquele local.</div>
+          <div id="mapAmazonas" style="height:420px;border-radius:10px;overflow:hidden;border:1px solid var(--line);"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="navChartTitle">Navegação por Expedição — Ida vs. Volta</span><button class="info-icon" data-info="infoNavChart">i</button></div>
+          <div class="panel-sub" data-i18n="navChartSub">Horas de navegação de ida e de volta, na ordem cronológica das expedições.</div>
+          <div class="chart-wrap" style="height:320px;"><canvas id="chartNav"></canvas></div>
+        </div>
+        <div class="panel" id="navHighlightPanel" style="display:none;">
+          <div class="panel-title"><span data-i18n="navHighlightTitle">Destaques Operacionais</span></div>
+          <div id="navHighlightBody"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><span data-i18n="navTableTitle">Detalhamento por Expedição</span></div>
+          <table><thead><tr>
+            <th data-i18n="colExp">Expedição</th><th data-i18n="colMun">Município / Comunidade</th>
+            <th data-i18n="navColDias">Dias</th><th data-i18n="navColIda">Ida</th><th data-i18n="navColVolta">Volta</th><th data-i18n="navColNota">Observação</th>
+          </tr></thead><tbody id="navTableBody"></tbody></table>
         </div>
       </div>
     </div>
@@ -494,6 +541,15 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
             </table>
           </section>
 
+          <section class="report-section" id="reportS7Section" style="display:none;">
+            <h2>7. <span data-i18n="reportS7">Pacientes Únicos Atendidos (Sistema Hospitalar)</span></h2>
+            <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;" data-i18n="reportS7Note">Dado do sistema de gestão hospitalar (contagem de pacientes únicos no ano) — fonte independente da planilha de expedições do barco.</p>
+            <table>
+              <thead><tr><th data-i18n="colAno">Ano</th><th data-i18n="reportColAtendimentos">Atendimentos</th><th data-i18n="pacientesL">Pacientes Únicos</th></tr></thead>
+              <tbody id="reportPatientsBody"></tbody>
+            </table>
+          </section>
+
           <div class="report-doc-footer">
             <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: __GENERATED_AT__</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
@@ -512,6 +568,48 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
 function showErr(msg){ const b=document.getElementById('errBanner'); b.style.display='block'; b.textContent='⚠ '+msg; }
 window.addEventListener('error', e=>{ showErr('Erro no painel: ' + (e.message||'erro desconhecido') + ' — recarregue a página.'); });
 function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+function loadCss(href){ return new Promise((res,rej)=>{ const l=document.createElement('link'); l.rel='stylesheet'; l.href=href; l.onload=res; l.onerror=rej; document.head.appendChild(l); }); }
+async function ensureMapLibre(){
+  if(window.maplibregl) return true;
+  try{ await loadCss('https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.css'); }
+  catch(e){ try{ await loadCss('https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css'); }catch(e2){} }
+  const sources=['https://cdn.jsdelivr.net/npm/maplibre-gl@3.6.2/dist/maplibre-gl.js','https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js'];
+  for(const src of sources){ try{ await loadScript(src); if(window.maplibregl) return true; }catch(e){} }
+  return false;
+}
+// Coordenadas aproximadas (lat, lng) dos municípios/comunidades já visitados. Mantida à mão —
+// se um novo município aparecer na planilha e não tiver coordenada aqui, ele simplesmente não
+// aparece no mapa (sem quebrar nada). Manaus é a base do barco.
+const MUN_COORDS = {
+  "Manaus": [-3.1019, -60.0250],
+  "Alvarães": [-3.2233, -64.8039],
+  "Anamã": [-3.5811, -61.3961],
+  "Anori": [-3.7728, -61.6442],
+  "Barreirinha": [-2.7906, -57.0669],
+  "Belém": [-1.4558, -48.5039],
+  "Beruri": [-3.8886, -61.3767],
+  "Boa Vista Do Ramos": [-2.9989, -57.5989],
+  "Borba": [-4.3878, -59.5947],
+  "Caapiranga": [-3.6667, -61.7667],
+  "Careiro Castanho": [-3.8322, -60.1875],
+  "Careiro da Várzea": [-3.2075, -59.8253],
+  "Codajás": [-3.8367, -62.0603],
+  "Itapiranga": [-2.7411, -58.0161],
+  "Manacapuru": [-3.2997, -60.6206],
+  "Manaquiri": [-3.4636, -60.3500],
+  "Nhamundá": [-2.1875, -56.7136],
+  "Novo Airão": [-2.6203, -60.9367],
+  "Novo Aripuanã": [-5.1256, -60.3808],
+  "Novo Remanso I": [-3.2183, -59.0258],
+  "Novo Remanso II": [-3.2183, -59.0258],
+  "Parintins": [-2.6283, -56.7358],
+  "Silves": [-2.8125, -58.2536],
+  "São Sebastião Do Uatumã": [-2.5289, -57.7397],
+  "Tefé": [-3.3542, -64.7108],
+  "Urucará": [-2.5364, -57.7597],
+  "Urucurituba": [-2.6844, -57.6691]
+};
+
 async function ensureChart(){
   if(window.Chart) return true;
   const sources=['https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js','https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js','https://unpkg.com/chart.js@4.4.4/dist/chart.umd.min.js'];
@@ -579,6 +677,18 @@ const EXAMS_BY_YEAR = __EXAMS_BY_YEAR__;
   });
 })();
 const GENERATED_AT = "__GENERATED_AT__";
+
+// Dados anuais do sistema hospitalar (relatório Wareline), não vêm da planilha de expedições do
+// barco — são o total de pacientes ÚNICOS e atendimentos do ano inteiro no sistema. Atualize esta
+// lista à mão sempre que receber um novo relatório em PDF (ex: quando os números de 2026 chegarem).
+const ANNUAL_PATIENT_STATS = {
+  2025: { atendimentos: 30739, pacientes: 21068 }
+};
+
+// Dados de navegação (horários de saída/chegada, comunidades visitadas, horas de ida/volta) —
+// vêm de relatórios de viagem, não da planilha de expedições. Chave: "ano_numeroExpedicao".
+// Atualize à mão quando novas expedições acontecerem.
+const NAVIGATION_DATA = {"2025_2": {"comunidade": "Manaquiri", "diasTotal": 6, "idaMin": 390, "voltaMin": 230, "extraMin": 0, "nota": null}, "2025_3": {"comunidade": "Novo Airão – Comunidade Bom Jesus", "diasTotal": 7, "idaMin": 855, "voltaMin": 780, "extraMin": 0, "nota": null}, "2025_4": {"comunidade": "Manacapuru – Comunidade Jacaré", "diasTotal": 6, "idaMin": 805, "voltaMin": 494, "extraMin": 0, "nota": null}, "2025_5": {"comunidade": "Anori – Comunidade Liberdade", "diasTotal": 7, "idaMin": 1335, "voltaMin": 750, "extraMin": 0, "nota": null}, "2025_6": {"comunidade": "Codajás – Comunidade Murituba / Urucurizinho", "diasTotal": 7, "idaMin": 1880, "voltaMin": 870, "extraMin": 0, "nota": "Rota com 2 comunidades: Murituba e Urucurizinho"}, "2025_7": {"comunidade": "Itacoatiara – Novo Remanso", "diasTotal": 7, "idaMin": 390, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2025_8": {"comunidade": "Itacoatiara – Novo Remanso", "diasTotal": 8, "idaMin": 430, "voltaMin": 660, "extraMin": 0, "nota": null}, "2025_9": {"comunidade": "Urucará – Comunidade Castanhal", "diasTotal": 6, "idaMin": 995, "voltaMin": 1780, "extraMin": 0, "nota": null}, "2025_10": {"comunidade": "Urucurituba – Comunidade Itapeaçu", "diasTotal": 7, "idaMin": 750, "voltaMin": 1120, "extraMin": 0, "nota": null}, "2025_11": {"comunidade": "Anamã", "diasTotal": 12, "idaMin": 1045, "voltaMin": 605, "extraMin": 0, "nota": null}, "2025_12": {"comunidade": "Parintins", "diasTotal": 7, "idaMin": 1440, "voltaMin": 2040, "extraMin": 0, "nota": null}, "2025_13": {"comunidade": "Barreirinha – Distrito Terra Preta", "diasTotal": 8, "idaMin": 1150, "voltaMin": 2145, "extraMin": 480, "nota": "8h inoperante aguardando peça (35h45 líquido de 43h45 bruto)"}, "2025_14": {"comunidade": "Nhamundá – Comunidade Juruá", "diasTotal": 8, "idaMin": 1500, "voltaMin": 2430, "extraMin": 1020, "nota": "17h encalhado (40h30 líquido de 57h30 bruto)"}, "2025_15": {"comunidade": "Beruri – Comunidade Itália", "diasTotal": 7, "idaMin": 1160, "voltaMin": 870, "extraMin": 0, "nota": null}, "2025_16": {"comunidade": "Boa Vista do Ramos – Comunidade Santana", "diasTotal": 7, "idaMin": 960, "voltaMin": 1605, "extraMin": 0, "nota": null}, "2025_17": {"comunidade": "Careiro da Várzea – Comunidade Piracauera", "diasTotal": 6, "idaMin": 160, "voltaMin": 200, "extraMin": 0, "nota": null}, "2025_18": {"comunidade": "Careiro Castanho", "diasTotal": 5, "idaMin": 475, "voltaMin": 325, "extraMin": 0, "nota": null}, "2025_19": {"comunidade": "Silves – Comunidade São João da Ilha", "diasTotal": 7, "idaMin": 1080, "voltaMin": 1455, "extraMin": 0, "nota": null}, "2025_20": {"comunidade": "Beruri", "diasTotal": 7, "idaMin": 1440, "voltaMin": 755, "extraMin": 0, "nota": null}, "2025_21": {"comunidade": "Belém – Icoaraci", "diasTotal": 19, "idaMin": 8550, "voltaMin": 6640, "extraMin": 0, "nota": "Expedição excepcional fora da região usual do barco"}, "2025_22": {"comunidade": "Urucurituba", "diasTotal": 7, "idaMin": 810, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2025_23": {"comunidade": "Caapiranga", "diasTotal": 7, "idaMin": 960, "voltaMin": 660, "extraMin": 0, "nota": null}, "2026_24": {"comunidade": "Manacapuru", "diasTotal": 6, "idaMin": 1120, "voltaMin": 750, "extraMin": 0, "nota": null}, "2026_25": {"comunidade": "Itapiranga", "diasTotal": 7, "idaMin": 1170, "voltaMin": 1635, "extraMin": 0, "nota": null}, "2026_26": {"comunidade": "Silves", "diasTotal": 7, "idaMin": 900, "voltaMin": 1561, "extraMin": 0, "nota": null}, "2026_27": {"comunidade": "São Sebastião do Uatumã", "diasTotal": 6, "idaMin": 1010, "voltaMin": 1500, "extraMin": 0, "nota": null}, "2026_28": {"comunidade": "Novo Aripuanã", "diasTotal": 6, "idaMin": 2340, "voltaMin": 1620, "extraMin": 0, "nota": null}, "2026_EXTRA": {"comunidade": "Anamã", "diasTotal": 5, "idaMin": 1000, "voltaMin": 630, "extraMin": 0, "nota": null}, "2026_29": {"comunidade": "Tefé (Comunidade Caimbé)", "diasTotal": 21, "idaMin": 3120, "voltaMin": 1650, "extraMin": 0, "nota": "Expedição combinada Tefé/Alvarães, com etapas intermediárias entre as duas"}, "2026_30": {"comunidade": "Alvarães", "diasTotal": 21, "idaMin": 360, "voltaMin": 90, "extraMin": 0, "nota": "Etapas dentro da expedição combinada Tefé/Alvarães (Caimbé→Tefé, Tefé→Alvarães, Alvarães→Tefé)"}, "2026_31": {"comunidade": "Borba", "diasTotal": 6, "idaMin": 1110, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2026_32": {"comunidade": "Beruri", "diasTotal": 7, "idaMin": 1080, "voltaMin": 630, "extraMin": 0, "nota": null}, "2026_33": {"comunidade": "Parintins", "diasTotal": 7, "idaMin": 1170, "voltaMin": 2220, "extraMin": 0, "nota": null}, "2026_34": {"comunidade": "Urucará", "diasTotal": 6, "idaMin": 1035, "voltaMin": 1799, "extraMin": 0, "nota": null}, "2026_35": {"comunidade": "Anori", "diasTotal": 7, "idaMin": 1290, "voltaMin": 630, "extraMin": 0, "nota": null}};
 
 const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
 const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES'};
@@ -766,6 +876,35 @@ const I18N = {
   catAlimentacao:"Alimentação",
   pacientesL:"Pacientes Únicos Atendidos",
   pacientesNA:"não registrado neste período na planilha",
+  colAno:"Ano",
+  reportColAtendimentos:"Atendimentos",
+  reportS7:"Pacientes Únicos Atendidos (Sistema Hospitalar)",
+  reportS7Note:"Dado do sistema de gestão hospitalar (contagem de pacientes únicos no ano) — fonte independente da planilha de expedições do barco.",
+  navNavegacao:"Navegação",
+  navBigHoras:"Horas Navegando",
+  navBigDias:"Média de Dias por Expedição",
+  navBigIncidente:"Horas Perdidas (Incidentes)",
+  navBigKm:"Distância Percorrida (estimada)",
+  navMn:"milhas náuticas",
+  navChartTitle:"Navegação por Expedição — Ida vs. Volta",
+  navChartSub:"Horas de navegação de ida e de volta, na ordem cronológica das expedições.",
+  infoNavChart:"Cada barra mostra quantas horas o barco navegou na ida e na volta daquela expedição. Diferenças grandes entre ida e volta podem indicar corrente do rio, parada em mais de uma comunidade, ou algum imprevisto operacional.",
+  navHighlightTitle:"Destaques Operacionais",
+  navTableTitle:"Detalhamento por Expedição",
+  navColDias:"Dias",
+  navColIda:"Ida",
+  navColVolta:"Volta",
+  navColNota:"Observação",
+  tripInfoTitle:"Viagens da Expedição",
+  tripInfoSub:"Tempo de navegação do barco (dados de horário de saída e chegada) — veja o menu Navegação para o detalhamento completo.",
+  infoTripInfo:"Resumo do tempo que o barco passa navegando, calculado a partir dos horários de saída e chegada de cada expedição. * A distância usa o tempo real de navegação de cada expedição multiplicado por uma velocidade média de 14,15 km/h — calibrada a partir de 2 destinos com distância fluvial real conhecida (Tefé e Novo Aripuanã). Como usa o tempo real, essa estimativa já reflete as curvas do rio, ao contrário de uma simples distância em linha reta no mapa.",
+  navLongest:"Expedição mais longa em navegação",
+  navMostIncident:"Expedição com mais tempo de parada",
+  navMapTitle:"Mapa das Expedições",
+  navMapSub:"Clique num ponto para ver as expedições, datas e horas de navegação daquele local.",
+  infoNavMap:"Mapa com os municípios/comunidades já visitados pelo barco. Os pontos são posições aproximadas — clique em qualquer um para ver o histórico de expedições, datas e horas de navegação daquele local.",
+  navMapExpeditions:"Expedições",
+  navMapLoadError:"Não foi possível carregar o mapa (sem conexão com a internet no momento).",
   catInternacao:"Internação Clínica/Cirúrgica",
   voyageSpecNote:"Passe o mouse em qualquer parada para ver as especialidades daquela expedição",
   voyageExamNote:"Passe o mouse em qualquer parada para ver os exames daquela expedição",
@@ -911,6 +1050,35 @@ const I18N = {
   catAlimentacao:"Meals",
   pacientesL:"Unique Patients Served",
   pacientesNA:"not recorded for this period in the spreadsheet",
+  colAno:"Year",
+  reportColAtendimentos:"Attendances",
+  reportS7:"Unique Patients Served (Hospital System)",
+  reportS7Note:"Data from the hospital management system (unique patient count for the year) — a source independent of the boat's expedition spreadsheet.",
+  navNavegacao:"Navigation",
+  navBigHoras:"Hours Navigated",
+  navBigDias:"Average Days per Expedition",
+  navBigIncidente:"Hours Lost (Incidents)",
+  navBigKm:"Distance Traveled (estimated)",
+  navMn:"nautical miles",
+  navChartTitle:"Navigation by Expedition — Outbound vs. Return",
+  navChartSub:"Outbound and return navigation hours, in chronological order of expeditions.",
+  infoNavChart:"Each bar shows how many hours the boat navigated outbound and on the return of that expedition. Large differences between the two can indicate river current, a stop at more than one community, or an operational incident.",
+  navHighlightTitle:"Operational Highlights",
+  navTableTitle:"Expedition Breakdown",
+  navColDias:"Days",
+  navColIda:"Outbound",
+  navColVolta:"Return",
+  navColNota:"Note",
+  tripInfoTitle:"Expedition Travel",
+  tripInfoSub:"The boat's navigation time (based on departure/arrival times) — see the Navigation menu for the full breakdown.",
+  infoTripInfo:"Summary of how much time the boat spends navigating, calculated from each expedition's departure and arrival times. * Distance is a straight-line estimate (Manaus to each municipality, round trip) — the actual river distance is greater, since the river winds.",
+  navLongest:"Longest expedition by navigation time",
+  navMostIncident:"Expedition with the most downtime",
+  navMapTitle:"Expedition Map",
+  navMapSub:"Click a point to see the expeditions, dates, and navigation hours for that location.",
+  infoNavMap:"Map of the municipalities/communities already visited by the boat. Points are approximate positions — click any of them to see the expedition history, dates, and navigation hours for that location.",
+  navMapExpeditions:"Expeditions",
+  navMapLoadError:"Could not load the map (no internet connection at the moment).",
   catInternacao:"Clinical/Surgical Hospitalization",
   voyageSpecNote:"Hover over any stop to see the specialties from that expedition",
   voyageExamNote:"Hover over any stop to see the exams from that expedition",
@@ -1056,6 +1224,35 @@ const I18N = {
   catAlimentacao:"Mahlzeiten",
   pacientesL:"Betreute Einzelpatienten",
   pacientesNA:"für diesen Zeitraum nicht in der Tabelle erfasst",
+  colAno:"Jahr",
+  reportColAtendimentos:"Behandlungen",
+  reportS7:"Betreute Einzelpatienten (Krankenhaussystem)",
+  reportS7Note:"Daten aus dem Krankenhausverwaltungssystem (Anzahl eindeutiger Patienten im Jahr) — eine von der Expeditionstabelle des Bootes unabhängige Quelle.",
+  navNavegacao:"Navigation",
+  navBigHoras:"Navigationsstunden",
+  navBigDias:"Durchschnittliche Tage pro Expedition",
+  navBigIncidente:"Verlorene Stunden (Zwischenfälle)",
+  navBigKm:"Zurückgelegte Strecke (geschätzt)",
+  navMn:"Seemeilen",
+  navChartTitle:"Navigation pro Expedition — Hin- vs. Rückfahrt",
+  navChartSub:"Navigationsstunden der Hin- und Rückfahrt, in chronologischer Reihenfolge der Expeditionen.",
+  infoNavChart:"Jeder Balken zeigt, wie viele Stunden das Boot bei der Hin- und Rückfahrt dieser Expedition navigiert ist. Große Unterschiede können auf Flussströmung, einen Halt an mehr als einer Gemeinde oder einen Betriebsvorfall hinweisen.",
+  navHighlightTitle:"Betriebliche Highlights",
+  navTableTitle:"Aufschlüsselung nach Expedition",
+  navColDias:"Tage",
+  navColIda:"Hinfahrt",
+  navColVolta:"Rückfahrt",
+  navColNota:"Anmerkung",
+  tripInfoTitle:"Expeditionsreisen",
+  tripInfoSub:"Die Navigationszeit des Bootes (basierend auf Abfahrts-/Ankunftszeiten) — siehe Menü Navigation für die vollständige Aufschlüsselung.",
+  infoTripInfo:"Zusammenfassung der Navigationszeit des Bootes, berechnet aus den Abfahrts- und Ankunftszeiten jeder Expedition — eine von der Behandlungstabelle unabhängige Quelle.",
+  navLongest:"Längste Expedition nach Navigationszeit",
+  navMostIncident:"Expedition mit der meisten Ausfallzeit",
+  navMapTitle:"Expeditionskarte",
+  navMapSub:"Klicken Sie auf einen Punkt, um die Expeditionen, Daten und Navigationsstunden für diesen Ort zu sehen.",
+  infoNavMap:"Karte der bereits vom Boot besuchten Gemeinden/Gemeinschaften. Die Punkte sind ungefähre Positionen — klicken Sie auf einen davon, um die Expeditionsgeschichte, Daten und Navigationsstunden für diesen Ort zu sehen.",
+  navMapExpeditions:"Expeditionen",
+  navMapLoadError:"Die Karte konnte nicht geladen werden (derzeit keine Internetverbindung).",
   catInternacao:"Klinische/Chirurgische Einweisung",
   voyageSpecNote:"Fahren Sie über einen Stopp, um die Fachrichtungen dieser Expedition zu sehen",
   voyageExamNote:"Fahren Sie über einen Stopp, um die Untersuchungen dieser Expedition zu sehen",
@@ -1201,6 +1398,35 @@ const I18N = {
   catAlimentacao:"Alimentación",
   pacientesL:"Pacientes Únicos Atendidos",
   pacientesNA:"no registrado en este período en la planilla",
+  colAno:"Año",
+  reportColAtendimentos:"Atenciones",
+  reportS7:"Pacientes Únicos Atendidos (Sistema Hospitalario)",
+  reportS7Note:"Dato del sistema de gestión hospitalaria (conteo de pacientes únicos en el año) — fuente independiente de la planilla de expediciones del barco.",
+  navNavegacao:"Navegación",
+  navBigHoras:"Horas Navegando",
+  navBigDias:"Promedio de Días por Expedición",
+  navBigIncidente:"Horas Perdidas (Incidentes)",
+  navBigKm:"Distancia Recorrida (estimada)",
+  navMn:"millas náuticas",
+  navChartTitle:"Navegación por Expedición — Ida vs. Vuelta",
+  navChartSub:"Horas de navegación de ida y vuelta, en orden cronológico de las expediciones.",
+  infoNavChart:"Cada barra muestra cuántas horas navegó el barco de ida y de vuelta en esa expedición. Diferencias grandes entre ida y vuelta pueden indicar corriente del río, parada en más de una comunidad, o algún incidente operativo.",
+  navHighlightTitle:"Destacados Operativos",
+  navTableTitle:"Detalle por Expedición",
+  navColDias:"Días",
+  navColIda:"Ida",
+  navColVolta:"Vuelta",
+  navColNota:"Observación",
+  tripInfoTitle:"Viajes de la Expedición",
+  tripInfoSub:"Tiempo de navegación del barco (datos de horario de salida y llegada) — vea el menú Navegación para el detalle completo.",
+  infoTripInfo:"Resumen del tiempo que el barco pasa navegando, calculado a partir de los horarios de salida y llegada de cada expedición — dato independiente de la planilla de atenciones.",
+  navLongest:"Expedición más larga en navegación",
+  navMostIncident:"Expedición con más tiempo de parada",
+  navMapTitle:"Mapa de las Expediciones",
+  navMapSub:"Haga clic en un punto para ver las expediciones, fechas y horas de navegación de ese lugar.",
+  infoNavMap:"Mapa de los municipios/comunidades ya visitados por el barco. Los puntos son posiciones aproximadas — haga clic en cualquiera para ver el historial de expediciones, fechas y horas de navegación de ese lugar.",
+  navMapExpeditions:"Expediciones",
+  navMapLoadError:"No se pudo cargar el mapa (sin conexión a internet en este momento).",
   catInternacao:"Internación Clínica/Quirúrgica",
   voyageSpecNote:"Pase el mouse sobre cualquier parada para ver las especialidades de esa expedición",
   voyageExamNote:"Pase el mouse sobre cualquier parada para ver los exámenes de esa expedición",
@@ -1276,7 +1502,7 @@ function applyI18n(){
   if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
   const footerEl = document.querySelector('[data-i18n="footerText"]');
   if(footerEl && t.footerText) footerEl.textContent = t.footerText.replace('{date}', GENERATED_AT);
-  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderChips(); renderInsightsAuto(); }
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderChips(); renderInsightsAuto(); renderNavegacao(); }
 }
 
 /* ================= mobile nav toggle ================= */
@@ -1345,6 +1571,7 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     item.classList.add('active');
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('visible'));
     document.getElementById('view-'+item.dataset.view).classList.add('visible');
+    if(item.dataset.view==='navegacao') renderNavMap();
   });
 });
 
@@ -1356,7 +1583,7 @@ function renderYearSelector(){
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     YEAR = b.dataset.year;
     renderYearSelector();
-    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderInsightsAuto();
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderInsightsAuto(); renderNavegacao();
     writeUrlState();
   }));
 }
@@ -1399,6 +1626,202 @@ function renderYoyBadge(elId, metricKey){
   el.className = 'delta ' + (up?'up':'down');
   el.innerHTML = `${up?'▲':'▼'} ${Math.abs(d.pct).toFixed(1)}% <span style="color:var(--muted-2);font-weight:500;">${t.yoyVs} ${d.prevYear}</span>`;
 }
+function getNavData(exp){ return NAVIGATION_DATA[`${exp.year}_${exp.n}`] || null; }
+function navMinToHours(min){ return min/60; }
+
+function haversineKm(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const dLat = (lat2-lat1) * Math.PI/180;
+  const dLon = (lon2-lon1) * Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+// Velocidade média de navegação, calibrada a partir dos 2 destinos com distância fluvial real
+// conhecida (Tefé e Novo Aripuanã): dividindo a distância real (ida+volta) pelo tempo real de
+// navegação (ida+volta) registrado para essas expedições. As duas contas bateram quase exatamente
+// (14,09 km/h e 14,21 km/h) — sinal de que é uma velocidade média confiável para o barco:
+//   Tefé:            (560×2) km ÷ (52h + 27,5h)  = 14,09 km/h
+//   Novo Aripuanã:    (469×2) km ÷ (39h + 27h)    = 14,21 km/h
+//   Calibrada:        média das duas               = 14,15 km/h (7,64 nós)
+// Com essa velocidade, a distância de qualquer expedição é estimada a partir do tempo REAL que ela
+// levou navegando (que já embute as curvas do rio) — não da posição geográfica em linha reta.
+const AVG_SPEED_KMH = 14.15;
+function kmToNm(km){ return km * 0.539957; }
+function estimateKmForExpeditions(exps){
+  const manaus = MUN_COORDS["Manaus"];
+  return exps.reduce((total, e)=>{
+    const nav = getNavData(e);
+    if(nav){
+      const horas = (nav.idaMin + nav.voltaMin + nav.extraMin) / 60;
+      return total + horas * AVG_SPEED_KMH;
+    }
+    // sem dado de navegação (horário de saída/chegada) para essa expedição — cai para a
+    // estimativa em linha reta como último recurso, só para não deixar a expedição de fora
+    const c = MUN_COORDS[e.mun];
+    if(!c) return total;
+    return total + haversineKm(manaus[0], manaus[1], c[0], c[1]) * 2;
+  }, 0);
+}
+
+function renderTripInfo(){
+  const t = I18N[CUR_LANG];
+  const panel = document.getElementById('tripInfoPanel');
+  const exp = currentExpeditions();
+  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav);
+  if(!withNav.length){ panel.style.display='none'; return; }
+  panel.style.display = '';
+  const totalMin = withNav.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+x.nav.extraMin,0);
+  const avgDias = withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length;
+  const kmEst = estimateKmForExpeditions(exp);
+  document.getElementById('tripInfoRow').innerHTML = `
+    <div>
+      <div style="font-size:0.62rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.navBigHoras}</div>
+      <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--navy);">${fmtAvg(navMinToHours(totalMin))}h</div>
+    </div>
+    <div>
+      <div style="font-size:0.62rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.navBigDias}</div>
+      <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--navy);">${fmtAvg(avgDias)}</div>
+    </div>
+    <div>
+      <div style="font-size:0.62rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.navBigKm}</div>
+      <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--navy);">${fmt(kmEst)} km</div>
+      <div class="mono" style="font-size:0.72rem;color:var(--muted);">${fmt(kmToNm(kmEst))} ${t.navMn}<span style="color:var(--muted-2);"> *</span></div>
+    </div>`;
+}
+
+let mapInstance = null;
+let mapMarkers = [];
+async function renderNavMap(){
+  const container = document.getElementById('mapAmazonas');
+  if(!container) return;
+  const ok = await ensureMapLibre();
+  const t = I18N[CUR_LANG];
+  if(!ok){
+    container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:0.85rem;text-align:center;padding:20px;">${t.navMapLoadError}</div>`;
+    return;
+  }
+
+  // group only the expeditions from the currently selected year (or all, if 'all' is selected)
+  const byMun = {};
+  currentExpeditions().forEach(e=>{
+    const key = e.mun;
+    if(!byMun[key]) byMun[key] = [];
+    byMun[key].push(e);
+  });
+
+  function popupHtml(mun, exps){
+    const rows = exps.map(e=>{
+      const nav = getNavData(e);
+      const navText = nav ? ` · ${fmtAvg(navMinToHours(nav.idaMin))}h${t.navColIda.slice(0,1).toLowerCase()} / ${fmtAvg(navMinToHours(nav.voltaMin))}h${t.navColVolta.slice(0,1).toLowerCase()}` : '';
+      const comText = nav && nav.comunidade && nav.comunidade !== mun ? ` — ${nav.comunidade}` : '';
+      return `<div style="padding:3px 0;border-bottom:1px solid #eee;font-size:0.78rem;">#${e.n}${comText}<br><span style="color:#6b7688;">${e.data}${navText}</span></div>`;
+    }).join('');
+    return `<div style="max-width:220px;"><strong>${mun}</strong><div style="font-size:0.7rem;color:#6b7688;margin-bottom:4px;">${exps.length} ${t.navMapExpeditions.toLowerCase()}</div>${rows}</div>`;
+  }
+  function addMarker(coordLatLng, html, color, size){
+    const el = document.createElement('div');
+    el.style.cssText = `background:${color};width:${size}px;height:${size}px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,0.45);cursor:pointer;`;
+    const marker = new maplibregl.Marker({element: el})
+      .setLngLat([coordLatLng[1], coordLatLng[0]]) // MapLibre expects [lng, lat]
+      .setPopup(new maplibregl.Popup({offset:14}).setHTML(html))
+      .addTo(mapInstance);
+    return marker;
+  }
+
+  if(!mapInstance){
+    mapInstance = new maplibregl.Map({
+      container: 'mapAmazonas',
+      style: 'https://tiles.openfreemap.org/styles/liberty',
+      center: [-60.5, -3.8],
+      zoom: 4.6,
+      pitch: 55,           // tilted 3D perspective
+      bearing: -8,
+      maxBounds: [[-76, -19], [-44, 7]],  // Região Norte do Brasil
+      scrollZoom: false,
+      attributionControl: true
+    });
+    mapInstance.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'top-right');
+    mapInstance.on('load', ()=>{
+      addMarker(MUN_COORDS["Manaus"], '<strong>Manaus</strong><br>Base do Barco Hospital', '#b8934a', 16);
+    });
+  } else {
+    mapMarkers.forEach(m=>m.remove());
+    mapMarkers = [];
+  }
+
+  const attachMunMarkers = ()=>{
+    Object.entries(byMun).forEach(([mun, exps])=>{
+      const coord = MUN_COORDS[mun];
+      if(!coord) return;
+      const marker = addMarker(coord, popupHtml(mun, exps), '#0f2a4a', 13);
+      mapMarkers.push(marker);
+    });
+  };
+  if(mapInstance.loaded()) attachMunMarkers();
+  else mapInstance.once('load', attachMunMarkers);
+
+  setTimeout(()=>{ if(mapInstance) mapInstance.resize(); }, 150);
+}
+
+function renderNavegacao(){
+  if(document.getElementById('mapAmazonas')) renderNavMap();
+  const t = I18N[CUR_LANG];
+  const exp = [...currentExpeditions()].sort((a,b)=> a.year-b.year || (parseFloat(a.n)||0)-(parseFloat(b.n)||0));
+  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav);
+
+  if(!withNav.length){
+    document.getElementById('bigNavHoras').textContent = '—';
+    document.getElementById('bigNavDias').textContent = '—';
+    document.getElementById('bigNavIncidente').textContent = '—';
+    document.getElementById('navTableBody').innerHTML = '';
+    document.getElementById('navHighlightPanel').style.display = 'none';
+    destroyIfExists(chartNav);
+    return;
+  }
+
+  const totalMin = withNav.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+x.nav.extraMin,0);
+  const incidentMin = withNav.reduce((a,x)=>a+x.nav.extraMin,0);
+  const avgDias = withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length;
+  document.getElementById('bigNavHoras').textContent = fmtAvg(navMinToHours(totalMin))+'h';
+  document.getElementById('bigNavDias').textContent = fmtAvg(avgDias);
+  document.getElementById('bigNavIncidente').textContent = fmtAvg(navMinToHours(incidentMin))+'h';
+
+  // table
+  document.getElementById('navTableBody').innerHTML = withNav.map(({e,nav})=>`
+    <tr><td>${e.mun} #${e.n}</td><td>${nav.comunidade}</td><td class="mono">${nav.diasTotal}</td>
+    <td class="mono">${fmtAvg(navMinToHours(nav.idaMin))}h</td><td class="mono">${fmtAvg(navMinToHours(nav.voltaMin))}h</td>
+    <td style="font-size:0.78rem;color:var(--muted);">${nav.nota||''}</td></tr>`).join('');
+
+  // highlights: longest total nav time + most incident time
+  const longest = [...withNav].sort((a,b)=>(b.nav.idaMin+b.nav.voltaMin+b.nav.extraMin)-(a.nav.idaMin+a.nav.voltaMin+a.nav.extraMin))[0];
+  const incidentOnes = withNav.filter(x=>x.nav.extraMin>0).sort((a,b)=>b.nav.extraMin-a.nav.extraMin);
+  const hlPanel = document.getElementById('navHighlightPanel');
+  if(longest || incidentOnes.length){
+    hlPanel.style.display = '';
+    let html = `<div style="margin-bottom:10px;"><span style="color:var(--muted);font-size:0.8rem;">${t.navLongest}:</span> <strong>${longest.e.mun} #${longest.e.n}</strong> — ${fmtAvg(navMinToHours(longest.nav.idaMin+longest.nav.voltaMin+longest.nav.extraMin))}h (${longest.nav.diasTotal} dias)</div>`;
+    if(incidentOnes.length){
+      html += `<div><span style="color:var(--muted);font-size:0.8rem;">${t.navMostIncident}:</span> <strong>${incidentOnes[0].e.mun} #${incidentOnes[0].e.n}</strong> — ${fmtAvg(navMinToHours(incidentOnes[0].nav.extraMin))}h (${incidentOnes[0].nav.nota||''})</div>`;
+    }
+    document.getElementById('navHighlightBody').innerHTML = html;
+  } else { hlPanel.style.display = 'none'; }
+
+  // chart
+  destroyIfExists(chartNav);
+  if(window.HAS_CHART && document.getElementById('chartNav')){
+    const ctx = document.getElementById('chartNav').getContext('2d');
+    chartNav = new Chart(ctx,{type:'bar',
+      data:{labels:withNav.map(({e})=>`${e.mun} #${e.n}`),
+        datasets:[
+          {label:t.navColIda, data:withNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:'#0f2a4a', borderRadius:4, maxBarThickness:16},
+          {label:t.navColVolta, data:withNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:'#b8934a', borderRadius:4, maxBarThickness:16}
+        ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}}},
+        scales:{x:{ticks:{font:{size:8},maxRotation:60,minRotation:60},grid:{display:false}},y:{title:{display:true,text:'h',font:{size:9}},grid:{color:'rgba(15,42,74,0.05)'}}}}
+    });
+    markLoaded('chartNav');
+  }
+}
+
 function renderDashboard(){
   const exp = currentExpeditions();
   const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude');
@@ -1406,6 +1829,7 @@ function renderDashboard(){
   document.getElementById('bigSaude').textContent = fmt(totalSaude);
   renderYoyBadge('bigGeralDelta', 'geral');
   renderYoyBadge('bigSaudeDelta', 'saude');
+  renderTripInfo();
 }
 
 function renderVoyage(){
@@ -1495,7 +1919,7 @@ function openExpeditionModal(exp){
   overlay.id = 'expModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <div>
           <div class="serif" style="font-size:1.25rem;font-weight:600;color:var(--navy);">${exp.mun}</div>
@@ -1527,7 +1951,7 @@ function openExpeditionModal(exp){
   document.getElementById('expModalClose').addEventListener('click',()=>overlay.remove());
 }
 
-let chartArea, chartSpecialties, chartExamsBar, chartExamsDonut, chartTop10, chartExamsMini, chartBreakdown, chartCirEvol, chartCirTop10, chartExamAvg;
+let chartArea, chartSpecialties, chartExamsBar, chartExamsDonut, chartTop10, chartExamsMini, chartBreakdown, chartCirEvol, chartCirTop10, chartExamAvg, chartNav;
 let EXAM_AVG_MODE = 'geral';
 
 /* ================= tipo de gráfico selecionável (barra / linha / pizza) ================= */
@@ -1599,7 +2023,7 @@ function openLastExpeditionModal(){
   overlay.id = 'lastExpModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
@@ -2283,6 +2707,20 @@ function renderReport(){
   // exams
   const examSorted = Object.entries(currentExams()).sort((a,b)=>b[1]-a[1]);
   document.getElementById('reportExamBody').innerHTML = examSorted.map(([n,v])=>`<tr><td>${trExam(n)}</td><td class="mono">${fmt(v)}</td></tr>`).join('');
+
+  // annual hospital-system patient stats (separate data source, manually maintained)
+  const annualYears = Object.keys(ANNUAL_PATIENT_STATS).map(Number).sort();
+  const relevantAnnualYears = YEAR==='all' ? annualYears : annualYears.filter(y=>String(y)===String(YEAR));
+  const s7 = document.getElementById('reportS7Section');
+  if(relevantAnnualYears.length){
+    s7.style.display = '';
+    document.getElementById('reportPatientsBody').innerHTML = relevantAnnualYears.map(y=>{
+      const d = ANNUAL_PATIENT_STATS[y];
+      return `<tr><td>${y}</td><td class="mono">${fmt(d.atendimentos)}</td><td class="mono">${fmt(d.pacientes)}</td></tr>`;
+    }).join('');
+  } else {
+    s7.style.display = 'none';
+  }
 }
 
 function downloadCsv(filename, rows){
@@ -2391,6 +2829,9 @@ async function exportPdfDocument(){
   addSection(4, 'reportS4', 'reportRankBody', [t.colMun, t.colExp, t.colGeral]);
   addSection(5, 'reportS5', 'reportSpecBody', [t.reportColEspecialidade, t.reportColConsultas]);
   addSection(6, 'reportS6', 'reportExamBody', [t.reportColExame, t.colGeral]);
+  if(document.getElementById('reportS7Section').style.display !== 'none'){
+    addSection(7, 'reportS7', 'reportPatientsBody', [t.colAno, t.reportColAtendimentos, t.pacientesL]);
+  }
 
   const pageCount = doc.internal.getNumberOfPages();
   const footerText = document.querySelector('[data-i18n="footerText"]').textContent;
@@ -2543,6 +2984,7 @@ renderCirurgias();
 buildExamAvgChart();
 renderChips();
 renderInsightsAuto();
+renderNavegacao();
 
 renderReport();
 chartsInitialized = true;
