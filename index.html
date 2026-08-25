@@ -229,7 +229,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     <button class="nav-item" data-view="cirurgias"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20L14.5 9.5"/><path d="M13 5l6 6-2 2-6-6z"/><circle cx="6.5" cy="17.5" r="2.2"/></svg><span data-i18n="navCir">Cirurgias</span></button>
     <button class="nav-item" data-view="navegacao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polygon points="16,8 12,12 8,16 12,12" fill="currentColor" stroke="none"/></svg><span data-i18n="navNavegacao">Navegação</span></button>
     <button class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></button>
-    <button class="nav-item" data-view="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 14l.75 2.25L22 17l-2.25.75L19 20l-.75-2.25L16 17l2.25-.75L19 14z"/></svg><span data-i18n="navAI">Insights</span></button>
     <button class="nav-item" data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg><span data-i18n="navReport">Relatório</span></button>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-live"></div>
@@ -243,7 +242,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/08/2026 11:33</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 24/08/2026 22:45</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -257,6 +256,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <option value="en">🇬🇧 English</option>
           <option value="de">🇩🇪 Deutsch</option>
           <option value="es">🇪🇸 Español</option>
+          <option value="ru">🇷🇺 Русский</option>
         </select>
       </div>
     </div>
@@ -437,32 +437,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       </div>
     </div>
 
-    <div class="view" id="view-ai">
-      <div class="stack">
-        <div class="panel">
-          <div class="panel-title"><span data-i18n="insightsAutoTitle">Destaques Automáticos</span><button class="info-icon" data-info="infoInsightsAuto">i</button></div>
-          <div class="panel-sub" data-i18n="insightsAutoSub">Gerados a partir dos dados do período selecionado</div>
-          <ul class="insights-list" id="insightsList"></ul>
-        </div>
-        <div class="panel">
-          <div class="ai-head">
-            <div class="ai-orb"></div>
-            <div>
-              <div class="panel-title" style="margin-bottom:2px;"><span data-i18n="aiTitle">Assistente de Dados</span><button class="info-icon" data-info="infoAI">i</button></div>
-              <div class="panel-sub" data-i18n="aiSub" style="margin:0;">Pergunte sobre especialidades, exames, categorias ou municípios — cálculo instantâneo, sem depender de internet.</div>
-            </div>
-          </div>
-          <div class="ai-input-row">
-            <input type="text" id="aiInput" data-i18n-ph="aiPlaceholder" placeholder="Ex.: Qual a média de consultas cirúrgicas?">
-            <button id="aiAsk" data-i18n="aiAskBtn">Perguntar</button>
-          </div>
-          <div class="ai-chips" id="aiChips"></div>
-          <div id="aiAnswer"></div>
-          <div id="aiSourceBadge" style="display:none;margin-top:8px;font-size:0.7rem;letter-spacing:0.03em;"></div>
-        </div>
-      </div>
-    </div>
-
     <div class="view" id="view-report">
       <div class="stack">
         <div class="panel no-print">
@@ -551,14 +525,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/08/2026 11:33</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 24/08/2026 22:45</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/08/2026 11:33</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 24/08/2026 22:45</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -676,7 +650,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/08/2026 11:33";
+const GENERATED_AT = "24/08/2026 22:45";
 
 // Dados anuais do sistema hospitalar (relatório Wareline), não vêm da planilha de expedições do
 // barco — são o total de pacientes ÚNICOS e atendimentos do ano inteiro no sistema. Atualize esta
@@ -691,7 +665,7 @@ const ANNUAL_PATIENT_STATS = {
 const NAVIGATION_DATA = {"2025_2": {"comunidade": "Manaquiri", "diasTotal": 6, "idaMin": 390, "voltaMin": 230, "extraMin": 0, "nota": null}, "2025_3": {"comunidade": "Novo Airão – Comunidade Bom Jesus", "diasTotal": 7, "idaMin": 855, "voltaMin": 780, "extraMin": 0, "nota": null}, "2025_4": {"comunidade": "Manacapuru – Comunidade Jacaré", "diasTotal": 6, "idaMin": 805, "voltaMin": 494, "extraMin": 0, "nota": null}, "2025_5": {"comunidade": "Anori – Comunidade Liberdade", "diasTotal": 7, "idaMin": 1335, "voltaMin": 750, "extraMin": 0, "nota": null}, "2025_6": {"comunidade": "Codajás – Comunidade Murituba / Urucurizinho", "diasTotal": 7, "idaMin": 1880, "voltaMin": 870, "extraMin": 0, "nota": "Rota com 2 comunidades: Murituba e Urucurizinho"}, "2025_7": {"comunidade": "Itacoatiara – Novo Remanso", "diasTotal": 7, "idaMin": 390, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2025_8": {"comunidade": "Itacoatiara – Novo Remanso", "diasTotal": 8, "idaMin": 430, "voltaMin": 660, "extraMin": 0, "nota": null}, "2025_9": {"comunidade": "Urucará – Comunidade Castanhal", "diasTotal": 6, "idaMin": 995, "voltaMin": 1780, "extraMin": 0, "nota": null}, "2025_10": {"comunidade": "Urucurituba – Comunidade Itapeaçu", "diasTotal": 7, "idaMin": 750, "voltaMin": 1120, "extraMin": 0, "nota": null}, "2025_11": {"comunidade": "Anamã", "diasTotal": 12, "idaMin": 1045, "voltaMin": 605, "extraMin": 0, "nota": null}, "2025_12": {"comunidade": "Parintins", "diasTotal": 7, "idaMin": 1440, "voltaMin": 2040, "extraMin": 0, "nota": null}, "2025_13": {"comunidade": "Barreirinha – Distrito Terra Preta", "diasTotal": 8, "idaMin": 1150, "voltaMin": 2145, "extraMin": 480, "nota": "8h inoperante aguardando peça (35h45 líquido de 43h45 bruto)"}, "2025_14": {"comunidade": "Nhamundá – Comunidade Juruá", "diasTotal": 8, "idaMin": 1500, "voltaMin": 2430, "extraMin": 1020, "nota": "17h encalhado (40h30 líquido de 57h30 bruto)"}, "2025_15": {"comunidade": "Beruri – Comunidade Itália", "diasTotal": 7, "idaMin": 1160, "voltaMin": 870, "extraMin": 0, "nota": null}, "2025_16": {"comunidade": "Boa Vista do Ramos – Comunidade Santana", "diasTotal": 7, "idaMin": 960, "voltaMin": 1605, "extraMin": 0, "nota": null}, "2025_17": {"comunidade": "Careiro da Várzea – Comunidade Piracauera", "diasTotal": 6, "idaMin": 160, "voltaMin": 200, "extraMin": 0, "nota": null}, "2025_18": {"comunidade": "Careiro Castanho", "diasTotal": 5, "idaMin": 475, "voltaMin": 325, "extraMin": 0, "nota": null}, "2025_19": {"comunidade": "Silves – Comunidade São João da Ilha", "diasTotal": 7, "idaMin": 1080, "voltaMin": 1455, "extraMin": 0, "nota": null}, "2025_20": {"comunidade": "Beruri", "diasTotal": 7, "idaMin": 1440, "voltaMin": 755, "extraMin": 0, "nota": null}, "2025_21": {"comunidade": "Belém – Icoaraci", "diasTotal": 19, "idaMin": 8550, "voltaMin": 6640, "extraMin": 0, "nota": "Expedição excepcional fora da região usual do barco"}, "2025_22": {"comunidade": "Urucurituba", "diasTotal": 7, "idaMin": 810, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2025_23": {"comunidade": "Caapiranga", "diasTotal": 7, "idaMin": 960, "voltaMin": 660, "extraMin": 0, "nota": null}, "2026_24": {"comunidade": "Manacapuru", "diasTotal": 6, "idaMin": 1120, "voltaMin": 750, "extraMin": 0, "nota": null}, "2026_25": {"comunidade": "Itapiranga", "diasTotal": 7, "idaMin": 1170, "voltaMin": 1635, "extraMin": 0, "nota": null}, "2026_26": {"comunidade": "Silves", "diasTotal": 7, "idaMin": 900, "voltaMin": 1561, "extraMin": 0, "nota": null}, "2026_27": {"comunidade": "São Sebastião do Uatumã", "diasTotal": 6, "idaMin": 1010, "voltaMin": 1500, "extraMin": 0, "nota": null}, "2026_28": {"comunidade": "Novo Aripuanã", "diasTotal": 6, "idaMin": 2340, "voltaMin": 1620, "extraMin": 0, "nota": null}, "2026_EXTRA": {"comunidade": "Anamã", "diasTotal": 5, "idaMin": 1000, "voltaMin": 630, "extraMin": 0, "nota": null}, "2026_29": {"comunidade": "Tefé (Comunidade Caimbé)", "diasTotal": 21, "idaMin": 3120, "voltaMin": 1650, "extraMin": 0, "nota": "Expedição combinada Tefé/Alvarães, com etapas intermediárias entre as duas"}, "2026_30": {"comunidade": "Alvarães", "diasTotal": 21, "idaMin": 360, "voltaMin": 90, "extraMin": 0, "nota": "Etapas dentro da expedição combinada Tefé/Alvarães (Caimbé→Tefé, Tefé→Alvarães, Alvarães→Tefé)"}, "2026_31": {"comunidade": "Borba", "diasTotal": 6, "idaMin": 1110, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2026_32": {"comunidade": "Beruri", "diasTotal": 7, "idaMin": 1080, "voltaMin": 630, "extraMin": 0, "nota": null}, "2026_33": {"comunidade": "Parintins", "diasTotal": 7, "idaMin": 1170, "voltaMin": 2220, "extraMin": 0, "nota": null}, "2026_34": {"comunidade": "Urucará", "diasTotal": 6, "idaMin": 1035, "voltaMin": 1799, "extraMin": 0, "nota": null}, "2026_35": {"comunidade": "Anori", "diasTotal": 7, "idaMin": 1290, "voltaMin": 630, "extraMin": 0, "nota": null}};
 
 const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
-const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES'};
+const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES',ru:'ru-RU'};
 const fmt = n => Math.round(n).toLocaleString(LOCALE_MAP[CUR_LANG]||'pt-BR');
 const fmtAvg = n => (Math.round(n*10)/10).toLocaleString(LOCALE_MAP[CUR_LANG]||'pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1});
 function mergeObj(a,b){ const out={...a}; for(const k in b){ out[k]=(out[k]||0)+b[k]; } return out; }
@@ -762,13 +736,15 @@ const CAT_LABELS_I18N = {
   pt:["Consultas","Odontologia","Exames","Enfermagem","Farmácia","Oftalmologia","Procedimentos"],
   en:["Consultations","Dentistry","Exams","Nursing","Pharmacy","Ophthalmology","Procedures"],
   de:["Konsultationen","Zahnmedizin","Untersuchungen","Pflege","Apotheke","Augenheilkunde","Verfahren"],
-  es:["Consultas","Odontología","Exámenes","Enfermería","Farmacia","Oftalmología","Procedimientos"]
+  es:["Consultas","Odontología","Exámenes","Enfermería","Farmacia","Oftalmología","Procedimientos"],
+  ru:["Приёмы","Стоматология","Обследования","Сестринский уход","Аптека","Офтальмология","Процедуры"]
 };
 const MONTHS_I18N = {
   pt:["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],
   en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
   de:["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"],
-  es:["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+  es:["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"],
+  ru:["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"]
 };
 function monthLabels(){ return MONTHS_I18N[CUR_LANG] || MONTHS_I18N.pt; }
 function parseExpMonth(dataStr){
@@ -781,12 +757,14 @@ function parseExpMonth(dataStr){
 const SPEC_I18N = {
   en:{"Oftalmologia (Consulta)":"Ophthalmology (Consultation)","Clínico Geral":"General Practice","Consultas Cirúrgicas":"Surgical Consultations","Consulta Anestésica":"Anesthesia Consultation","Pediatria":"Pediatrics","Ginecologia":"Gynecology","Dermatologia":"Dermatology","Cardiologia":"Cardiology","Otorrinolaringologia":"Otolaryngology (ENT)","Ortopedia":"Orthopedics","Endocrinologia":"Endocrinology","Infectologia":"Infectious Disease","Geriatria":"Geriatrics","Neurologia":"Neurology","Reumatologia":"Rheumatology","Urologista":"Urology","Medicina Geral Comunidade":"Community General Medicine","Psiquiatria":"Psychiatry","Gastrologia":"Gastroenterology","Mastologia":"Mastology","Proctologista":"Proctology","Pneumologia":"Pulmonology","Oftalmologia (Consulta)":"Ophthalmology (Consultation)"},
   de:{"Oftalmologia (Consulta)":"Augenheilkunde (Konsultation)","Clínico Geral":"Allgemeinmedizin","Consultas Cirúrgicas":"Chirurgische Beratungen","Consulta Anestésica":"Anästhesieberatung","Pediatria":"Pädiatrie","Ginecologia":"Gynäkologie","Dermatologia":"Dermatologie","Cardiologia":"Kardiologie","Otorrinolaringologia":"Hals-Nasen-Ohren","Ortopedia":"Orthopädie","Endocrinologia":"Endokrinologie","Infectologia":"Infektiologie","Geriatria":"Geriatrie","Neurologia":"Neurologie","Reumatologia":"Rheumatologie","Urologista":"Urologie","Medicina Geral Comunidade":"Allgemeinmedizin (Gemeinde)","Psiquiatria":"Psychiatrie","Gastrologia":"Gastroenterologie","Mastologia":"Mastologie","Proctologista":"Proktologie","Pneumologia":"Pneumologie","Oftalmologia (Consulta)":"Augenheilkunde (Konsultation)"},
-  es:{"Oftalmologia (Consulta)":"Oftalmología (Consulta)","Clínico Geral":"Medicina General","Consultas Cirúrgicas":"Consultas Quirúrgicas","Consulta Anestésica":"Consulta de Anestesia","Pediatria":"Pediatría","Ginecologia":"Ginecología","Dermatologia":"Dermatología","Cardiologia":"Cardiología","Otorrinolaringologia":"Otorrinolaringología","Ortopedia":"Ortopedia","Endocrinologia":"Endocrinología","Infectologia":"Infectología","Geriatria":"Geriatría","Neurologia":"Neurología","Reumatologia":"Reumatología","Urologista":"Urología","Medicina Geral Comunidade":"Medicina General Comunitaria","Psiquiatria":"Psiquiatría","Gastrologia":"Gastroenterología","Mastologia":"Mastología","Proctologista":"Proctología","Pneumologia":"Neumología","Oftalmologia (Consulta)":"Oftalmología (Consulta)"}
+  es:{"Oftalmologia (Consulta)":"Oftalmología (Consulta)","Clínico Geral":"Medicina General","Consultas Cirúrgicas":"Consultas Quirúrgicas","Consulta Anestésica":"Consulta de Anestesia","Pediatria":"Pediatría","Ginecologia":"Ginecología","Dermatologia":"Dermatología","Cardiologia":"Cardiología","Otorrinolaringologia":"Otorrinolaringología","Ortopedia":"Ortopedia","Endocrinologia":"Endocrinología","Infectologia":"Infectología","Geriatria":"Geriatría","Neurologia":"Neurología","Reumatologia":"Reumatología","Urologista":"Urología","Medicina Geral Comunidade":"Medicina General Comunitaria","Psiquiatria":"Psiquiatría","Gastrologia":"Gastroenterología","Mastologia":"Mastología","Proctologista":"Proctología","Pneumologia":"Neumología","Oftalmologia (Consulta)":"Oftalmología (Consulta)"},
+  ru:{"Oftalmologia (Consulta)":"Офтальмология (консультация)","Clínico Geral":"Терапевт","Consultas Cirúrgicas":"Хирургические консультации","Consulta Anestésica":"Консультация анестезиолога","Pediatria":"Педиатрия","Ginecologia":"Гинекология","Dermatologia":"Дерматология","Cardiologia":"Кардиология","Otorrinolaringologia":"Отоларингология (ЛОР)","Ortopedia":"Ортопедия","Endocrinologia":"Эндокринология","Infectologia":"Инфекционные болезни","Geriatria":"Гериатрия","Neurologia":"Неврология","Reumatologia":"Ревматология","Urologista":"Урология","Medicina Geral Comunidade":"Общая медицина (община)","Psiquiatria":"Психиатрия","Gastrologia":"Гастроэнтерология","Mastologia":"Маммология","Proctologista":"Проктология","Pneumologia":"Пульмонология","Oftalmologia (Consulta)":"Офтальмология (консультация)"}
 };
 const EXAM_I18N = {
   en:{"Análises Clínicas":"Clinical Lab Tests","Oftalmologia":"Ophthalmology","Ultrassom":"Ultrasound","Raios-X":"X-Ray","Mamografia":"Mammography","Eletrocardiograma":"Electrocardiogram","Exames de PCCU":"Pap Smear Tests","Teste COVID-19 Saúde Local":"Local COVID-19 Testing","Otorrinolaringologia":"Otolaryngology (ENT)"},
   de:{"Análises Clínicas":"Laboruntersuchungen","Oftalmologia":"Augenheilkunde","Ultrassom":"Ultraschall","Raios-X":"Röntgen","Mamografia":"Mammographie","Eletrocardiograma":"Elektrokardiogramm","Exames de PCCU":"PAP-Abstrich","Teste COVID-19 Saúde Local":"Lokaler COVID-19-Test","Otorrinolaringologia":"Hals-Nasen-Ohren"},
-  es:{"Análises Clínicas":"Análisis Clínicos","Oftalmologia":"Oftalmología","Ultrassom":"Ecografía","Raios-X":"Rayos X","Mamografia":"Mamografía","Eletrocardiograma":"Electrocardiograma","Exames de PCCU":"Prueba de Papanicolaou","Teste COVID-19 Saúde Local":"Prueba Local de COVID-19","Otorrinolaringologia":"Otorrinolaringología"}
+  es:{"Análises Clínicas":"Análisis Clínicos","Oftalmologia":"Oftalmología","Ultrassom":"Ecografía","Raios-X":"Rayos X","Mamografia":"Mamografía","Eletrocardiograma":"Electrocardiograma","Exames de PCCU":"Prueba de Papanicolaou","Teste COVID-19 Saúde Local":"Prueba Local de COVID-19","Otorrinolaringologia":"Otorrinolaringología"},
+  ru:{"Análises Clínicas":"Клинические анализы","Oftalmologia":"Офтальмология","Ultrassom":"УЗИ","Raios-X":"Рентген","Mamografia":"Маммография","Eletrocardiograma":"Электрокардиограмма","Exames de PCCU":"Мазок Папаниколау","Teste COVID-19 Saúde Local":"Локальный тест на COVID-19","Otorrinolaringologia":"Отоларингология (ЛОР)"}
 };
 function trSpec(name){ return (SPEC_I18N[CUR_LANG] && SPEC_I18N[CUR_LANG][name]) || name; }
 function trExam(name){ return (EXAM_I18N[CUR_LANG] && EXAM_I18N[CUR_LANG][name]) || name; }
@@ -1489,7 +1467,181 @@ const I18N = {
   ansAverageMun:(name,mun,avg,total,n)=>`El promedio de "${name}" en ${mun} es ${fmtAvg(avg)} por expedición (total de ${fmt(total)} en ${n} expedición(es) en el período considerado).`,
   ansTotalMun:(name,mun,total,n)=>`El total de "${name}" en ${mun} en el período considerado es ${fmt(total)}, en ${n} expedición(es).`,
   ansNoDataMun:(mun)=>`No encontré expediciones en ${mun} en el período considerado.`,
-  ansFallback:"No encontré esa métrica específica. Intenta preguntar sobre una especialidad, examen, categoría, municipio, o usa una de las sugerencias abajo."}
+  ansFallback:"No encontré esa métrica específica. Intenta preguntar sobre una especialidad, examen, categoría, municipio, o usa una de las sugerencias abajo."},
+ ru:{brandTitle:"Госпитальное судно Сан-Жуан XXIII",brandSub:"Панель управления экспедициями · Амазония",live:"Источник: официальная таблица",yearAll:"Все годы",updatedPrefix:"Обновлено ",
+  navDash:"Панель",navSpec:"Специальности",navExam:"Обследования",navMun:"Муниципалитеты",navAI:"Аналитика",navInfo:"О системе",
+  navReport:"Отчёт",
+  reportTitle:"Сводный отчёт",
+  reportSub:"Автоматически сформирован на основе выбранного периода",
+  reportExportTitle:"Экспорт",
+  reportDocSub:"Речные медицинские экспедиции · Штат Амазонас, Бразилия",
+  reportDocConfidential:"Официальный документ",
+  reportDocTitle:"Итоговый отчёт по экспедициям",
+  reportPeriodLabel:"Период:",
+  reportGenLabel:"Дата выпуска:",
+  reportS1:"Сводный отчёт",
+  reportS2:"Основные показатели",
+  reportS3:"Приём по категориям",
+  reportS4:"Рейтинг муниципалитетов",
+  reportS5:"Медицинские специальности",
+  reportS6:"Проведённые обследования",
+  reportColIndicador:"Показатель",
+  reportColValor:"Значение",
+  reportColCategoria:"Категория",
+  reportColPct:"% от общего",
+  reportColEspecialidade:"Специальность",
+  reportColConsultas:"Приёмы",
+  reportColExame:"Обследование",
+  reportExportSub:"Скачайте данные за выбранный период или создайте PDF для печати/пересылки",
+  btnExportPdf:"Экспорт в PDF",
+  btnExportCsvExp:"Скачать экспедиции (CSV)",
+  btnExportCsvSpec:"Скачать специальности (CSV)",
+  btnExportCsvExam:"Скачать обследования (CSV)",
+  btnExportJson:"Скачать всё (JSON)",
+  footerText:"Источник: официальная таблица экспедиций · Построчное программное извлечение · Последнее обновление: {date}",
+  footerLgpd:"Эта панель содержит только агрегированные данные приёма (количества), без какой-либо личной информации о пациентах.",
+  reportIntro:(n,g,s,m)=>`За выбранный период госпитальное судно Сан-Жуан XXIII совершило ${n} экспедиций, обслужив ${m} прибрежных муниципалитетов, с общим числом ${fmt(g)} обращений, из которых ${fmt(s)} — обращения по здоровью.`,
+  gauge1Title:"Охват медицинской помощью",gauge1Sub:"% от общего приёма, относящийся к здоровью",
+  gauge2Title:"Доля стоматологии",gauge2Sub:"% от приёма по здоровью",
+  yoyVs:"по сравнению с",
+  bigGeralL:"Общий приём",bigSaudeL:"Здоровье",
+  miniExpL:"Экспедиции",miniMunL:"Муниципалитеты",miniAvgL:"В среднем/экспедиция",miniAlimL:"Питание",
+  stackTitle:"Приём по экспедициям · по категориям",stackSub:"Состав каждой экспедиции, по типу приёма",
+  top5Title:"Топ-5 медицинских специальностей",top5Sub:"Наибольший объём приёмов за период",
+  donutTitle:"Распределение по категориям",donutSub:"Доля каждой категории в общем итоге",
+  areaTitle:"Динамика общего приёма",areaSub:"По экспедициям, в порядке их проведения",
+  specTitle:"Медицинские специальности",specNote:"Объём приёмов по специальности за выбранный период.",
+  examTitle:"Обследования по типу",examNote:"Распределение проведённых обследований за выбранный период.",
+  voyageTitle:"Маршрут экспедиций",voyageNote:"Каждая точка — обслуженный муниципалитет, в порядке следования судна.",
+  rankTitle:"Рейтинг муниципалитетов · Общий приём",rankNote:"Сумма за выбранный период по муниципалитету (повторные визиты суммируются).",
+  colMun:"Муниципалитет",colExp:"Экспедиции",colGeral:"Общий приём",
+  insightsAutoTitle:"Автоматические выводы",insightsAutoSub:"Сформированы на основе данных выбранного периода",
+  aiTitle:"Ассистент по данным",aiSub:"Спрашивайте о специальностях, обследованиях, категориях или муниципалитетах — мгновенный расчёт, без интернета.",
+  aiPlaceholder:"Напр.: Какова средняя посещаемость хирургических консультаций?",aiAskBtn:"Спросить",
+  infoInsightsAuto:"Выводы, рассчитанные автоматически на основе данных выбранного периода: ведущая специальность и обследование, экспедиция с наибольшим приёмом, а также сравнение по годам, если доступно более одного года.",
+  infoAI:"Ассистент, отвечающий на вопросы о данных панели. По умолчанию работает локально (интернет не требуется); если настроен ИИ-прокси, используется генеративный ИИ для более открытых вопросов, а локальный движок служит автоматическим резервом при сбое.",
+  aiSrcOnline:"Ответил онлайн-ИИ (Claude)",
+  aiSrcLocalNoProxy:"Локальный движок — онлайн-ИИ не настроен",
+  aiSrcLocalFallback:"Локальный движок — онлайн-ИИ не сработал",
+  dqTitle:"Примечание о качестве данных —",dqBody:"Каждая цифра в этой панели была извлечена построчно и по столбцам напрямую из официальной таблицы путём программного чтения — без ручного переноса.",
+  prodTitle:"Как обновлять после каждой экспедиции —",prodBody:"Запустите gerar_dashboard.py, указав обновлённую таблицу .ods. Скрипт автоматически определяет каждую годовую вкладку (2025, 2026, 2027...), пересчитывает всё и создаёт новый dashboard.html, готовый к публикации. Редактировать код не нужно.",
+  chips:["Средний показатель хирургических консультаций","Какая специальность имела больше всего приёмов?","Какое обследование проводится чаще всего?","Сравнить годы"],
+  top10Title:"Топ-10 муниципалитетов · Общий приём",
+  top10Sub:"10 муниципалитетов с наибольшим общим объёмом за выбранный период",
+  infoGauge1:"Процент общего приёма (здоровье + питание), приходящийся на медицинскую помощь. Рассчитывается как Всего по здоровью ÷ Всего в целом.",
+  infoGauge2:"Процент приёма по здоровью, приходящийся на стоматологию. Показывает долю стоматологической помощи относительно других категорий здоровья.",
+  infoStack:"Каждый столбец — одна экспедиция. Цвета показывают, как распределяется приём этой экспедиции: консультации, стоматология, обследования, сестринский уход, аптека, офтальмология и процедуры.",
+  infoTop5:"5 медицинских специальностей с наибольшим суммарным числом приёмов за выбранный период.",
+  infoDonut:"Процентная доля каждой категории приёма (консультации, стоматология, обследования и т.д.) в общем итоге за выбранный период.",
+  infoArea:"Общий приём каждой экспедиции, в хронологическом порядке их проведения.",
+  infoSpec:"Общий объём приёмов по медицинской специальности за выбранный период, от наибольшего к наименьшему.",
+  infoExam:"Объём каждого типа обследований, проведённых за выбранный период.",
+  infoVoyage:"Фактическая последовательность муниципалитетов, посещённых судном. Нажмите на любую остановку, чтобы увидеть все данные этой конкретной экспедиции.",
+  infoRank:"Каждый обслуженный муниципалитет, с суммированием всех экспедиций за выбранный период (повторные визиты суммируются).",
+  infoTop10:"10 муниципалитетов с наибольшим совокупным приёмом за выбранный период, с точным значением рядом с каждым столбцом.",
+  examMiniTitle:"Обследования по типу",
+  breakdownTitle:"Детализация приёма",
+  breakdownSub:"Все категории приёма за выбранный период",
+  infoBreakdown:"Все категории приёма, выполняемые судном: медицинские специальности, обследования, операции средней и низкой сложности, стоматологические процедуры, сортировка/сестринский уход, стоматологические консультации, выдача лекарств и питание — за выбранный период.",
+  catEspecialidade:"Медицинская специальность (приёмы)",
+  catExames:"Обследования",
+  catTriagem:"Сортировка / Сестринский уход",
+  catMedicamento:"Выдача лекарств",
+  catAlimentacao:"Питание",
+  pacientesL:"Уникальных пациентов принято",
+  pacientesNA:"не зафиксировано за этот период в таблице",
+  colAno:"Год",
+  reportColAtendimentos:"Обращения",
+  reportS7:"Уникальных пациентов принято (больничная система)",
+  reportS7Note:"Данные из системы управления больницей (число уникальных пациентов за год) — источник, независимый от таблицы экспедиций судна.",
+  navNavegacao:"Навигация",
+  navBigHoras:"Часов в пути",
+  navBigDias:"Среднее число дней на экспедицию",
+  navBigIncidente:"Часов потеряно (инциденты)",
+  navBigKm:"Пройденное расстояние (оценка)",
+  navMn:"морских миль",
+  navChartTitle:"Навигация по экспедициям — Туда и обратно",
+  navChartSub:"Часы навигации туда и обратно, в хронологическом порядке экспедиций.",
+  infoNavChart:"Каждый столбец показывает, сколько часов судно шло туда и обратно в этой экспедиции. Большая разница между ними может указывать на течение реки, остановку более чем в одной общине или технический инцидент.",
+  navHighlightTitle:"Эксплуатационные показатели",
+  navTableTitle:"Детализация по экспедициям",
+  navColDias:"Дней",
+  navColIda:"Туда",
+  navColVolta:"Обратно",
+  navColNota:"Примечание",
+  tripInfoTitle:"Переходы экспедиции",
+  tripInfoSub:"Время навигации судна (по времени отправления/прибытия) — полную детализацию см. в меню Навигация.",
+  infoTripInfo:"Сводка времени, которое судно проводит в навигации, рассчитанная по времени отправления и прибытия каждой экспедиции. * Расстояние использует реальное время навигации экспедиции, умноженное на среднюю скорость 14,15 км/ч — откалиброванную по 2 пунктам назначения с известным реальным речным расстоянием (Тефе и Нову-Арипуана). Поскольку используется реальное время, эта оценка уже отражает изгибы реки, в отличие от простого расстояния по прямой на карте.",
+  navLongest:"Самая долгая экспедиция по времени навигации",
+  navMostIncident:"Экспедиция с наибольшим простоем",
+  navMapTitle:"Карта экспедиций",
+  navMapSub:"Нажмите на точку, чтобы увидеть экспедиции, даты и часы навигации для этого места.",
+  infoNavMap:"Карта муниципалитетов/общин, уже посещённых судном. Точки — приблизительные позиции — нажмите на любую из них, чтобы увидеть историю экспедиций, даты и часы навигации для этого места.",
+  navMapExpeditions:"Экспедиции",
+  navMapLoadError:"Не удалось загрузить карту (в данный момент нет подключения к интернету).",
+  catInternacao:"Клиническая/хирургическая госпитализация",
+  voyageSpecNote:"Наведите курсор на любую остановку, чтобы увидеть специальности этой экспедиции",
+  voyageExamNote:"Наведите курсор на любую остановку, чтобы увидеть обследования этой экспедиции",
+  infoVoyageSpec:"Тот же маршрут экспедиций, но при наведении показываются медицинские специальности, задействованные в этой конкретной экспедиции.",
+  infoVoyageExam:"Тот же маршрут экспедиций, но при наведении показываются обследования, проведённые в этой конкретной экспедиции.",
+  navCir:"Операции",
+  voyageCirNote:"Тот же маршрут экспедиций, но при наведении показываются операции и госпитализации этой конкретной экспедиции.",
+  infoVoyageCir:"Тот же маршрут экспедиций, но при наведении показываются операции низкой и средней сложности и госпитализации этой конкретной экспедиции.",
+  cirEvolTitle:"Операции и госпитализации по экспедициям",
+  cirEvolSub:"Операции средней и низкой сложности и клинические/хирургические госпитализации, в порядке экспедиций",
+  infoCirEvol:"Динамика операций низкой сложности, операций средней сложности и клинических/хирургических госпитализаций по экспедициям.",
+  cirTop10Title:"Топ-10 муниципалитетов · Операции средней и низкой сложности",
+  cirTop10Sub:"Сумма операций средней + низкой сложности за выбранный период (повторные визиты суммируются)",
+  infoCirTop10:"10 муниципалитетов с наибольшим суммарным числом операций средней и низкой сложности за выбранный период.",
+  cirColMedia:"Средняя сложность",
+  cirColBaixa:"Низкая сложность",
+  cirColTotal:"Всего",
+  examAvgTitle:"Среднее число обследований на экспедицию",
+  examAvgSub:"Среднее по каждому типу обследования на экспедицию — выберите режим просмотра ниже",
+  examAvgGeral:"Общее",
+  examAvgAno:"По годам",
+  examAvgMes:"По месяцам",
+  infoExamAvg:"Среднее число маммографий, рентгенов, ЭКГ, офтальмологических осмотров, лабораторных анализов и УЗИ на экспедицию. «Общее» усредняет за выбранный период; «По годам» сравнивает годы; «По месяцам» группирует по календарному месяцу за все доступные годы, что полезно для выявления сезонности.",
+  lastExpBtn:"Последняя экспедиция",
+  lastExpTitle:"Последняя экспедиция",
+  lastExpPeriodo:"Период",
+  lastExpStatus:"Статус",
+  lastExpStatusConcluida:"Завершена",
+  lastExpDias:"Длительность (дней)",
+  lastExpResultados:"Результаты экспедиции",
+  lastExpAtendTotais:"Общий приём",
+  lastExpConsultas:"Медицинские консультации",
+  lastExpExames:"Проведённые обследования",
+  lastExpOdonto:"Стоматологические процедуры",
+  lastExpCirurgias:"Проведённые операции",
+  lastExpExportPdf:"Экспортировать эту экспедицию в PDF",
+  procMiniTitle:"Операции и стоматологические процедуры",
+  procMiniSub:"Операции средней и низкой сложности в сравнении со стоматологическими процедурами",
+  infoProcMini:"Сравнивает объём операций низкой сложности, операций средней сложности и стоматологических процедур (отдельная категория от плановых стоматологических консультаций) за выбранный период.",
+  procCirBaixa:"Операция низкой сложности",
+  procCirMedia:"Операция средней сложности",
+  procOdontoL:"Стоматологическая процедура",
+  consultaOdontoL:"Стоматологическая консультация",
+  ansAverage:(name,avg,total,n)=>`Среднее значение «${name}» составляет ${fmtAvg(avg)} на экспедицию (всего ${fmt(total)} за ${n} экспедиций за выбранный период).`,
+  ansCount:(n,year)=>`${fmt(n)} экспедиций было зарегистрировано${year?` в ${year} году`:' за выбранный период'}.`,
+  ansMunCountByMetric:(n,total,metric,list,neg)=>{
+    const base = neg
+      ? `${fmt(n)} из ${fmt(total)} муниципалитетов не имели зарегистрированного «${metric}» за выбранный период`
+      : `${fmt(n)} из ${fmt(total)} муниципалитетов имели зарегистрированное «${metric}» за выбранный период`;
+    return base + (list.length<=10 ? (list.length? `: ${list.join(', ')}.` : '.') : '.');
+  },
+  ansTotal:(name,total,avg)=>`Итог по «${name}» за выбранный период составляет ${fmt(total)} (в среднем ${fmt(avg)} на экспедицию).`,
+  ansTopSpec:(name,val)=>`Специальность с наибольшим объёмом — «${name}», с ${fmt(val)} приёмами за выбранный период.`,
+  ansTopExam:(name,val)=>`Чаще всего проводится обследование «${name}», с показателем ${fmt(val)} за выбранный период.`,
+  ansTopMun:(name,val)=>`Муниципалитет с наибольшим общим приёмом — ${name}, с показателем ${fmt(val)}.`,
+  ansTopMunMetric:(metric,name,val)=>`Муниципалитет с наибольшим объёмом по «${metric}» — ${name}, с показателем ${fmt(val)}.`,
+  ansTopExp:(mun,n,val)=>`Экспедицией с наибольшим объёмом была №${n} (${mun}), с показателем ${fmt(val)} общего приёма.`,
+  ansTopExpMetric:(metric,mun,n,val)=>`Экспедицией с наибольшим объёмом по «${metric}» была №${n} (${mun}), с показателем ${fmt(val)}.`,
+  ansCompare:(y1,y2,g1,g2)=>`В ${y1} году общий приём составил ${fmt(g1)}; в ${y2} году — ${fmt(g2)} — изменение на ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
+  ansAverageMun:(name,mun,avg,total,n)=>`Среднее значение «${name}» в ${mun} составляет ${fmtAvg(avg)} на экспедицию (всего ${fmt(total)} за ${n} экспедиций(ю) за рассматриваемый период).`,
+  ansTotalMun:(name,mun,total,n)=>`Итог по «${name}» в ${mun} за рассматриваемый период составляет ${fmt(total)}, за ${n} экспедиций(ю).`,
+  ansNoDataMun:(mun)=>`Не удалось найти экспедиции в ${mun} за рассматриваемый период.`,
+  ansFallback:"Не удалось найти этот конкретный показатель. Попробуйте спросить о специальности, обследовании, категории (консультации, стоматология, аптека...), муниципалитете, или воспользуйтесь одной из подсказок ниже."}
 };
 let CUR_LANG = 'pt';
 let chartsInitialized = false;
@@ -1502,7 +1654,7 @@ function applyI18n(){
   if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
   const footerEl = document.querySelector('[data-i18n="footerText"]');
   if(footerEl && t.footerText) footerEl.textContent = t.footerText.replace('{date}', GENERATED_AT);
-  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderChips(); renderInsightsAuto(); renderNavegacao(); }
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); }
 }
 
 /* ================= mobile nav toggle ================= */
@@ -1583,7 +1735,7 @@ function renderYearSelector(){
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     YEAR = b.dataset.year;
     renderYearSelector();
-    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderInsightsAuto(); renderNavegacao();
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao();
     writeUrlState();
   }));
 }
@@ -1701,7 +1853,7 @@ async function renderNavMap(){
     return;
   }
 
-  // group only the expeditions from the currently selected year (or all, if 'all' is selected)
+  // group by município/comunidade name first...
   const byMun = {};
   currentExpeditions().forEach(e=>{
     const key = e.mun;
@@ -1709,14 +1861,27 @@ async function renderNavMap(){
     byMun[key].push(e);
   });
 
-  function popupHtml(mun, exps){
+  // ...then merge names that share the exact same coordinate into a single marker, so places like
+  // "Novo Remanso I" / "Novo Remanso II" — which are really the same physical community, just named
+  // slightly differently across expeditions in the spreadsheet — don't hide one marker behind the other
+  const byCoord = {};
+  Object.entries(byMun).forEach(([mun, exps])=>{
+    const coord = MUN_COORDS[mun];
+    if(!coord) return;
+    const key = coord.join(',');
+    if(!byCoord[key]) byCoord[key] = { coord, names: [], exps: [] };
+    byCoord[key].names.push(mun);
+    byCoord[key].exps.push(...exps);
+  });
+
+  function popupHtml(label, exps){
     const rows = exps.map(e=>{
       const nav = getNavData(e);
       const navText = nav ? ` · ${fmtAvg(navMinToHours(nav.idaMin))}h${t.navColIda.slice(0,1).toLowerCase()} / ${fmtAvg(navMinToHours(nav.voltaMin))}h${t.navColVolta.slice(0,1).toLowerCase()}` : '';
-      const comText = nav && nav.comunidade && nav.comunidade !== mun ? ` — ${nav.comunidade}` : '';
+      const comText = nav && nav.comunidade && nav.comunidade !== label ? ` — ${nav.comunidade}` : '';
       return `<div style="padding:3px 0;border-bottom:1px solid #eee;font-size:0.78rem;">#${e.n}${comText}<br><span style="color:#6b7688;">${e.data}${navText}</span></div>`;
     }).join('');
-    return `<div style="max-width:220px;"><strong>${mun}</strong><div style="font-size:0.7rem;color:#6b7688;margin-bottom:4px;">${exps.length} ${t.navMapExpeditions.toLowerCase()}</div>${rows}</div>`;
+    return `<div style="max-width:220px;"><strong>${label}</strong><div style="font-size:0.7rem;color:#6b7688;margin-bottom:4px;">${exps.length} ${t.navMapExpeditions.toLowerCase()}</div>${rows}</div>`;
   }
   function addMarker(coordLatLng, html, color, size){
     const el = document.createElement('div');
@@ -1750,10 +1915,10 @@ async function renderNavMap(){
   }
 
   const attachMunMarkers = ()=>{
-    Object.entries(byMun).forEach(([mun, exps])=>{
-      const coord = MUN_COORDS[mun];
-      if(!coord) return;
-      const marker = addMarker(coord, popupHtml(mun, exps), '#0f2a4a', 13);
+    Object.values(byCoord).forEach(({coord, names, exps})=>{
+      const uniqueNames = [...new Set(names)];
+      const label = uniqueNames.join(' / ');
+      const marker = addMarker(coord, popupHtml(label, exps), '#0f2a4a', 13);
       mapMarkers.push(marker);
     });
   };
@@ -2056,12 +2221,6 @@ function openLastExpeditionModal(){
   document.getElementById('lastExpModalExportPdf').addEventListener('click', ()=>exportExpeditionPdf(exp));
 }
 document.getElementById('btnLastExp').addEventListener('click', openLastExpeditionModal);
-(function wireAiPanel(){
-  const askBtn = document.getElementById('aiAsk');
-  const input = document.getElementById('aiInput');
-  if(askBtn) askBtn.addEventListener('click', askAI);
-  if(input) input.addEventListener('keydown', e=>{ if(e.key==='Enter') askAI(); });
-})();
 const valueLabelPlugin = {
   id: 'valueLabel',
   afterDatasetsDraw(chart){
@@ -2982,8 +3141,6 @@ buildAllCharts();
 renderRanking();
 renderCirurgias();
 buildExamAvgChart();
-renderChips();
-renderInsightsAuto();
 renderNavegacao();
 
 renderReport();
