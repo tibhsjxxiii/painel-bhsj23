@@ -656,7 +656,8 @@ const GENERATED_AT = "__GENERATED_AT__";
 // barco — são o total de pacientes ÚNICOS e atendimentos do ano inteiro no sistema. Atualize esta
 // lista à mão sempre que receber um novo relatório em PDF (ex: quando os números de 2026 chegarem).
 const ANNUAL_PATIENT_STATS = {
-  2025: { atendimentos: 30739, pacientes: 21068 }
+  2025: { atendimentos: 31657, pacientes: 21665 },
+  2026: { atendimentos: 16764, pacientes: 12374 }
 };
 
 // Dados de navegação (horários de saída/chegada, comunidades visitadas, horas de ida/volta) —
@@ -2875,7 +2876,7 @@ function renderReport(){
     s7.style.display = '';
     document.getElementById('reportPatientsBody').innerHTML = relevantAnnualYears.map(y=>{
       const d = ANNUAL_PATIENT_STATS[y];
-      return `<tr><td>${y}</td><td class="mono">${fmt(d.atendimentos)}</td><td class="mono">${fmt(d.pacientes)}</td></tr>`;
+      return `<tr><td>${y}</td><td class="mono">${d.atendimentos!=null ? fmt(d.atendimentos) : '—'}</td><td class="mono">${fmt(d.pacientes)}</td></tr>`;
     }).join('');
   } else {
     s7.style.display = 'none';

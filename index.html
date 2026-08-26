@@ -242,7 +242,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 24/08/2026 22:45</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 26/08/2026 08:48</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -525,14 +525,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 24/08/2026 22:45</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 26/08/2026 08:48</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 24/08/2026 22:45</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 26/08/2026 08:48</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -650,13 +650,14 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "24/08/2026 22:45";
+const GENERATED_AT = "26/08/2026 08:48";
 
 // Dados anuais do sistema hospitalar (relatório Wareline), não vêm da planilha de expedições do
 // barco — são o total de pacientes ÚNICOS e atendimentos do ano inteiro no sistema. Atualize esta
 // lista à mão sempre que receber um novo relatório em PDF (ex: quando os números de 2026 chegarem).
 const ANNUAL_PATIENT_STATS = {
-  2025: { atendimentos: 30739, pacientes: 21068 }
+  2025: { atendimentos: 31657, pacientes: 21665 },
+  2026: { atendimentos: 16764, pacientes: 12374 }
 };
 
 // Dados de navegação (horários de saída/chegada, comunidades visitadas, horas de ida/volta) —
@@ -2875,7 +2876,7 @@ function renderReport(){
     s7.style.display = '';
     document.getElementById('reportPatientsBody').innerHTML = relevantAnnualYears.map(y=>{
       const d = ANNUAL_PATIENT_STATS[y];
-      return `<tr><td>${y}</td><td class="mono">${fmt(d.atendimentos)}</td><td class="mono">${fmt(d.pacientes)}</td></tr>`;
+      return `<tr><td>${y}</td><td class="mono">${d.atendimentos!=null ? fmt(d.atendimentos) : '—'}</td><td class="mono">${fmt(d.pacientes)}</td></tr>`;
     }).join('');
   } else {
     s7.style.display = 'none';
