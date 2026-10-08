@@ -1,5 +1,7 @@
 import pandas as pd
 import re
+from zipfile import ZipFile
+import xml.etree.ElementTree as ET
 
 TOTAL_LABELS = {
     "Total de Consultas": "consultas",
@@ -59,6 +61,65 @@ def _numf(v):
     except (ValueError, TypeError):
         return 0.0
 
+def extract_schedule_data(ods_path):
+    """Extract departure/arrival times from CHEGADA E SAIDA sheet using XML parsing"""
+    try:
+        with ZipFile(ods_path) as z:
+            content = z.read('content.xml').decode('utf-8')
+        root = ET.fromstring(content)
+        namespaces = {
+            'table': 'urn:oasis:names:tc:opendocument:xmlns:table:1.0',
+            'text': 'urn:oasis:names:tc:opendocument:xmlns:text:1.0'
+        }
+        
+        schedule = {}
+        sheets = root.findall('.//table:table', namespaces)
+        
+        for sheet in sheets:
+            name = sheet.get('{urn:oasis:names:tc:opendocument:xmlns:table:1.0}name', '')
+            if 'CHEGADA' not in name.upper():
+                continue
+            
+            rows = sheet.findall('.//table:table-row', namespaces)
+            for i, row in enumerate(rows):
+                if i < 2:  # Skip headers
+                    continue
+                cells = row.findall('.//table:table-cell', namespaces)
+                row_data = []
+                for cell in cells:
+                    text_elem = cell.find('.//text:p', namespaces)
+                    value = text_elem.text if text_elem is not None and text_elem.text else ""
+                    row_data.append(value)
+                
+                if len(row_data) >= 8:
+                    year = row_data[0].strip()
+                    exp_num = row_data[1].strip()
+                    saida = row_data[4].strip() if len(row_data) > 4 else ""
+                    chegada = row_data[5].strip() if len(row_data) > 5 else ""
+                    nav_ida = row_data[6].strip() if len(row_data) > 6 else ""
+                    retorno = row_data[7].strip() if len(row_data) > 7 else ""
+                    
+                    if year and exp_num and year != 'nan' and year != 'Ano':
+                        try:
+                            year_int = int(year)
+                            # Extract number from strings like "2ª Expedição" or "2º Expedição"
+                            exp_match = re.match(r'(\d+)', exp_num)
+                            exp_num_clean = int(exp_match.group(1)) if exp_match else exp_num
+                            key = (year_int, exp_num_clean)
+                            schedule[key] = {
+                                'saida': saida,
+                                'chegada': chegada,
+                                'navegacao_ida': nav_ida,
+                                'retorno': retorno
+                            }
+                        except:
+                            pass
+        
+        return schedule
+    except Exception as e:
+        print(f"Erro ao extrair horários: {e}")
+        return {}
+
 def find_expedition_columns(df):
     """Find the header row listing '<n> EXPEDIÇÃO' and return {col_index: expedition_label}."""
     for i in range(min(6, len(df))):
@@ -107,14 +168,14 @@ def parse_year_sheet(df, year):
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
     datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
 
-    # dias em atendimento: try to find "TOTAL DE DIAS EM ATENDIMENTO" row
+    # dias em atendimento
     dias_atendimento = {c: 0.0 for c in cols}
     r_dias = find_row_by_label(df, "TOTAL DE DIAS EM ATENDIMENTO")
     if r_dias is not None:
         for c in cols:
             dias_atendimento[c] = _numf(df.iloc[r_dias, c])
 
-    # specialties: rows strictly between "Consultas Médicas" and "Total de Consultas"
+    # specialties
     specialties = {}
     specialties_per_col = {c: {} for c in cols}
     r_spec_start = find_row_by_label(df, "Consultas Médicas")
@@ -131,7 +192,7 @@ def parse_year_sheet(df, year):
                 if v:
                     specialties_per_col[c][label] = specialties_per_col[c].get(label, 0) + v
 
-    # exams: rows strictly between "Exames" (section header) and the next TOTAL_LABEL row after it
+    # exams
     exams = {}
     exams_per_col = {c: {} for c in cols}
     r_exam_start = find_row_by_label(df, "Exames")
@@ -155,7 +216,7 @@ def parse_year_sheet(df, year):
                 if v:
                     exams_per_col[c][label] = exams_per_col[c].get(label, 0) + v
 
-    # detailed breakdown rows (small/medium surgery, dental procedures vs consultations)
+    # detailed breakdown rows
     DETAIL_LABELS = {
         "Cirurgias de Baixa Complexidade": "cirBaixa",
         "Cirurgias de Média Complexidade": "cirMedia",
@@ -213,4 +274,13 @@ def extract_all_years(ods_path):
         parsed = parse_year_sheet(df, year)
         if parsed and parsed["expeditions"]:
             result[year] = parsed
+    
+    # Enrich with schedule data
+    schedule = extract_schedule_data(ods_path)
+    for year in result:
+        for exp in result[year]["expeditions"]:
+            key = (exp["year"], int(exp["n"]) if isinstance(exp["n"], int) else exp["n"])
+            if key in schedule:
+                exp["horarios"] = schedule[key]
+    
     return result
