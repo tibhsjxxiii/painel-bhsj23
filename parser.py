@@ -50,6 +50,15 @@ def _num(v):
     except (ValueError, TypeError):
         return 0
 
+def _numf(v):
+    """Parse float preserving decimals (e.g., 4.5 stays 4.5, not rounded to 5)"""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return 0.0
+    try:
+        return round(float(v), 1)
+    except (ValueError, TypeError):
+        return 0.0
+
 def find_expedition_columns(df):
     """Find the header row listing '<n> EXPEDIÇÃO' and return {col_index: expedition_label}."""
     for i in range(min(6, len(df))):
@@ -97,6 +106,13 @@ def parse_year_sheet(df, year):
 
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
     datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
+
+    # dias em atendimento: try to find "TOTAL DE DIAS EM ATENDIMENTO" row
+    dias_atendimento = {c: 0.0 for c in cols}
+    r_dias = find_row_by_label(df, "TOTAL DE DIAS EM ATENDIMENTO")
+    if r_dias is not None:
+        for c in cols:
+            dias_atendimento[c] = _numf(df.iloc[r_dias, c])
 
     # specialties: rows strictly between "Consultas Médicas" and "Total de Consultas"
     specialties = {}
@@ -162,6 +178,7 @@ def parse_year_sheet(df, year):
             "n": expedition_number(exp_cols[c], c),
             "mun": municipios[c],
             "data": datas[c],
+            "diasAtendimento": dias_atendimento.get(c, 0.0),
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),
