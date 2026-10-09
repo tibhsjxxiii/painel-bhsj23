@@ -2134,11 +2134,11 @@ function renderRecentExpeditions(){
       
       <div style="border-top:1px solid var(--line);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;">
         <div>
-          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Saúde</div>
-          <div style="font-weight:700;color:var(--teal);font-size:0.95rem;">${fmt(e.saude||0)}</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">👥 Pacientes</div>
+          <div style="font-weight:700;color:var(--teal);font-size:0.95rem;">${fmt(e.pacientes||0)}</div>
         </div>
         <div>
-          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">Dias Atendimento</div>
+          <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">⏱️ Dias Atendimento</div>
           <div style="font-weight:700;color:var(--gold);font-size:0.95rem;">${(e.diasAtendimento||0).toFixed(1)}</div>
         </div>
         <div style="text-align:right;">
