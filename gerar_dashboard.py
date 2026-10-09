@@ -126,10 +126,22 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     generated_at = datetime.now().strftime("%d/%m/%Y %H:%M")
 
+    # Calcular totais de pacientes e atendimentos por ano
+    patient_data_by_year = {}
+    for year in sorted(data_by_year.keys()):
+        exps = data_by_year[year]["expeditions"]
+        total_pacientes = sum(e.get("pacientes", 0) for e in exps)
+        total_atendimentos = sum(e.get("geral", 0) for e in exps)
+        patient_data_by_year[str(year)] = {
+            "atendimentos": total_atendimentos,
+            "pacientes": total_pacientes
+        }
+
     html = template
     html = html.replace("__ALL_EXPEDITIONS__", json.dumps(all_expeditions, ensure_ascii=False))
     html = html.replace("__SPECIALTIES_BY_YEAR__", json.dumps(specialties_by_year, ensure_ascii=False))
     html = html.replace("__EXAMS_BY_YEAR__", json.dumps(exams_by_year, ensure_ascii=False))
+    html = html.replace("__PATIENT_DATA_BY_YEAR__", json.dumps(patient_data_by_year, ensure_ascii=False))
     html = html.replace("__GENERATED_AT__", generated_at)
     html = html.replace("__PROXY_URL__", proxy_url)
     html = html.replace("__PROXY_SECRET__", proxy_secret)

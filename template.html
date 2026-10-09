@@ -657,13 +657,9 @@ const EXAMS_BY_YEAR = __EXAMS_BY_YEAR__;
 })();
 const GENERATED_AT = "__GENERATED_AT__";
 
-// Dados anuais do sistema hospitalar (relatório Wareline), não vêm da planilha de expedições do
-// barco — são o total de pacientes ÚNICOS e atendimentos do ano inteiro no sistema. Atualize esta
-// lista à mão sempre que receber um novo relatório em PDF (ex: quando os números de 2026 chegarem).
-const ANNUAL_PATIENT_STATS = {
-  2025: { atendimentos: 31657, pacientes: 21665 },
-  2026: { atendimentos: 16764, pacientes: 12374 }
-};
+// Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
+// da planilha de expedições pelo gerador de dashboard.
+const ANNUAL_PATIENT_STATS = __PATIENT_DATA_BY_YEAR__;
 
 // Dados de navegação (horários de saída/chegada, comunidades visitadas, horas de ida/volta) —
 // vêm de relatórios de viagem, não da planilha de expedições. Chave: "ano_numeroExpedicao".

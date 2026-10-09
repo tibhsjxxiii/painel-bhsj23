@@ -218,6 +218,7 @@ def parse_year_sheet(df, year):
 
     # detailed breakdown rows
     DETAIL_LABELS = {
+        "Total de Pacientes Atendidos": "pacientes",
         "Cirurgias de Baixa Complexidade": "cirBaixa",
         "Cirurgias de Média Complexidade": "cirMedia",
         "Procedimentos Odontológicos": "procOdonto",
@@ -240,6 +241,7 @@ def parse_year_sheet(df, year):
             "mun": municipios[c],
             "data": datas[c],
             "diasAtendimento": dias_atendimento.get(c, 0.0),
+            "pacientes": detail_totals["pacientes"].get(c, 0),
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),
@@ -258,6 +260,7 @@ def parse_year_sheet(df, year):
             "internClinCir": detail_totals["internClinCir"].get(c, 0),
             "spec": specialties_per_col[c],
             "exam": exams_per_col[c],
+            "horarios": {},
         })
 
     return {"expeditions": expeditions, "specialties": specialties, "exams": exams}
