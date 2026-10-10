@@ -91,14 +91,16 @@ def extract_schedule_data(ods_path):
                     value = text_elem.text if text_elem is not None and text_elem.text else ""
                     row_data.append(value)
                 
-                if len(row_data) >= 8:
+                if len(row_data) >= 9:
                     year = row_data[0].strip()
                     exp_num = row_data[1].strip()
                     saida = row_data[4].strip() if len(row_data) > 4 else ""
-                    chegada = row_data[5].strip() if len(row_data) > 5 else ""
+                    chegada_dest = row_data[5].strip() if len(row_data) > 5 else ""
                     nav_ida = row_data[6].strip() if len(row_data) > 6 else ""
                     retorno = row_data[7].strip() if len(row_data) > 7 else ""
-                    
+                    chegada_manaus = row_data[8].strip() if len(row_data) > 8 else ""
+                    nav_volta = row_data[9].strip() if len(row_data) > 9 else ""
+
                     if year and exp_num and year != 'nan' and year != 'Ano':
                         try:
                             year_int = int(year)
@@ -106,11 +108,26 @@ def extract_schedule_data(ods_path):
                             exp_match = re.match(r'(\d+)', exp_num)
                             exp_num_clean = int(exp_match.group(1)) if exp_match else exp_num
                             key = (year_int, exp_num_clean)
+
+                            # Calcular dias totais (diferença entre saída de Manaus e chegada em Manaus)
+                            dias_totais = 0.0
+                            try:
+                                from datetime import datetime
+                                if saida and chegada_manaus:
+                                    saida_dt = datetime.strptime(saida.split()[0], '%d/%m/%Y')
+                                    chegada_dt = datetime.strptime(chegada_manaus.split()[0], '%d/%m/%Y')
+                                    dias_totais = (chegada_dt - saida_dt).days + 1
+                            except:
+                                dias_totais = 0.0
+
                             schedule[key] = {
                                 'saida': saida,
-                                'chegada': chegada,
+                                'chegada_destino': chegada_dest,
                                 'navegacao_ida': nav_ida,
-                                'retorno': retorno
+                                'retorno': retorno,
+                                'chegada_manaus': chegada_manaus,
+                                'navegacao_volta': nav_volta,
+                                'dias_totais': dias_totais
                             }
                         except:
                             pass
@@ -261,6 +278,7 @@ def parse_year_sheet(df, year):
             "spec": specialties_per_col[c],
             "exam": exams_per_col[c],
             "horarios": {},
+            "diasTotalExpedicao": 0.0,
         })
 
     return {"expeditions": expeditions, "specialties": specialties, "exams": exams}
@@ -285,5 +303,6 @@ def extract_all_years(ods_path):
             key = (exp["year"], int(exp["n"]) if isinstance(exp["n"], int) else exp["n"])
             if key in schedule:
                 exp["horarios"] = schedule[key]
-    
+                exp["diasTotalExpedicao"] = schedule[key].get("dias_totais", 0.0)
+
     return result

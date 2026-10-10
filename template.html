@@ -263,10 +263,48 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
 
     <div class="view visible" id="view-dashboard">
       <div class="dash-grid-v2">
-        <div class="bignum-row">
-          <div class="bignum"><div class="v mono" id="bigGeral">—</div><div class="delta" id="bigGeralDelta"></div><div class="l" data-i18n="bigGeralL">Atendimento Geral</div></div>
-          <div class="bignum"><div class="v mono" id="bigSaude">—</div><div class="delta" id="bigSaudeDelta"></div><div class="l" data-i18n="bigSaudeL">Em Saúde</div></div>
+        <!-- PAINEL COMPACTO: Métricas Principais em Grid Responsivo -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;">
+          <!-- Atendimento Geral -->
+          <div class="panel" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;">
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="bigGeralL">Atendimento Geral</div>
+            <div class="v mono" id="bigGeral" style="font-size:1.6rem;color:var(--navy);font-weight:700;">—</div>
+            <div class="delta" id="bigGeralDelta" style="font-size:0.7rem;margin-top:2px;"></div>
+          </div>
+
+          <!-- Em Saúde -->
+          <div class="panel" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;">
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="bigSaudeL">Em Saúde</div>
+            <div class="v mono" id="bigSaude" style="font-size:1.6rem;color:var(--teal);font-weight:700;">—</div>
+            <div class="delta" id="bigSaudeDelta" style="font-size:0.7rem;margin-top:2px;"></div>
+          </div>
+
+          <!-- Viagens da Expedição (Compacto) -->
+          <div class="panel" id="tripInfoPanelCompact" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;border-left:3px solid var(--teal);">
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="tripInfoTitle">Viagens da Expedição</div>
+            <div id="tripInfoCompact" style="font-size:0.75rem;color:var(--navy);"></div>
+          </div>
+
+          <!-- Dias em Expedições -->
+          <div class="panel" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;">
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="diasExpTitle">Dias em Expedições</div>
+            <div class="v mono" id="bigDiasExp" style="font-size:1.6rem;color:var(--gold);font-weight:700;">—</div>
+          </div>
+
+          <!-- Dias em Atendimento -->
+          <div class="panel" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;">
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="diasAtendTitle">Dias em Atendimento</div>
+            <div class="v mono" id="bigDiasAtend" style="font-size:1.6rem;color:var(--teal);font-weight:700;">—</div>
+          </div>
+
+          <!-- Expedições -->
+          <div class="panel" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;">
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="colExp">Expedições</div>
+            <div class="v mono" id="bigCountExp" style="font-size:1.6rem;color:var(--navy);font-weight:700;">—</div>
+          </div>
         </div>
+
+        <!-- Painel antigo (agora oculto) -->
         <div class="panel" id="tripInfoPanel" style="display:none;border-left:3px solid var(--teal);padding:12px 16px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
             <span style="font-family:'Fraunces';font-size:0.8rem;font-weight:600;color:var(--navy);" data-i18n="tripInfoTitle">Viagens da Expedição</span>
@@ -274,6 +312,8 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </div>
           <div id="tripInfoRow" style="display:flex;gap:24px;flex-wrap:wrap;"></div>
         </div>
+
+        <!-- Detalhamento de Atendimentos - Gráfico Grande -->
         <div class="panel breakdown-hero">
           <div class="panel-title"><span data-i18n="breakdownTitle">Detalhamento de Atendimentos</span><button class="info-icon" data-info="infoBreakdown">i</button><div class="chart-type-toggle" data-chart-key="breakdown">
             <button data-type="bar" class="active" title="Barra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></button>
@@ -285,11 +325,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
             <div class="chart-wrap" id="chartBreakdownWrap"><canvas id="chartBreakdown"></canvas></div>
             <div id="breakdownList"></div>
           </div>
-        </div>
-        <div class="panel">
-          <div class="panel-title"><span data-i18n="recentExpTitle">Últimas Expedições</span><button class="info-icon" data-info="infoRecentExp">i</button></div>
-          <div class="panel-sub" data-i18n="recentExpSub">Sumário dos dados das últimas expedições do período selecionado</div>
-          <div id="recentExpeditionsBody"></div>
         </div>
         <div class="two-col" style="flex:1;min-height:0;">
           <div class="panel">
@@ -437,7 +472,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <div class="panel">
           <div class="panel-title"><span data-i18n="rankTitle">Ranking de Municípios · Atendimento Geral</span><button class="info-icon" data-info="infoRank">i</button></div>
           <div class="panel-sub" data-i18n="rankNote">Soma do período selecionado por município (municípios revisitados aparecem somados).</div>
-          <table><thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead><tbody id="rankBody"></tbody></table>
+          <table><thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colDiasAtendimento">Dias Atendimento</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead><tbody id="rankBody"></tbody></table>
         </div>
       </div>
     </div>
@@ -499,7 +534,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <section class="report-section">
             <h2>4. <span data-i18n="reportS4">Ranking de Municípios Atendidos</span></h2>
             <table>
-              <thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead>
+              <thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colDiasAtendimento">Dias Atendimento</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead>
               <tbody id="reportRankBody"></tbody>
             </table>
           </section>
@@ -820,7 +855,9 @@ const I18N = {
   examTitle:"Exames por Tipo",examNote:"Distribuição dos exames realizados, considerando o período selecionado.",
   voyageTitle:"Rota das Expedições",voyageNote:"Cada nó é um município atendido, na ordem em que o barco navegou.",
   rankTitle:"Ranking de Municípios · Atendimento Geral",rankNote:"Soma do período selecionado por município (municípios revisitados aparecem somados).",
-  colMun:"Município",colExp:"Expedições",colDias:"Dias de Atendimento",colGeral:"Atendimento Geral",
+  colMun:"Município",colExp:"Expedições",colDiasAtendimento:"Dias Atendimento",colGeral:"Atendimento Geral",
+  diasExpTitle:"Total Dias em Expedições",infoDiasExp:"Soma total de dias que o barco passou em navegação (incluindo ida, volta e pausas).",
+  diasAtendTitle:"Total Dias em Atendimento",infoDiasAtend:"Soma total de dias dedicados a atendimento médico nas comunidades visitadas.",
   insightsAutoTitle:"Destaques Automáticos",insightsAutoSub:"Gerados a partir dos dados do período selecionado",
   aiTitle:"Assistente de Dados",aiSub:"Pergunte sobre especialidades, exames, categorias ou municípios — cálculo instantâneo, sem depender de internet.",
   aiPlaceholder:"Ex.: Qual a média de consultas cirúrgicas?",aiAskBtn:"Perguntar",
@@ -994,7 +1031,9 @@ const I18N = {
   examTitle:"Exams by Type",examNote:"Distribution of exams performed for the selected period.",
   voyageTitle:"Expedition Route",voyageNote:"Each node is a municipality served, in the order the boat navigated.",
   rankTitle:"Municipality Ranking · Total Attendance",rankNote:"Sum of the selected period per municipality (revisited municipalities are combined).",
-  colMun:"Municipality",colExp:"Expeditions",colDias:"Service Days",colGeral:"Total Attendance",
+  colMun:"Municipality",colExp:"Expeditions",colDiasAtendimento:"Service Days",colGeral:"Total Attendance",
+  diasExpTitle:"Total Days on Expeditions",infoDiasExp:"Total days the boat spent navigating (including outbound, return, and stops).",
+  diasAtendTitle:"Total Service Days",infoDiasAtend:"Total days dedicated to medical service in the visited communities.",
   insightsAutoTitle:"Automatic Highlights",insightsAutoSub:"Generated from the selected period's data",
   aiTitle:"Data Assistant",aiSub:"Ask about specialties, exams, categories, or municipalities — instant calculation, no internet needed.",
   aiPlaceholder:"E.g.: What's the average of surgical consultations?",aiAskBtn:"Ask",
@@ -1168,7 +1207,9 @@ const I18N = {
   examTitle:"Untersuchungen nach Art",examNote:"Verteilung der durchgeführten Untersuchungen im gewählten Zeitraum.",
   voyageTitle:"Expeditionsroute",voyageNote:"Jeder Knoten ist eine versorgte Gemeinde, in der Reihenfolge der Bootsfahrt.",
   rankTitle:"Gemeinde-Rangliste · Gesamtbehandlungen",rankNote:"Summe des gewählten Zeitraums je Gemeinde.",
-  colMun:"Gemeinde",colExp:"Expeditionen",colDias:"Servicetage",colGeral:"Gesamtbehandlungen",
+  colMun:"Gemeinde",colExp:"Expeditionen",colDiasAtendimento:"Servicetage",colGeral:"Gesamtbehandlungen",
+  diasExpTitle:"Gesamttage der Expeditionen",infoDiasExp:"Gesamttage, die das Boot navigiert hat (einschließlich Hinfahrt, Rückfahrt und Stopps).",
+  diasAtendTitle:"Gesamttage für Serviceleistungen",infoDiasAtend:"Gesamttage, die in den besuchten Gemeinden für medizinische Dienstleistungen aufgewendet wurden.",
   insightsAutoTitle:"Automatische Highlights",insightsAutoSub:"Erstellt aus den Daten des gewählten Zeitraums",
   aiTitle:"Datenassistent",aiSub:"Fragen Sie zu Fachrichtungen, Untersuchungen, Kategorien oder Gemeinden — sofortige Berechnung, ohne Internet.",
   aiPlaceholder:"Z. B.: Was ist der Durchschnitt der chirurgischen Beratungen?",aiAskBtn:"Fragen",
@@ -1342,7 +1383,9 @@ const I18N = {
   examTitle:"Exámenes por Tipo",examNote:"Distribución de los exámenes realizados en el período seleccionado.",
   voyageTitle:"Ruta de las Expediciones",voyageNote:"Cada nodo es un municipio atendido, en el orden en que navegó el barco.",
   rankTitle:"Ranking de Municipios · Atención General",rankNote:"Suma del período seleccionado por municipio.",
-  colMun:"Municipio",colExp:"Expediciones",colDias:"Días de Servicio",colGeral:"Atención General",
+  colMun:"Municipio",colExp:"Expediciones",colDiasAtendimento:"Días de Servicio",colGeral:"Atención General",
+  diasExpTitle:"Total de Días en Expediciones",infoDiasExp:"Días totales que el barco pasó navegando (incluida ida, vuelta y paradas).",
+  diasAtendTitle:"Total de Días de Atención",infoDiasAtend:"Días totales dedicados a la atención médica en las comunidades visitadas.",
   insightsAutoTitle:"Destacados Automáticos",insightsAutoSub:"Generados a partir de los datos del período seleccionado",
   aiTitle:"Asistente de Datos",aiSub:"Pregunte sobre especialidades, exámenes, categorías o municipios — cálculo instantáneo, sin depender de internet.",
   aiPlaceholder:"Ej.: ¿Cuál es el promedio de consultas quirúrgicas?",aiAskBtn:"Preguntar",
@@ -1515,7 +1558,9 @@ const I18N = {
   examTitle:"Обследования по типам",examNote:"Распределение проведенных обследований в выбранном периоде.",
   voyageTitle:"Маршрут экспедиций",voyageNote:"Каждый узел — это обслуженный город в порядке плавания корабля.",
   rankTitle:"Рейтинг городов · Общее обслуживание",rankNote:"Сумма выбранного периода по городу.",
-  colMun:"Город",colExp:"Экспедиции",colDias:"Дни обслуживания",colGeral:"Общее обслуживание",
+  colMun:"Город",colExp:"Экспедиции",colDiasAtendimento:"Дни обслуживания",colGeral:"Общее обслуживание",
+  diasExpTitle:"Всего дней в экспедициях",infoDiasExp:"Общее количество дней, которые лодка провела в плавании (включая туристические поездки, возвращение и остановки).",
+  diasAtendTitle:"Всего дней обслуживания",infoDiasAtend:"Общее количество дней, посвященных медицинскому обслуживанию в посещенных общинах.",
   insightsAutoTitle:"Автоматические аналитические данные",insightsAutoSub:"Сгенерировано из данных выбранного периода",
   aiTitle:"Помощник по данным",aiSub:"Задавайте вопросы о специальностях, обследованиях, категориях или городах — мгновенные расчеты без интернета.",
   aiPlaceholder:"Например: Какое среднее количество хирургических консультаций?",aiAskBtn:"Спросить",
@@ -2156,8 +2201,21 @@ function renderRecentExpeditions(){
 function renderDashboard(){
   const exp = currentExpeditions();
   const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude');
+  const totalDiasAtend=exp.reduce((a,b)=>a+(b.diasAtendimento||0),0);
+  const totalDiasExp=exp.reduce((a,b)=>a+(b.diasTotalExpedicao||0),0); // Soma dos dias totais de cada expedição
+
   document.getElementById('bigGeral').textContent = fmt(totalGeral);
   document.getElementById('bigSaude').textContent = fmt(totalSaude);
+
+  const bigDiasAtend = document.getElementById('bigDiasAtend');
+  if(bigDiasAtend) bigDiasAtend.textContent = totalDiasAtend.toFixed(1);
+
+  const bigDiasExp = document.getElementById('bigDiasExp');
+  if(bigDiasExp) bigDiasExp.textContent = totalDiasExp.toFixed(1);
+
+  const bigCountExp = document.getElementById('bigCountExp');
+  if(bigCountExp) bigCountExp.textContent = exp.length.toString();
+
   renderYoyBadge('bigGeralDelta', 'geral');
   renderYoyBadge('bigSaudeDelta', 'saude');
   renderTripInfo();
@@ -2520,13 +2578,13 @@ function renderRanking(){
   const map = {};
   currentExpeditions().forEach(d=>{
     const key = d.mun.replace(/\s*\(.*\)/,'');
-    if(!map[key]) map[key] = {geral:0,exp:0};
-    map[key].geral += d.geral; map[key].exp += 1;
+    if(!map[key]) map[key] = {geral:0,exp:0,dias:0.0};
+    map[key].geral += d.geral; map[key].exp += 1; map[key].dias += (d.diasAtendimento||0.0);
   });
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral).slice(0,14);
   const max = rows.length? rows[0][1].geral : 1;
   document.getElementById('rankBody').innerHTML = rows.map((r,i)=>`
-    <tr><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td>
+    <tr><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
     <td><div class="bar-cell"><span class="mono">${fmt(r[1].geral)}</span><div class="bar-track"><div class="bar-fill" style="width:${(r[1].geral/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('');
 
   destroyIfExists(chartTop10);
@@ -2992,9 +3050,13 @@ function renderReport(){
   document.getElementById('reportSummary').textContent = t.reportIntro(exp.length, totalGeral, totalSaude, municipios.size);
 
   // KPIs
+  const totalDiasAtend = exp.reduce((a,b)=>a+(b.diasAtendimento||0),0);
+  const totalDiasExp = exp.reduce((a,b)=>a+(b.diasTotalExpedicao||0),0);
   const kpis = [
     [t.miniExpL, exp.length],
     [t.miniMunL, municipios.size],
+    [t.diasExpTitle, totalDiasExp.toFixed(1)],
+    [t.diasAtendTitle, totalDiasAtend.toFixed(1)],
     [t.bigGeralL, fmt(totalGeral)],
     [t.bigSaudeL, fmt(totalSaude)],
     [t.pacientesL, totalPacientes>0 ? fmt(totalPacientes) : t.pacientesNA],
@@ -3021,9 +3083,9 @@ function renderReport(){
 
   // ranking
   const map = {};
-  exp.forEach(d=>{ if(!map[d.mun]) map[d.mun]={geral:0,exp:0}; map[d.mun].geral+=d.geral; map[d.mun].exp+=1; });
+  exp.forEach(d=>{ if(!map[d.mun]) map[d.mun]={geral:0,exp:0,dias:0.0}; map[d.mun].geral+=d.geral; map[d.mun].exp+=1; map[d.mun].dias+=(d.diasAtendimento||0.0); });
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
-  document.getElementById('reportRankBody').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`).join('');
+  document.getElementById('reportRankBody').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${r[1].dias.toFixed(1)}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`).join('');
 
   // specialties
   const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
