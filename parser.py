@@ -71,15 +71,40 @@ def extract_schedule_data(ods_path):
             'table': 'urn:oasis:names:tc:opendocument:xmlns:table:1.0',
             'text': 'urn:oasis:names:tc:opendocument:xmlns:text:1.0'
         }
-        
+
+        def horas_to_minutes(horas_str):
+            """Converte "15:00", "14h30" ou "14.5" para minutos"""
+            if not horas_str:
+                return 0
+            horas_str = horas_str.strip().lower()
+            try:
+                # Formato "15:00" (com dois pontos)
+                if ':' in horas_str:
+                    parts = horas_str.split(':')
+                    hours = int(parts[0])
+                    mins = int(parts[1]) if len(parts) > 1 else 0
+                    return hours * 60 + mins
+                # Formato "14h30" ou "14h 30"
+                elif 'h' in horas_str:
+                    parts = horas_str.replace('h', ' ').split()
+                    hours = int(parts[0])
+                    mins = int(parts[1]) if len(parts) > 1 else 0
+                    return hours * 60 + mins
+                # Formato decimal "14.5"
+                else:
+                    horas_float = float(horas_str)
+                    return int(horas_float * 60)
+            except:
+                return 0
+
         schedule = {}
         sheets = root.findall('.//table:table', namespaces)
-        
+
         for sheet in sheets:
             name = sheet.get('{urn:oasis:names:tc:opendocument:xmlns:table:1.0}name', '')
             if 'CHEGADA' not in name.upper():
                 continue
-            
+
             rows = sheet.findall('.//table:table-row', namespaces)
             for i, row in enumerate(rows):
                 if i < 2:  # Skip headers
@@ -90,10 +115,12 @@ def extract_schedule_data(ods_path):
                     text_elem = cell.find('.//text:p', namespaces)
                     value = text_elem.text if text_elem is not None and text_elem.text else ""
                     row_data.append(value)
-                
+
                 if len(row_data) >= 9:
                     year = row_data[0].strip()
                     exp_num = row_data[1].strip()
+                    cidade_destino = row_data[2].strip() if len(row_data) > 2 else ""
+                    comunidade = row_data[3].strip() if len(row_data) > 3 else ""
                     saida = row_data[4].strip() if len(row_data) > 4 else ""
                     chegada_dest = row_data[5].strip() if len(row_data) > 5 else ""
                     nav_ida = row_data[6].strip() if len(row_data) > 6 else ""
@@ -120,6 +147,13 @@ def extract_schedule_data(ods_path):
                             except:
                                 dias_totais = 0.0
 
+                            # Converter horas de navegação para minutos
+                            ida_min = horas_to_minutes(nav_ida)
+                            volta_min = horas_to_minutes(nav_volta)
+
+                            # Usar nome da comunidade se disponível, senão usar cidade
+                            comunidade_display = comunidade if comunidade and comunidade != '-' else cidade_destino
+
                             schedule[key] = {
                                 'saida': saida,
                                 'chegada_destino': chegada_dest,
@@ -127,11 +161,18 @@ def extract_schedule_data(ods_path):
                                 'retorno': retorno,
                                 'chegada_manaus': chegada_manaus,
                                 'navegacao_volta': nav_volta,
-                                'dias_totais': dias_totais
+                                'dias_totais': dias_totais,
+                                # Formato compatível com template (em minutos)
+                                'idaMin': ida_min,
+                                'voltaMin': volta_min,
+                                'extraMin': 0,
+                                'diasTotal': dias_totais,
+                                'comunidade': comunidade_display or '',
+                                'nota': None
                             }
                         except:
                             pass
-        
+
         return schedule
     except Exception as e:
         print(f"Erro ao extrair horários: {e}")

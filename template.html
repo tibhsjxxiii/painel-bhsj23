@@ -1924,7 +1924,7 @@ function renderYoyBadge(elId, metricKey){
   el.className = 'delta ' + (up?'up':'down');
   el.innerHTML = `${up?'▲':'▼'} ${Math.abs(d.pct).toFixed(1)}% <span style="color:var(--muted-2);font-weight:500;">${t.yoyVs} ${d.prevYear}</span>`;
 }
-function getNavData(exp){ return NAVIGATION_DATA[`${exp.year}_${exp.n}`] || null; }
+function getNavData(exp){ return exp.horarios || NAVIGATION_DATA[`${exp.year}_${exp.n}`] || null; }
 function navMinToHours(min){ return min/60; }
 
 function haversineKm(lat1, lon1, lat2, lon2){
