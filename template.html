@@ -1965,8 +1965,8 @@ function renderTripInfo(){
   const t = I18N[CUR_LANG];
   const exp = currentExpeditions();
 
-  // Filtrar expedições com dados de navegação
-  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav && x.nav.idaMin);
+  // Filtrar expedições com dados de navegação VÁLIDOS
+  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
 
   if(!withNav.length){
     document.getElementById('tripInfoCompact').innerHTML = `<div style="color:var(--muted);">—</div>`;
@@ -2088,7 +2088,7 @@ function renderNavegacao(){
   if(document.getElementById('mapAmazonas')) renderNavMap();
   const t = I18N[CUR_LANG];
   const exp = [...currentExpeditions()].sort((a,b)=> a.year-b.year || (parseFloat(a.n)||0)-(parseFloat(b.n)||0));
-  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav);
+  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
 
   if(!withNav.length){
     document.getElementById('bigNavHoras').textContent = '—';

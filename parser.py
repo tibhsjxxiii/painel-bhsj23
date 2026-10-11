@@ -334,7 +334,7 @@ def parse_year_sheet(df, year):
             "internClinCir": detail_totals["internClinCir"].get(c, 0),
             "spec": specialties_per_col[c],
             "exam": exams_per_col[c],
-            "horarios": {},
+            "horarios": None,  # Será preenchido se tiver dados na aba CHEGADA E SAIDA
             "diasTotalExpedicao": 0.0,
         })
 
