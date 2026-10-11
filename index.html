@@ -242,7 +242,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 10/10/2026 10:17</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 11/10/2026 02:10</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -565,14 +565,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 10/10/2026 10:17</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 11/10/2026 02:10</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 10/10/2026 10:17</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 11/10/2026 02:10</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -690,7 +690,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "10/10/2026 10:17";
+const GENERATED_AT = "11/10/2026 02:10";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1963,27 +1963,37 @@ function estimateKmForExpeditions(exps){
 
 function renderTripInfo(){
   const t = I18N[CUR_LANG];
-  const panel = document.getElementById('tripInfoPanel');
   const exp = currentExpeditions();
-  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav);
-  if(!withNav.length){ panel.style.display='none'; return; }
-  panel.style.display = '';
-  const totalMin = withNav.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+x.nav.extraMin,0);
-  const avgDias = withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length;
-  const kmEst = estimateKmForExpeditions(exp);
-  document.getElementById('tripInfoRow').innerHTML = `
-    <div>
-      <div style="font-size:0.62rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.navBigHoras}</div>
-      <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--navy);">${fmtAvg(navMinToHours(totalMin))}h</div>
-    </div>
-    <div>
-      <div style="font-size:0.62rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.navBigDias}</div>
-      <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--navy);">${fmtAvg(avgDias)}</div>
-    </div>
-    <div>
-      <div style="font-size:0.62rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.navBigKm}</div>
-      <div class="mono" style="font-size:1.05rem;font-weight:700;color:var(--navy);">${fmt(kmEst)} km</div>
-      <div class="mono" style="font-size:0.72rem;color:var(--muted);">${fmt(kmToNm(kmEst))} ${t.navMn}<span style="color:var(--muted-2);"> *</span></div>
+
+  // Filtrar expedições com dados de navegação
+  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav && x.nav.idaMin);
+
+  if(!withNav.length){
+    document.getElementById('tripInfoCompact').innerHTML = `<div style="color:var(--muted);">—</div>`;
+    return;
+  }
+
+  // Calcular totais
+  const totalIdaMin = withNav.reduce((a,x)=>a+(x.nav.idaMin||0),0);
+  const totalVoltaMin = withNav.reduce((a,x)=>a+(x.nav.voltaMin||0),0);
+  const totalMin = totalIdaMin + totalVoltaMin;
+  const avgDias = withNav.length > 0 ? withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length : 0;
+
+  // Formatar valores
+  const horasTotal = (totalMin / 60).toFixed(1);
+  const avgDiasStr = avgDias.toFixed(1);
+
+  // Renderizar painel compacto
+  document.getElementById('tripInfoCompact').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:6px;width:100%;">
+      <div>
+        <div style="font-size:0.55rem;color:var(--muted);text-transform:uppercase;font-weight:600;">${t.navBigHoras}</div>
+        <div class="mono" style="font-size:0.95rem;font-weight:700;color:var(--navy);">${horasTotal}h</div>
+      </div>
+      <div>
+        <div style="font-size:0.55rem;color:var(--muted);text-transform:uppercase;font-weight:600;">${t.navBigDias}</div>
+        <div class="mono" style="font-size:0.95rem;font-weight:700;color:var(--navy);">${avgDiasStr}</div>
+      </div>
     </div>`;
 }
 

@@ -73,26 +73,42 @@ def extract_schedule_data(ods_path):
         }
 
         def horas_to_minutes(horas_str):
-            """Converte "15:00", "14h30" ou "14.5" para minutos"""
+            """Converte "15:00", "14h30" ou "14.5" para minutos (validando dados)"""
             if not horas_str:
                 return 0
             horas_str = horas_str.strip().lower()
             try:
+                # Rejeitar valores negativos ou inválidos
+                if '-' in horas_str or '/' in horas_str:
+                    return 0
+
                 # Formato "15:00" (com dois pontos)
                 if ':' in horas_str:
                     parts = horas_str.split(':')
                     hours = int(parts[0])
                     mins = int(parts[1]) if len(parts) > 1 else 0
+
+                    # Validação: horas não deve ser > 200 (navegação irreal)
+                    if hours < 0 or hours > 200 or mins < 0 or mins >= 60:
+                        return 0
+
                     return hours * 60 + mins
                 # Formato "14h30" ou "14h 30"
                 elif 'h' in horas_str:
                     parts = horas_str.replace('h', ' ').split()
                     hours = int(parts[0])
                     mins = int(parts[1]) if len(parts) > 1 else 0
+
+                    # Validação
+                    if hours < 0 or hours > 200 or mins < 0 or mins >= 60:
+                        return 0
+
                     return hours * 60 + mins
                 # Formato decimal "14.5"
                 else:
                     horas_float = float(horas_str)
+                    if horas_float < 0 or horas_float > 500:
+                        return 0
                     return int(horas_float * 60)
             except:
                 return 0
