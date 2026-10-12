@@ -3351,7 +3351,7 @@ function renderInternacoes(){
 
   const ctxEvol = document.getElementById('chartInternEvol');
   if(ctxEvol){
-    if(window.chartInternEvol) window.chartInternEvol.destroy();
+    destroyIfExists(window.chartInternEvol);
     window.chartInternEvol = new Chart(ctxEvol, {
       type:'bar',
       data:{
@@ -3361,7 +3361,7 @@ function renderInternacoes(){
           {label:t.internMedia,data:dataMedia,backgroundColor:'rgba(184,147,74,0.7)',borderColor:'var(--gold)',borderWidth:1}
         ]
       },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:false},y:{beginAtZero:true}},plugins:[valueLabelPlugin]}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},valueLabelPlugin},scales:{x:{stacked:false},y:{beginAtZero:true}}}
     });
   }
 
@@ -3412,7 +3412,7 @@ function renderComparativo(){
   // ABA GERAL
   const ctxGeral = document.getElementById('chartCompGeral');
   if(ctxGeral){
-    if(window.chartCompGeral) window.chartCompGeral.destroy();
+    destroyIfExists(window.chartCompGeral);
     const dataByYear = anos.map(y=>dadosPorAno[y].totalGeral);
     const expByYear = anos.map(y=>dadosPorAno[y].expeditions.length);
 
@@ -3496,7 +3496,7 @@ function renderComparativo(){
 
   const ctxEfic = document.getElementById('chartCompEficacia');
   if(ctxEfic){
-    if(window.chartCompEficacia) window.chartCompEficacia.destroy();
+    destroyIfExists(window.chartCompEficacia);
     window.chartCompEficacia = new Chart(ctxEfic, {
       type:'line',
       data:{
@@ -3505,7 +3505,7 @@ function renderComparativo(){
           {label:t.eficAtendDia,data:eficData.map(e=>e.atendDia),borderColor:'var(--teal)',backgroundColor:'rgba(14,143,111,0.1)',tension:0.3}
         ]
       },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true}},plugins:[valueLabelPlugin]}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},valueLabelPlugin},scales:{y:{beginAtZero:true}}}
     });
   }
 

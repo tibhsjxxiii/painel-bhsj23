@@ -252,7 +252,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 12/10/2026 20:08</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 12/10/2026 20:23</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -670,14 +670,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 12/10/2026 20:08</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 12/10/2026 20:23</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 12/10/2026 20:08</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 12/10/2026 20:23</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -801,7 +801,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "12/10/2026 20:08";
+const GENERATED_AT = "12/10/2026 20:23";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3351,7 +3351,7 @@ function renderInternacoes(){
 
   const ctxEvol = document.getElementById('chartInternEvol');
   if(ctxEvol){
-    if(window.chartInternEvol) window.chartInternEvol.destroy();
+    destroyIfExists(window.chartInternEvol);
     window.chartInternEvol = new Chart(ctxEvol, {
       type:'bar',
       data:{
@@ -3361,7 +3361,7 @@ function renderInternacoes(){
           {label:t.internMedia,data:dataMedia,backgroundColor:'rgba(184,147,74,0.7)',borderColor:'var(--gold)',borderWidth:1}
         ]
       },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:false},y:{beginAtZero:true}},plugins:[valueLabelPlugin]}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},valueLabelPlugin},scales:{x:{stacked:false},y:{beginAtZero:true}}}
     });
   }
 
@@ -3412,7 +3412,7 @@ function renderComparativo(){
   // ABA GERAL
   const ctxGeral = document.getElementById('chartCompGeral');
   if(ctxGeral){
-    if(window.chartCompGeral) window.chartCompGeral.destroy();
+    destroyIfExists(window.chartCompGeral);
     const dataByYear = anos.map(y=>dadosPorAno[y].totalGeral);
     const expByYear = anos.map(y=>dadosPorAno[y].expeditions.length);
 
@@ -3496,7 +3496,7 @@ function renderComparativo(){
 
   const ctxEfic = document.getElementById('chartCompEficacia');
   if(ctxEfic){
-    if(window.chartCompEficacia) window.chartCompEficacia.destroy();
+    destroyIfExists(window.chartCompEficacia);
     window.chartCompEficacia = new Chart(ctxEfic, {
       type:'line',
       data:{
@@ -3505,7 +3505,7 @@ function renderComparativo(){
           {label:t.eficAtendDia,data:eficData.map(e=>e.atendDia),borderColor:'var(--teal)',backgroundColor:'rgba(14,143,111,0.1)',tension:0.3}
         ]
       },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true}},plugins:[valueLabelPlugin]}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},valueLabelPlugin},scales:{y:{beginAtZero:true}}}
     });
   }
 
