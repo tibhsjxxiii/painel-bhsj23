@@ -235,8 +235,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     <button class="nav-item active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg><span data-i18n="navDash">Painel</span></button>
     <button class="nav-item" data-view="specialties"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v7a6 6 0 0012 0V4"/><path d="M9 4V2M15 4V2"/><circle cx="18" cy="15" r="3"/></svg><span data-i18n="navSpec">Especialidades</span></button>
     <button class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></button>
-    <button class="nav-item" data-view="internacoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21v-6a4 4 0 014-4h8a4 4 0 014 4v6"/><path d="M4 21h16"/><path d="M9 11V7a3 3 0 016 0v4"/><path d="M12 3v2"/></svg><span data-i18n="navInternacoes">Internações</span></button>
-    <button class="nav-item" data-view="comparativo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h18M3 6h18M3 18h18"/><rect x="3" y="3" width="8" height="18" fill="none"/><rect x="13" y="8" width="8" height="13" fill="none"/></svg><span data-i18n="navComparativo">Comparativo</span></button>
     <button class="nav-item" data-view="navegacao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polygon points="16,8 12,12 8,16 12,12" fill="currentColor" stroke="none"/></svg><span data-i18n="navNavegacao">Navegação</span></button>
     <button class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></button>
     <button class="nav-item" data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg><span data-i18n="navReport">Relatório</span></button>
@@ -252,16 +250,12 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 12/10/2026 20:23</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 13/10/2026 15:39</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
           <span data-i18n="lastExpBtn">Última Expedição</span>
-        </button>
-        <button id="btnSelectExp" class="report-btn" style="display:flex;align-items:center;gap:8px;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M12 5v14M5 12h14"/></svg>
-          <span data-i18n="selectExpBtn">Selecionar Expedição</span>
         </button>
         <div class="year-select" id="yearSelect"></div>
         <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
@@ -436,96 +430,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       </div>
     </div>
 
-    <div class="view" id="view-internacoes">
-      <div class="stack">
-        <div class="bignum-row">
-          <div class="bignum"><div class="v mono" id="bigInternTotal">—</div><div class="l" data-i18n="internTotal">Internações Totais</div></div>
-          <div class="bignum"><div class="v mono" id="bigInternBaixa">—</div><div class="l" data-i18n="internBaixa">Cirurgia Baixa Complexidade</div></div>
-          <div class="bignum"><div class="v mono" id="bigInternMedia">—</div><div class="l" data-i18n="internMedia">Cirurgia Média Complexidade</div></div>
-        </div>
-        <div class="panel">
-          <div class="panel-title"><span data-i18n="internEvolTitle">Evolução de Internações por Expedição</span><button class="info-icon" data-info="infoInternEvol">i</button></div>
-          <div class="panel-sub" data-i18n="internEvolSub">Acompanhamento de internações clínicas e cirúrgicas ao longo das expedições</div>
-          <div class="chart-wrap" style="height:300px;"><canvas id="chartInternEvol"></canvas></div>
-        </div>
-        <div class="panel">
-          <div class="panel-title"><span data-i18n="internRankTitle">Ranking de Municípios por Internações</span><button class="info-icon" data-info="infoInternRank">i</button></div>
-          <div class="panel-sub" data-i18n="internRankSub">Municípios com maior número de internações registradas</div>
-          <table><thead><tr><th data-i18n="colMun">Município</th><th data-i18n="internColBaixa">Baixa</th><th data-i18n="internColMedia">Média</th><th data-i18n="internColTotal">Total</th></tr></thead><tbody id="internRankBody"></tbody></table>
-        </div>
-      </div>
-    </div>
-
-    <div class="view" id="view-comparativo">
-      <div class="stack">
-        <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
-          <button class="comp-tab active" data-tab="geral" data-i18n="compTabGeral">Geral</button>
-          <button class="comp-tab" data-tab="especialidades" data-i18n="compTabEspec">Especialidades</button>
-          <button class="comp-tab" data-tab="municipios" data-i18n="compTabMun">Municípios</button>
-          <button class="comp-tab" data-tab="eficiencia" data-i18n="compTabEfic">Eficiência</button>
-        </div>
-
-        <div class="comp-content" id="comp-geral">
-          <div class="panel">
-            <div class="panel-title" data-i18n="compGeralTitle">Comparação Geral de Atendimentos</div>
-            <div class="chart-wrap" style="height:320px;"><canvas id="chartCompGeral"></canvas></div>
-          </div>
-          <div class="panel">
-            <div class="panel-title" data-i18n="compMetricasTitle">Métricas Principais</div>
-            <table id="compMetricasTable"><thead><tr><th data-i18n="metricaAno">Ano</th><th data-i18n="metricaExpedicoes">Expedições</th><th data-i18n="metricaAtendimentos">Atendimentos</th><th data-i18n="metricaDias">Dias Atendimento</th><th data-i18n="metricaMedia">Média/Expedição</th></tr></thead><tbody id="compMetricasBody"></tbody></table>
-          </div>
-        </div>
-
-        <div class="comp-content" id="comp-especialidades" style="display:none;">
-          <div class="panel">
-            <div class="panel-title" data-i18n="compEspecTitle">Especialidades: Novas e Removidas</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-              <div>
-                <h3 data-i18n="compNovas" style="color:var(--teal);font-weight:600;margin-bottom:10px;">✨ Novas em 2026</h3>
-                <ul id="especNovas" style="list-style:none;padding:0;"></ul>
-              </div>
-              <div>
-                <h3 data-i18n="compRemovidas" style="color:var(--gold);font-weight:600;margin-bottom:10px;">➖ Removidas de 2026</h3>
-                <ul id="especRemovidas" style="list-style:none;padding:0;"></ul>
-              </div>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-title" data-i18n="compTopEspecTitle">Top 10 Especialidades por Volume (2026 vs 2025)</div>
-            <div class="chart-wrap" style="height:320px;"><canvas id="chartCompEspec"></canvas></div>
-          </div>
-        </div>
-
-        <div class="comp-content" id="comp-municipios" style="display:none;">
-          <div class="panel">
-            <div class="panel-title" data-i18n="compMunTitle">Municípios: Novos e Expansão</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-              <div>
-                <h3 data-i18n="compNovosMun" style="color:var(--teal);font-weight:600;margin-bottom:10px;">🗺️ Novos em 2026</h3>
-                <ul id="munNovos" style="list-style:none;padding:0;"></ul>
-              </div>
-              <div>
-                <h3 data-i18n="compSaiosMun" style="color:var(--gold);font-weight:600;margin-bottom:10px;">📍 Visitados em ambos</h3>
-                <ul id="munRepetidos" style="list-style:none;padding:0;"></ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="comp-content" id="comp-eficiencia" style="display:none;">
-          <div class="panel">
-            <div class="panel-title" data-i18n="compEficTitle">Análise de Eficiência por Expedição</div>
-            <div style="font-size:0.9rem;color:var(--muted);margin-bottom:14px;" data-i18n="compEficSub">Métricas de eficiência operacional comparando atendimentos com dias de viagem</div>
-            <div class="chart-wrap" style="height:300px;"><canvas id="chartCompEficacia"></canvas></div>
-          </div>
-          <div class="panel">
-            <div class="panel-title" data-i18n="compEficExpTitle">Eficiência por Expedição</div>
-            <table><thead><tr><th data-i18n="colExpedicao">Expedição</th><th data-i18n="eficAtendDia">Atend./Dia</th><th data-i18n="eficPacientes">Pacientes</th><th data-i18n="eficConsultasPac">Consultas/Pac</th></tr></thead><tbody id="compEficBody"></tbody></table>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="view" id="view-navegacao">
       <div class="stack">
         <div class="bignum-row">
@@ -670,14 +574,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 12/10/2026 20:23</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 13/10/2026 15:39</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 12/10/2026 20:23</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 13/10/2026 15:39</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -801,7 +705,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "12/10/2026 20:23";
+const GENERATED_AT = "13/10/2026 15:39";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1944,7 +1848,7 @@ function applyI18n(){
   if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
   const footerEl = document.querySelector('[data-i18n="footerText"]');
   if(footerEl && t.footerText) footerEl.textContent = t.footerText.replace('{date}', GENERATED_AT);
-  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); renderInternacoes(); renderComparativo(); buildExamAvgChart(); renderReport(); renderNavegacao(); }
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); }
 }
 
 /* ================= mobile nav toggle ================= */
@@ -2025,7 +1929,7 @@ function renderYearSelector(){
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     YEAR = b.dataset.year;
     renderYearSelector();
-    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); renderInternacoes(); renderComparativo(); buildExamAvgChart(); renderReport(); renderNavegacao();
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao();
     writeUrlState();
   }));
 }
@@ -2601,76 +2505,6 @@ function openLastExpeditionModal(){
 }
 document.getElementById('btnLastExp').addEventListener('click', openLastExpeditionModal);
 
-function openExpeditionSelector(){
-  if(!ALL_EXPEDITIONS.length) return;
-  const t = I18N[CUR_LANG];
-
-  // Agrupar expedições por ano em ordem reversa
-  const byYear = {};
-  ALL_EXPEDITIONS.forEach(exp=>{
-    if(!byYear[exp.year]) byYear[exp.year] = [];
-    byYear[exp.year].push(exp);
-  });
-
-  const years = Object.keys(byYear).sort((a,b)=>b-a);
-  let expedicoesList = '';
-
-  years.forEach(year=>{
-    expedicoesList += `<div style="margin-bottom:16px;"><div style="font-weight:700;color:var(--navy);font-size:0.9rem;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line);">${year}</div>`;
-
-    byYear[year].sort((a,b)=>(typeof a.n==='number'?a.n:0)-(typeof b.n==='number'?b.n:0)).forEach(exp=>{
-      const expNum = typeof exp.n === 'number' ? `#${exp.n}` : `${exp.n}`;
-      expedicoesList += `
-        <button onclick="openExpeditionReportModal(${ALL_EXPEDITIONS.indexOf(exp)})" style="display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:6px;cursor:pointer;transition:all 0.15s;font-family:inherit;color:var(--text);">
-          <div style="display:flex;flex-direction:column;align-items:flex-start;">
-            <div style="font-weight:600;font-size:0.9rem;color:var(--navy);">Expedição ${expNum}</div>
-            <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">${exp.mun}</div>
-          </div>
-          <div style="text-align:right;">
-            <div class="mono" style="font-weight:700;font-size:0.85rem;color:var(--teal);">${fmt(exp.geral)}</div>
-            <div style="font-size:0.7rem;color:var(--muted);">${exp.data||'—'}</div>
-          </div>
-        </button>`;
-    });
-    expedicoesList += '</div>';
-  });
-
-  const overlay = document.createElement('div');
-  overlay.id = 'expSelectorOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
-  overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:580px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
-          <div class="serif" style="font-size:1.15rem;font-weight:700;color:var(--navy);letter-spacing:0.02em;" data-i18n="selectExpTitle">Selecionar Expedição</div>
-        </div>
-        <button onclick="document.getElementById('expSelectorOverlay').remove();" style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--muted);">✕</button>
-      </div>
-      <div style="margin-bottom:14px;">
-        <input type="text" id="expSearchInput" placeholder="${t.selectExpSearch}" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.9rem;color:var(--text);">
-      </div>
-      <div id="expedicoesList" style="max-height:calc(85vh - 160px);overflow-y:auto;">
-        ${expedicoesList}
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
-
-  // Busca de expedições
-  const searchInput = document.getElementById('expSearchInput');
-  searchInput.addEventListener('input', (e)=>{
-    const query = e.target.value.toLowerCase();
-    const buttons = document.querySelectorAll('#expedicoesList button');
-    buttons.forEach(btn=>{
-      const text = btn.textContent.toLowerCase();
-      btn.style.display = text.includes(query) ? 'flex' : 'none';
-    });
-  });
-
-  setTimeout(()=>searchInput.focus(), 100);
-}
-
 function openExpeditionReportModal(expIndex){
   if(expIndex < 0 || expIndex >= ALL_EXPEDITIONS.length) return;
 
@@ -2741,7 +2575,6 @@ function openExpeditionReportModal(expIndex){
   document.getElementById('expReportModalExportPdf').addEventListener('click', ()=>exportExpeditionPdf(exp));
 }
 
-document.getElementById('btnSelectExp').addEventListener('click', openExpeditionSelector);
 const valueLabelPlugin = {
   id: 'valueLabel',
   afterDatasetsDraw(chart){
@@ -2881,7 +2714,7 @@ function renderRanking(){
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral).slice(0,14);
   const max = rows.length? rows[0][1].geral : 1;
   document.getElementById('rankBody').innerHTML = rows.map((r,i)=>`
-    <tr><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
+    <tr style="cursor:pointer;" onclick="openMunicipalModal('${r[0]}')"><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
     <td><div class="bar-cell"><span class="mono">${fmt(r[1].geral)}</span><div class="bar-track"><div class="bar-fill" style="width:${(r[1].geral/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('');
 
   destroyIfExists(chartTop10);
@@ -3331,199 +3164,6 @@ function renderInsightsAuto(){
   document.getElementById('insightsList').innerHTML = items.map(i=>`<li><span class="insights-dot">●</span>${i}</li>`).join('');
 }
 
-/* ================= internações ================= */
-function renderInternacoes(){
-  const t = I18N[CUR_LANG];
-  const exp = currentExpeditions();
-
-  const internTotal = sum(exp,'intern');
-  const internBaixa = sum(exp,'cirBaixa');
-  const internMedia = sum(exp,'cirMedia');
-
-  document.getElementById('bigInternTotal').textContent = fmt(internTotal);
-  document.getElementById('bigInternBaixa').textContent = fmt(internBaixa);
-  document.getElementById('bigInternMedia').textContent = fmt(internMedia);
-
-  // Gráfico de evolução
-  const labels = exp.map((e,i)=>`${typeof e.n==='number'?'#'+e.n:e.n}`);
-  const dataBaixa = exp.map(e=>e.cirBaixa||0);
-  const dataMedia = exp.map(e=>e.cirMedia||0);
-
-  const ctxEvol = document.getElementById('chartInternEvol');
-  if(ctxEvol){
-    destroyIfExists(window.chartInternEvol);
-    window.chartInternEvol = new Chart(ctxEvol, {
-      type:'bar',
-      data:{
-        labels:labels,
-        datasets:[
-          {label:t.internBaixa,data:dataBaixa,backgroundColor:'rgba(14,143,111,0.7)',borderColor:'var(--teal)',borderWidth:1},
-          {label:t.internMedia,data:dataMedia,backgroundColor:'rgba(184,147,74,0.7)',borderColor:'var(--gold)',borderWidth:1}
-        ]
-      },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},valueLabelPlugin},scales:{x:{stacked:false},y:{beginAtZero:true}}}
-    });
-  }
-
-  // Ranking por município
-  const munData = {};
-  exp.forEach(e=>{
-    if(!munData[e.mun]) munData[e.mun]={baixa:0,media:0};
-    munData[e.mun].baixa += e.cirBaixa||0;
-    munData[e.mun].media += e.cirMedia||0;
-  });
-
-  const ranking = Object.entries(munData)
-    .map(([mun,{baixa,media}])=>({mun,baixa,media,total:baixa+media}))
-    .sort((a,b)=>b.total-a.total)
-    .slice(0,15);
-
-  document.getElementById('internRankBody').innerHTML = ranking.map(r=>`
-    <tr>
-      <td>${r.mun}</td>
-      <td class="mono">${fmt(r.baixa)}</td>
-      <td class="mono">${fmt(r.media)}</td>
-      <td class="mono" style="font-weight:700;">${fmt(r.total)}</td>
-    </tr>`).join('');
-}
-
-/* ================= comparativo ================= */
-function renderComparativo(){
-  const t = I18N[CUR_LANG];
-
-  // Dados por ano
-  const dadosPorAno = {};
-  ALL_EXPEDITIONS.forEach(exp=>{
-    if(!dadosPorAno[exp.year]) dadosPorAno[exp.year]={
-      expeditions:[],
-      totalGeral:0,totalPacientes:0,totalDias:0,especialidades:new Set(),municipios:new Set()
-    };
-    dadosPorAno[exp.year].expeditions.push(exp);
-    dadosPorAno[exp.year].totalGeral += exp.geral||0;
-    dadosPorAno[exp.year].totalPacientes += exp.pacientes||0;
-    dadosPorAno[exp.year].totalDias += exp.diasAtendimento||0;
-    dadosPorAno[exp.year].municipios.add(exp.mun);
-    // Adicionar especialidades
-    if(exp.spec) Object.keys(exp.spec).forEach(s=>dadosPorAno[exp.year].especialidades.add(s));
-  });
-
-  const anos = Object.keys(dadosPorAno).sort();
-
-  // ABA GERAL
-  const ctxGeral = document.getElementById('chartCompGeral');
-  if(ctxGeral){
-    destroyIfExists(window.chartCompGeral);
-    const dataByYear = anos.map(y=>dadosPorAno[y].totalGeral);
-    const expByYear = anos.map(y=>dadosPorAno[y].expeditions.length);
-
-    window.chartCompGeral = new Chart(ctxGeral, {
-      type:'bar',
-      data:{
-        labels:anos,
-        datasets:[
-          {label:t.metricaAtendimentos,data:dataByYear,backgroundColor:'rgba(14,42,74,0.7)',borderColor:'var(--navy)',borderWidth:1,yAxisID:'y'}
-        ]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{position:'bottom'}},
-        scales:{
-          y:{type:'linear',position:'left',beginAtZero:true},
-          y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}
-        }
-      }
-    });
-  }
-
-  // Tabela de métricas
-  const metricsHTML = anos.map(y=>{
-    const d = dadosPorAno[y];
-    const media = d.expeditions.length ? Math.round(d.totalGeral/d.expeditions.length) : 0;
-    return `<tr>
-      <td>${y}</td>
-      <td class="mono">${d.expeditions.length}</td>
-      <td class="mono">${fmt(d.totalGeral)}</td>
-      <td class="mono">${fmt(d.totalDias)}</td>
-      <td class="mono">${fmt(media)}</td>
-    </tr>`;
-  }).join('');
-
-  document.getElementById('compMetricasBody').innerHTML = metricsHTML;
-
-  // ABA ESPECIALIDADES
-  if(anos.length>=2){
-    const ano1 = anos[0], ano2 = anos[anos.length-1];
-    const esp1 = dadosPorAno[ano1].especialidades;
-    const esp2 = dadosPorAno[ano2].especialidades;
-
-    const novas = [...esp2].filter(e=>!esp1.has(e));
-    const removidas = [...esp1].filter(e=>!esp2.has(e));
-
-    document.getElementById('especNovas').innerHTML = novas.length?
-      novas.map(e=>`<li>✨ ${e}</li>`).join('') :
-      `<li style="color:var(--muted);">-</li>`;
-
-    document.getElementById('especRemovidas').innerHTML = removidas.length?
-      removidas.map(e=>`<li>➖ ${e}</li>`).join('') :
-      `<li style="color:var(--muted);">-</li>`;
-  }
-
-  // ABA MUNICÍPIOS
-  if(anos.length>=2){
-    const ano1 = anos[0], ano2 = anos[anos.length-1];
-    const mun1 = dadosPorAno[ano1].municipios;
-    const mun2 = dadosPorAno[ano2].municipios;
-
-    const novos = [...mun2].filter(m=>!mun1.has(m));
-    const repetidos = [...mun2].filter(m=>mun1.has(m));
-
-    document.getElementById('munNovos').innerHTML = novos.length?
-      novos.map(m=>`<li>🗺️ ${m}</li>`).join('') :
-      `<li style="color:var(--muted);">-</li>`;
-
-    document.getElementById('munRepetidos').innerHTML = repetidos.length?
-      repetidos.map(m=>`<li>📍 ${m}</li>`).join('') :
-      `<li style="color:var(--muted);">-</li>`;
-  }
-
-  // ABA EFICIÊNCIA
-  const eficData = ALL_EXPEDITIONS.map((e,i)=>{
-    const diasTotal = e.diasTotalExpedicao||1;
-    const atendDia = Math.round(e.geral/diasTotal);
-    const consultasPac = e.pacientes? Math.round(e.geral/e.pacientes*10)/10 : 0;
-    return {label:`${typeof e.n==='number'?'#'+e.n:e.n}`,atendDia,pacientes:e.pacientes||0,consultasPac};
-  });
-
-  const ctxEfic = document.getElementById('chartCompEficacia');
-  if(ctxEfic){
-    destroyIfExists(window.chartCompEficacia);
-    window.chartCompEficacia = new Chart(ctxEfic, {
-      type:'line',
-      data:{
-        labels:eficData.map(e=>e.label),
-        datasets:[
-          {label:t.eficAtendDia,data:eficData.map(e=>e.atendDia),borderColor:'var(--teal)',backgroundColor:'rgba(14,143,111,0.1)',tension:0.3}
-        ]
-      },
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},valueLabelPlugin},scales:{y:{beginAtZero:true}}}
-    });
-  }
-
-  document.getElementById('compEficBody').innerHTML = eficData.map((e,i)=>
-    `<tr><td>${e.label}</td><td class="mono">${fmt(e.atendDia)}</td><td class="mono">${fmt(e.pacientes)}</td><td class="mono">${e.consultasPac}</td></tr>`).join('');
-
-  // Handlers das tabs
-  document.querySelectorAll('.comp-tab').forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      document.querySelectorAll('.comp-tab').forEach(t=>t.classList.remove('active'));
-      document.querySelectorAll('.comp-content').forEach(c=>c.style.display='none');
-      tab.classList.add('active');
-      const tabName = tab.dataset.tab;
-      document.getElementById('comp-'+tabName).style.display='block';
-    });
-  });
-}
-
 /* ================= relatório (report) ================= */
 function renderReport(){
   const t = I18N[CUR_LANG];
@@ -3770,6 +3410,7 @@ async function exportExpeditionPdf(exp){
     [t.lastExpStatus, t.lastExpStatusConcluida],
   ];
   if(dias) infoRows.push([t.lastExpDias, String(dias)]);
+  if(exp.diasAtendimento) infoRows.push(['Dias de Atendimento', fmt(exp.diasAtendimento)]);
 
   doc.autoTable({
     startY: y, body: infoRows, theme:'plain',
@@ -3851,6 +3492,198 @@ async function exportExpeditionPdf(exp){
 
   doc.save(`expedicao_${exp.year}_${exp.n}_${normalize(exp.mun).replace(/\s+/g,'_')}.pdf`);
 }
+
+function openMunicipalModal(munName){
+  if(!munName) return;
+  const t = I18N[CUR_LANG];
+  const exp = currentExpeditions();
+
+  // Agregar dados por município
+  const allExps = exp.filter(e=>e.mun.replace(/\s*\(.*\)/,'')==munName.replace(/\s*\(.*\)/,''));
+  if(!allExps.length) return;
+
+  const totalGeral = allExps.reduce((s,e)=>s+(e.geral||0),0);
+  const totalDias = allExps.reduce((s,e)=>s+(e.diasAtendimento||0),0);
+  const totalConsultas = allExps.reduce((s,e)=>s+(e.consultas||0),0);
+  const totalExames = allExps.reduce((s,e)=>s+(e.exames||0),0);
+  const totalOdonto = allExps.reduce((s,e)=>s+(e.procOdonto||0),0);
+  const totalOdontoConsulta = allExps.reduce((s,e)=>s+(e.consultaOdonto||0),0);
+  const totalCirurgias = allExps.reduce((s,e)=>s+((e.cirBaixa||0)+(e.cirMedia||0)),0);
+  const totalCirBaixa = allExps.reduce((s,e)=>s+(e.cirBaixa||0),0);
+  const totalCirMedia = allExps.reduce((s,e)=>s+(e.cirMedia||0),0);
+  const totalInternacao = allExps.reduce((s,e)=>s+(e.internClinCir||0),0);
+  const totalAlim = allExps.reduce((s,e)=>s+(e.alim||0),0);
+  const totalFarm = allExps.reduce((s,e)=>s+(e.farm||0),0);
+
+  const rows = [
+    [ `<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/>`, t.lastExpAtendTotais, totalGeral ],
+    [ `<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/>`, t.lastExpConsultas, totalConsultas ],
+    [ `<path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/>`, t.lastExpExames, totalExames ],
+    [ `<path d="M12 5c-2 0-3 1.5-3 3.5C9 11 12 13 12 13s3-2 3-4.5C15 6.5 14 5 12 5z"/><path d="M8 13v2a4 4 0 004 4 4 4 0 004-4v-2"/>`, t.lastExpOdonto, totalOdonto ],
+    [ `<path d="M12 5c-2 0-3 1.5-3 3.5C9 11 12 13 12 13s3-2 3-4.5C15 6.5 14 5 12 5z"/><path d="M8 13v2a4 4 0 004 4 4 4 0 004-4v-2"/>`, t.consultaOdontoL, totalOdontoConsulta ],
+    [ `<path d="M4 20L14.5 9.5"/><path d="M13 5l6 6-2 2-6-6z"/><circle cx="6.5" cy="17.5" r="2.2"/>`, t.lastExpCirurgias, totalCirurgias ],
+    [ `<path d="M4 21v-6a4 4 0 014-4h8a4 4 0 014 4v6"/><path d="M4 21h16"/><path d="M9 11V7a3 3 0 016 0v4"/>`, t.catInternacao, totalInternacao ],
+    [ `<path d="M6 2h12l-1 5H7L6 2z"/><path d="M7 7l-2 13a2 2 0 002 2h10a2 2 0 002-2L17 7"/>`, t.catAlimentacao, totalAlim ],
+    [ `<path d="M10.5 20.5L3.5 13.5a5 5 0 017-7l7 7a5 5 0 01-7 7z"/><path d="M8.5 8.5l7 7"/>`, t.catMedicamento, totalFarm ],
+  ];
+  const resultRows = rows.map(([icon,label,val])=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" style="flex-shrink:0;">${icon}</svg>
+      <span style="flex:1;color:var(--text);font-size:0.85rem;">${label}</span>
+      <span class="mono" style="font-weight:700;color:var(--navy);font-size:0.95rem;">${fmt(val||0)}</span>
+    </div>`).join('');
+  const overlay = document.createElement('div');
+  overlay.id = 'munModalOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = `
+    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div class="serif" style="font-size:1.15rem;font-weight:700;color:var(--navy);letter-spacing:0.02em;">Relatório Municipal</div>
+        </div>
+        <button id="munModalClose" style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--muted);">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;">
+        <div>
+          <div style="margin-bottom:12px;"><div style="font-size:0.68rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">${t.colMun}</div><div style="font-weight:700;color:var(--navy);font-size:1.02rem;">${munName}</div></div>
+          <div style="margin-bottom:12px;"><div style="font-size:0.68rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">Expedições</div><div style="font-weight:600;color:var(--text);font-size:0.9rem;">${allExps.length}</div></div>
+          <div><div style="font-size:0.68rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;">Dias de Atendimento</div><div style="font-weight:600;color:var(--text);font-size:0.9rem;">${fmt(totalDias)}</div></div>
+        </div>
+        <div>
+          <div style="font-size:0.68rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.04em;margin-bottom:6px;">Resultados</div>
+          ${resultRows}
+        </div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;">
+        <button id="munModalExportPdf" class="report-btn" style="display:flex;align-items:center;gap:7px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span data-i18n="lastExpExportPdf">Exportar em PDF</span>
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('munModalClose').addEventListener('click', ()=>overlay.remove());
+  document.getElementById('munModalExportPdf').addEventListener('click', ()=>exportMunicipalPdf(munName, allExps));
+}
+
+async function exportMunicipalPdf(munName, expeditions){
+  const btn = document.getElementById('munModalExportPdf');
+  const original = btn ? btn.innerHTML : null;
+  if(btn){ btn.disabled = true; btn.innerHTML = '…'; }
+  const ok = await ensureJsPDF();
+  if(btn){ btn.disabled = false; btn.innerHTML = original; }
+  const t = I18N[CUR_LANG];
+  if(!ok){ window.print(); return; }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4'});
+  const ml = 15, pageW = 210;
+  let y;
+
+  doc.setFillColor(15,42,74); doc.rect(0,0,pageW,12,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(255,255,255);
+  doc.text('Barco Hospital São João XXIII', ml, 8);
+
+  y = 26;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(90,100,115);
+  doc.text('Relatório Municipal', pageW/2, y, {align:'center'});
+  y += 9;
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(15,42,74);
+  doc.text(munName, pageW/2, y, {align:'center'});
+  y += 8;
+  doc.setDrawColor(184,147,74); doc.setLineWidth(0.8);
+  doc.line(ml, y, pageW-ml, y);
+  y += 12;
+
+  const totalGeral = expeditions.reduce((s,e)=>s+(e.geral||0),0);
+  const totalDias = expeditions.reduce((s,e)=>s+(e.diasAtendimento||0),0);
+  const infoRows = [
+    [t.colMun, munName],
+    ['Expedições', String(expeditions.length)],
+    ['Dias de Atendimento', fmt(totalDias)],
+  ];
+
+  doc.autoTable({
+    startY: y, body: infoRows, theme:'plain',
+    styles:{fontSize:10, textColor:30, cellPadding:{top:2,bottom:2,left:0,right:4}},
+    columnStyles:{0:{fontStyle:'bold', textColor:[15,42,74], cellWidth:45}},
+    margin:{left:ml, right:ml}
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(15,42,74);
+  doc.text(t.lastExpResultados, ml, y);
+  y += 3;
+
+  const totalConsultas = expeditions.reduce((s,e)=>s+(e.consultas||0),0);
+  const totalExames = expeditions.reduce((s,e)=>s+(e.exames||0),0);
+  const totalOdonto = expeditions.reduce((s,e)=>s+(e.procOdonto||0),0);
+  const totalOdontoConsulta = expeditions.reduce((s,e)=>s+(e.consultaOdonto||0),0);
+  const totalCirurgias = expeditions.reduce((s,e)=>s+((e.cirBaixa||0)+(e.cirMedia||0)),0);
+  const totalCirBaixa = expeditions.reduce((s,e)=>s+(e.cirBaixa||0),0);
+  const totalCirMedia = expeditions.reduce((s,e)=>s+(e.cirMedia||0),0);
+  const totalInternacao = expeditions.reduce((s,e)=>s+(e.internClinCir||0),0);
+  const totalAlim = expeditions.reduce((s,e)=>s+(e.alim||0),0);
+  const totalFarm = expeditions.reduce((s,e)=>s+(e.farm||0),0);
+
+  doc.autoTable({
+    startY: y,
+    head: [[t.reportColIndicador, t.reportColValor]],
+    body: [
+      [t.lastExpAtendTotais, fmt(totalGeral||0)],
+      [t.lastExpConsultas, fmt(totalConsultas||0)],
+      [t.lastExpExames, fmt(totalExames||0)],
+      [t.lastExpOdonto, fmt(totalOdonto||0)],
+      [t.consultaOdontoL, fmt(totalOdontoConsulta||0)],
+      [t.lastExpCirurgias, fmt(totalCirurgias)],
+      [t.procCirBaixa, fmt(totalCirBaixa||0)],
+      [t.procCirMedia, fmt(totalCirMedia||0)],
+      [t.catInternacao, fmt(totalInternacao||0)],
+      [t.catAlimentacao, fmt(totalAlim||0)],
+      [t.catMedicamento, fmt(totalFarm||0)],
+    ],
+    theme:'striped',
+    headStyles:{fillColor:[15,42,74], textColor:255, fontSize:9, halign:'left'},
+    bodyStyles:{fontSize:9, textColor:30}, alternateRowStyles:{fillColor:[247,246,243]},
+    margin:{left:ml, right:ml}
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  // Tabela de expedições
+  if(y > 250){ doc.addPage(); y = 20; }
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(15,42,74);
+  doc.text('Expedições neste Município', ml, y);
+  y += 3;
+  doc.autoTable({
+    startY: y, head:[['Expedição', t.lastExpPeriodo, t.lastExpAtendTotais, 'Dias']],
+    body: expeditions.map(e=>[
+      `${e.year}·${e.n}`,
+      e.data||'—',
+      fmt(e.geral||0),
+      fmt(e.diasAtendimento||0)
+    ]),
+    theme:'striped', headStyles:{fillColor:[15,42,74], textColor:255, fontSize:9, halign:'left'},
+    bodyStyles:{fontSize:9, textColor:30}, alternateRowStyles:{fillColor:[247,246,243]},
+    margin:{left:ml, right:ml}
+  });
+  y = doc.lastAutoTable.finalY + 10;
+
+  const pageCount = doc.internal.getNumberOfPages();
+  const footerText = document.querySelector('[data-i18n="footerText"]').textContent;
+  const lgpdText = document.querySelector('[data-i18n="footerLgpd"]').textContent;
+  for(let i=1;i<=pageCount;i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(150,150,150);
+    doc.text(footerText, pageW/2, 287, {align:'center'});
+    doc.text(lgpdText, pageW/2, 291, {align:'center'});
+    doc.text(`${i} / ${pageCount}`, pageW-ml, 291, {align:'right'});
+  }
+
+  doc.save(`municipio_${normalize(munName).replace(/\s+/g,'_')}.pdf`);
+}
+
 document.getElementById('btnExportCsvExp').addEventListener('click',exportExpeditionsCsv);
 document.getElementById('btnExportCsvSpec').addEventListener('click',exportSpecialtiesCsv);
 document.getElementById('btnExportCsvExam').addEventListener('click',exportExamsCsv);
@@ -3867,8 +3700,6 @@ renderVoyage();
 buildAllCharts();
 renderRanking();
 renderCirurgias();
-renderInternacoes();
-renderComparativo();
 buildExamAvgChart();
 renderNavegacao();
 
