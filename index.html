@@ -250,7 +250,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 13/10/2026 15:39</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 13/10/2026 16:10</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -574,14 +574,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 13/10/2026 15:39</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 13/10/2026 16:10</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 13/10/2026 15:39</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 13/10/2026 16:10</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -705,7 +705,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "13/10/2026 15:39";
+const GENERATED_AT = "13/10/2026 16:10";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2362,6 +2362,7 @@ function openExpeditionModal(exp){
     <tr><td>${t.consultaOdontoL}</td><td class="mono" style="text-align:right;">${fmt(exp.consultaOdonto||0)}</td></tr>`;
   const specRows = Object.entries(exp.spec||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trSpec(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
   const examRows = Object.entries(exp.exam||{}).sort((a,b)=>b[1]-a[1]).map(([n,v])=>`<tr><td>${trExam(n)}</td><td class="mono" style="text-align:right;">${fmt(v)}</td></tr>`).join('') || `<tr><td colspan="2" style="color:var(--muted);">—</td></tr>`;
+  const dias = parseExpDurationDays(exp.data);
   const overlay = document.createElement('div');
   overlay.id = 'expModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
@@ -2384,6 +2385,16 @@ function openExpeditionModal(exp){
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">${t.bigSaudeL}</div>
         </div>
       </div>
+      ${dias || exp.diasAtendimento ? `<div style="display:flex;gap:10px;margin:0 0 16px 0;">
+        ${dias ? `<div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--navy);">
+          <div class="serif" style="font-size:1rem;font-weight:600;color:var(--navy);">${dias}</div>
+          <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">Dias de Viagem</div>
+        </div>` : ''}
+        ${exp.diasAtendimento ? `<div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid #a9564a;">
+          <div class="serif" style="font-size:1rem;font-weight:600;color:var(--navy);">${fmt(exp.diasAtendimento)}</div>
+          <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">Dias de Atendimento</div>
+        </div>` : ''}
+      </div>` : ''}
       <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:14px 0 6px;">${t.bigGeralL}</div>
       <table style="width:100%;font-size:0.85rem;">${rows}</table>
       <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.procMiniTitle}</div>
@@ -2392,10 +2403,20 @@ function openExpeditionModal(exp){
       <table style="width:100%;font-size:0.85rem;">${specRows}</table>
       <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.examTitle}</div>
       <table style="width:100%;font-size:0.85rem;">${examRows}</table>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;">
+        <button id="expModalExportPdfBtn" class="report-btn" style="display:flex;align-items:center;gap:7px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span>Exportar em PDF</span>
+        </button>
+      </div>
     </div>`;
   document.body.appendChild(overlay);
   overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.remove(); });
   document.getElementById('expModalClose').addEventListener('click',()=>overlay.remove());
+  document.getElementById('expModalExportPdfBtn').addEventListener('click',()=>{
+    overlay.remove();
+    exportExpeditionPdf(exp);
+  });
 }
 
 let chartArea, chartSpecialties, chartExamsBar, chartExamsDonut, chartTop10, chartExamsMini, chartBreakdown, chartCirEvol, chartCirTop10, chartExamAvg, chartNav;
@@ -2714,8 +2735,11 @@ function renderRanking(){
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral).slice(0,14);
   const max = rows.length? rows[0][1].geral : 1;
   document.getElementById('rankBody').innerHTML = rows.map((r,i)=>`
-    <tr style="cursor:pointer;" onclick="openMunicipalModal('${r[0]}')"><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
+    <tr style="cursor:pointer;" data-mun="${r[0].replace(/"/g,'&quot;')}"><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
     <td><div class="bar-cell"><span class="mono">${fmt(r[1].geral)}</span><div class="bar-track"><div class="bar-fill" style="width:${(r[1].geral/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('');
+  document.querySelectorAll('#rankBody tr').forEach(tr=>{
+    tr.addEventListener('click',()=>openMunicipalModal(tr.dataset.mun));
+  });
 
   destroyIfExists(chartTop10);
   if(window.HAS_CHART && document.getElementById('chartTop10')){
