@@ -76,20 +76,35 @@ def extract_schedule_data(ods_path):
             """Converte "15:00", "14h30" ou "14.5" para minutos (validando dados)"""
             if not horas_str:
                 return 0
-            horas_str = horas_str.strip().lower()
+            horas_str = str(horas_str).strip().lower()
+
+            # Rejeitar valores vazios ou com caracteres inválidos
+            if not horas_str or horas_str in ["", "0", "00:00", "-", "none"]:
+                return 0
+
+            # ⚠️ CRÍTICO: Rejeitar valores inválidos/corrompidos
+            # Exemplo: "-1110584:30:00" é corrupção de dados, retornar 0
+            if horas_str.startswith('-') or len(horas_str) > 20:
+                return 0
+
             try:
-                # Rejeitar valores negativos ou inválidos
-                if '-' in horas_str or '/' in horas_str:
+                # Rejeitar valores com caracteres inválidos
+                if '/' in horas_str or any(c in horas_str for c in ['@', '#', '$', '%']):
                     return 0
 
-                # Formato "15:00" (com dois pontos)
+                # Formato "15:00" (com dois pontos) - permite horas > 24
                 if ':' in horas_str:
                     parts = horas_str.split(':')
                     hours = int(parts[0])
                     mins = int(parts[1]) if len(parts) > 1 else 0
 
-                    # Validação: horas não deve ser > 200 (navegação irreal)
-                    if hours < 0 or hours > 200 or mins < 0 or mins >= 60:
+                    # Validação: rejeitar se minutos >= 60 ou valores inválidos
+                    # MAS permitir horas > 24 (durações totais de viagem)
+                    if hours < 0 or mins < 0 or mins >= 60:
+                        return 0
+
+                    # Permitir até 999 horas (durações totais de ~41 dias)
+                    if hours > 999:
                         return 0
 
                     return hours * 60 + mins
@@ -348,7 +363,9 @@ def extract_all_years(ods_path):
         if not m:
             continue
         year = int(m.group(1))
-        df = pd.read_excel(ods_path, engine="odf", sheet_name=sheet_name, header=None)
+        # ⚠️ IMPORTANTE: dtype=object evita conversão automática de "29:40" como datetime
+        # Sem dtype=object, pandas tenta interpretar "29:40" como hora (max 23:59)
+        df = pd.read_excel(ods_path, engine="odf", sheet_name=sheet_name, header=None, dtype=object)
         parsed = parse_year_sheet(df, year)
         if parsed and parsed["expeditions"]:
             result[year] = parsed
