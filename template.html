@@ -237,6 +237,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
     <button class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></button>
     <button class="nav-item" data-view="navegacao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><polygon points="16,8 12,12 8,16 12,12" fill="currentColor" stroke="none"/></svg><span data-i18n="navNavegacao">Navegação</span></button>
     <button class="nav-item" data-view="municipios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="navMun">Municípios</span></button>
+    <button class="nav-item" data-view="comparativo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18M9 17V9M15 17v-7"/></svg><span>Comparativo</span></button>
     <button class="nav-item" data-view="report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg><span data-i18n="navReport">Relatório</span></button>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-live"></div>
@@ -485,6 +486,128 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       </div>
     </div>
 
+    <!-- MENU COMPARATIVO -->
+    <div class="view" id="view-comparativo">
+      <div class="view-title">
+        <h1 class="serif">Análise Comparativa</h1>
+        <p>Comparativo 2025 vs 2026 — Passado e Presente</p>
+      </div>
+      <div class="panel">
+        <!-- KPIs PRINCIPAIS -->
+        <div style="margin-bottom: 32px;">
+          <h2 class="serif" style="color: var(--navy); margin-bottom: 18px; font-size: 1.1rem;">📊 KPIs Principais</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <!-- CARD: Total Atendimentos -->
+            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Total de Atendimentos</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-total-2025">231.560</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">22 expedições</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-total-2026">170.362</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">17 expedições</div>
+                </div>
+              </div>
+            </div>
+            <!-- CARD: Média por Expedição -->
+            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Média por Expedição</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-media-2025">10.525</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px; font-weight: 500;">por expedição</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-media-2026">10.022</div>
+                  <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-media-var">▼ 4.8%</div>
+                </div>
+              </div>
+            </div>
+            <!-- CARD: Pacientes Únicos -->
+            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Pacientes Únicos</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-pac-2025">36.304</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">pessoas</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-pac-2026">24.518</div>
+                  <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-pac-var">▼ 32.5%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ABAS DE COMPARATIVO -->
+        <div style="margin-bottom: 28px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--line); overflow-x: auto;">
+            <button class="comp-tab active" onclick="showCompTab('especialidades')" style="white-space: nowrap;">Especialidades</button>
+            <button class="comp-tab" onclick="showCompTab('exames')" style="white-space: nowrap;">Exames</button>
+            <button class="comp-tab" onclick="showCompTab('atendimentos')" style="white-space: nowrap;">Tipo Atendimento</button>
+          </div>
+          <!-- TAB: ESPECIALIDADES -->
+          <div id="comp-especialidades" class="comp-content" style="display: block;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Especialidade</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-especialidades">
+              </tbody>
+            </table>
+          </div>
+          <!-- TAB: EXAMES -->
+          <div id="comp-exames" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tipo de Exame</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-exames">
+              </tbody>
+            </table>
+          </div>
+          <!-- TAB: ATENDIMENTOS -->
+          <div id="comp-atendimentos" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tipo de Atendimento</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-atendimentos">
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- GRÁFICO COMPARATIVO -->
+        <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+          <h3 class="serif" style="color: var(--navy); margin-bottom: 16px; font-size: 1rem;">📈 Comparativo Visual</h3>
+          <div style="height: 400px;"><canvas id="chartComparativo"></canvas></div>
+        </div>
+      </div>
+    </div>
+
     <div class="view" id="view-report">
       <div class="stack">
         <div class="panel no-print">
@@ -661,13 +784,137 @@ async function ensureJsPDF(){
   initDashboardApp();
 })();
 
+// FUNÇÕES PARA MENU COMPARATIVO
+function showCompTab(tab) {
+  document.querySelectorAll('.comp-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.comp-content').forEach(c => c.style.display = 'none');
+  event.target.classList.add('active');
+  document.getElementById('comp-' + tab).style.display = 'block';
+}
+
+function gerarComparativo(exps) {
+  if (!exps || exps.length === 0) {
+    console.log('Dados ainda não carregados');
+    return;
+  }
+  const exp2025 = exps.filter(e => e.year === 2025);
+  const exp2026 = exps.filter(e => e.year === 2026);
+
+  // KPIs
+  const total2025 = exp2025.reduce((s, e) => s + e.geral, 0);
+  const total2026 = exp2026.reduce((s, e) => s + e.geral, 0);
+  const media2025 = Math.round(total2025 / exp2025.length);
+  const media2026 = Math.round(total2026 / exp2026.length);
+  const varMedia = (((media2026 - media2025) / media2025) * 100).toFixed(1);
+  const pac2025 = exp2025.reduce((s, e) => s + e.pacientes, 0);
+  const pac2026 = exp2026.reduce((s, e) => s + e.pacientes, 0);
+  const varPac = (((pac2026 - pac2025) / pac2025) * 100).toFixed(1);
+
+  document.getElementById('kpi-total-2025').textContent = total2025.toLocaleString('pt-BR');
+  document.getElementById('kpi-total-2026').textContent = total2026.toLocaleString('pt-BR');
+  document.getElementById('kpi-media-2025').textContent = media2025.toLocaleString('pt-BR');
+  document.getElementById('kpi-media-2026').textContent = media2026.toLocaleString('pt-BR');
+  document.getElementById('kpi-media-var').textContent = (varMedia >= 0 ? '▲' : '▼') + ' ' + Math.abs(varMedia) + '%';
+  document.getElementById('kpi-media-var').style.color = varMedia >= 0 ? 'var(--teal)' : '#d32f2f';
+  document.getElementById('kpi-pac-2025').textContent = pac2025.toLocaleString('pt-BR');
+  document.getElementById('kpi-pac-2026').textContent = pac2026.toLocaleString('pt-BR');
+  document.getElementById('kpi-pac-var').textContent = (varPac >= 0 ? '▲' : '▼') + ' ' + Math.abs(varPac) + '%';
+  document.getElementById('kpi-pac-var').style.color = varPac >= 0 ? 'var(--teal)' : '#d32f2f';
+
+  // ESPECIALIDADES
+  const spec2025 = {}, spec2026 = {};
+  exp2025.forEach(e => {
+    Object.entries(e.spec || {}).forEach(([s, c]) => {
+      spec2025[s] = (spec2025[s] || 0) + c;
+    });
+  });
+  exp2026.forEach(e => {
+    Object.entries(e.spec || {}).forEach(([s, c]) => {
+      spec2026[s] = (spec2026[s] || 0) + c;
+    });
+  });
+
+  const allSpecs = [...new Set([...Object.keys(spec2025), ...Object.keys(spec2026)])].sort();
+  let htmlSpec = '';
+  allSpecs.forEach(s => {
+    const v25 = spec2025[s] || 0;
+    const v26 = spec2026[s] || 0;
+    const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
+    htmlSpec += `<tr><td>${s}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+  });
+  document.getElementById('table-especialidades').innerHTML = htmlSpec;
+
+  // EXAMES
+  const exam2025 = {}, exam2026 = {};
+  exp2025.forEach(e => {
+    Object.entries(e.exam || {}).forEach(([ex, c]) => {
+      exam2025[ex] = (exam2025[ex] || 0) + c;
+    });
+  });
+  exp2026.forEach(e => {
+    Object.entries(e.exam || {}).forEach(([ex, c]) => {
+      exam2026[ex] = (exam2026[ex] || 0) + c;
+    });
+  });
+
+  const allExams = [...new Set([...Object.keys(exam2025), ...Object.keys(exam2026)])].sort();
+  let htmlExam = '';
+  allExams.forEach(ex => {
+    const v25 = exam2025[ex] || 0;
+    const v26 = exam2026[ex] || 0;
+    const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
+    htmlExam += `<tr><td>${ex}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+  });
+  document.getElementById('table-exames').innerHTML = htmlExam;
+
+  // TIPOS DE ATENDIMENTO
+  const tipos = {
+    'Saúde': { 2025: exp2025.reduce((s, e) => s + e.saude, 0), 2026: exp2026.reduce((s, e) => s + e.saude, 0) },
+    'Alimentação': { 2025: exp2025.reduce((s, e) => s + e.alim, 0), 2026: exp2026.reduce((s, e) => s + e.alim, 0) },
+    'Consultas': { 2025: exp2025.reduce((s, e) => s + e.consultas, 0), 2026: exp2026.reduce((s, e) => s + e.consultas, 0) },
+    'Exames': { 2025: exp2025.reduce((s, e) => s + e.exames, 0), 2026: exp2026.reduce((s, e) => s + e.exames, 0) },
+  };
+
+  let htmlTipos = '';
+  Object.entries(tipos).forEach(([tipo, dados]) => {
+    const v25 = dados[2025];
+    const v26 = dados[2026];
+    const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
+    htmlTipos += `<tr><td>${tipo}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+  });
+  document.getElementById('table-atendimentos').innerHTML = htmlTipos;
+
+  // GRÁFICO
+  const ctx = document.getElementById('chartComparativo');
+  if (ctx && window.Chart && window.HAS_CHART) {
+    try {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Total Atendimentos', 'Pacientes', 'Média por Expedição'],
+          datasets: [
+            { label: '2025', data: [total2025, pac2025, media2025], backgroundColor: 'rgba(15, 42, 74, 0.7)', borderColor: 'rgba(15, 42, 74, 1)', borderWidth: 1, borderRadius: 8 },
+            { label: '2026', data: [total2026, pac2026, media2026], backgroundColor: 'rgba(14, 143, 111, 0.7)', borderColor: 'rgba(14, 143, 111, 1)', borderWidth: 1, borderRadius: 8 },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { size: 13, family: "'Inter', sans-serif" } } } },
+          scales: { y: { beginAtZero: true, ticks: { font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } },
+        },
+      });
+    } catch(e) { console.log('Gráfico comparativo:', e); }
+  }
+}
+
 function initDashboardApp(){
 /* Cole aqui a URL do seu Cloudflare Worker depois de implantá-lo (veja worker.js).
    Deixe vazio ('') para usar só o assistente local por padrões. */
 const PROXY_URL = "__PROXY_URL__";
 const PROXY_SECRET = "__PROXY_SECRET__";
 /* ================= DATA (injected by gerar_dashboard.py from the official spreadsheet) ================= */
-const ALL_EXPEDITIONS = __ALL_EXPEDITIONS__;
+const ALL_EXPEDITIONS = window.ALL_EXPEDITIONS = __ALL_EXPEDITIONS__;
 const SPECIALTIES_BY_YEAR = __SPECIALTIES_BY_YEAR__;
 const EXAMS_BY_YEAR = __EXAMS_BY_YEAR__;
 
@@ -1848,7 +2095,7 @@ function applyI18n(){
   if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
   const footerEl = document.querySelector('[data-i18n="footerText"]');
   if(footerEl && t.footerText) footerEl.textContent = t.footerText.replace('{date}', GENERATED_AT);
-  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); }
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); gerarComparativo(ALL_EXPEDITIONS); }
 }
 
 /* ================= mobile nav toggle ================= */
@@ -1929,7 +2176,7 @@ function renderYearSelector(){
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     YEAR = b.dataset.year;
     renderYearSelector();
-    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao();
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); gerarComparativo(ALL_EXPEDITIONS);
     writeUrlState();
   }));
 }
