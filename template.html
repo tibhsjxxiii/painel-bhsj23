@@ -884,14 +884,11 @@ function showCompTab(tab) {
 }
 
 function gerarComparativo(exps) {
-  console.log('🔍 DEBUG gerarComparativo:', { expsLength: exps?.length, exps });
   if (!exps || exps.length === 0) {
-    console.log('❌ Dados ainda não carregados');
     return;
   }
   const exp2025 = exps.filter(e => e.year === 2025);
   const exp2026 = exps.filter(e => e.year === 2026);
-  console.log('✅ Filtrados:', { exp2025Length: exp2025.length, exp2026Length: exp2026.length, sampleExp2025: exp2025[0] });
 
   // KPIs
   const total2025 = exp2025.reduce((s, e) => s + e.geral, 0);
@@ -940,7 +937,6 @@ function gerarComparativo(exps) {
       spec2026[s] = (spec2026[s] || 0) + c;
     });
   });
-  console.log('📊 ESPECIALIDADES:', { spec2025, spec2026, totalSpecKeys: Object.keys(spec2025).length + Object.keys(spec2026).length });
 
   const allSpecs = [...new Set([...Object.keys(spec2025), ...Object.keys(spec2026)])].sort();
   let htmlSpec = '';
@@ -964,7 +960,6 @@ function gerarComparativo(exps) {
       exam2026[ex] = (exam2026[ex] || 0) + c;
     });
   });
-  console.log('🧬 EXAMES:', { exam2025, exam2026, totalExamKeys: Object.keys(exam2025).length + Object.keys(exam2026).length });
 
   const allExams = [...new Set([...Object.keys(exam2025), ...Object.keys(exam2026)])].sort();
   let htmlExam = '';

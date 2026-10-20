@@ -252,7 +252,8 @@ def parse_year_sheet(df, year):
             totals[key][c] = _num(df.iloc[r, c])
 
     # keep only columns that actually have recorded attendance (drop future/empty placeholder columns)
-    cols = [c for c in cols if totals["geral"].get(c, 0) > 0]
+    # Also drop "TOTAL DO ANO" column which is a summary, not an actual expedition
+    cols = [c for c in cols if totals["geral"].get(c, 0) > 0 and "TOTAL" not in str(exp_cols.get(c, "")).upper()]
 
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
     datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
