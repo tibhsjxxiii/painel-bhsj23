@@ -252,7 +252,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/10/2026 22:55</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 19/10/2026 12:49</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -603,7 +603,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         </div>
         <!-- GRÁFICOS INTERATIVOS COMPARATIVOS -->
         <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
-          <h3 class="serif" style="color: var(--navy); margin-bottom: 16px; font-size: 1rem;">📊 Gráficos Interativos</h3>
+          <h3 class="serif" style="color: var(--navy); margin-bottom: 16px; font-size: 1rem;"><span data-i18n="graphsTitle">📊 Gráficos Interativos</span></h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div id="chartComparativo" style="height: 350px;"></div>
             <div id="chartPizza" style="height: 350px;"></div>
@@ -702,14 +702,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/10/2026 22:55</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 19/10/2026 12:49</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/10/2026 22:55</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 19/10/2026 12:49</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -897,15 +897,17 @@ function gerarComparativo(exps) {
   if (window.Plotly) {
     try {
       // 1️⃣ GRÁFICO 1: Comparativo de Barras (2025 vs 2026)
-      const trace1_2025 = { x: ['Total Atendimentos', 'Pacientes', 'Média/Exp'], y: [total2025, pac2025, media2025], name: '2025', type: 'bar', marker: { color: 'rgba(15, 42, 74, 0.8)' } };
-      const trace1_2026 = { x: ['Total Atendimentos', 'Pacientes', 'Média/Exp'], y: [total2026, pac2026, media2026], name: '2026', type: 'bar', marker: { color: 'rgba(14, 143, 111, 0.8)' } };
-      Plotly.newPlot('chartComparativo', [trace1_2025, trace1_2026], { title: 'Comparativo 2025 vs 2026', barmode: 'group', hovermode: 'closest', showlegend: true }, { responsive: true });
+      const t = I18N[CUR_LANG];
+      const labels1 = [t.chartTotalAtendimentos, t.chartPacientes, t.chartMediaExp];
+      const trace1_2025 = { x: labels1, y: [total2025, pac2025, media2025], name: '2025', type: 'bar', marker: { color: 'rgba(15, 42, 74, 0.8)' } };
+      const trace1_2026 = { x: labels1, y: [total2026, pac2026, media2026], name: '2026', type: 'bar', marker: { color: 'rgba(14, 143, 111, 0.8)' } };
+      Plotly.newPlot('chartComparativo', [trace1_2025, trace1_2026], { title: t.chartCompTitle, barmode: 'group', hovermode: 'closest', showlegend: true }, { responsive: true });
 
       // 2️⃣ GRÁFICO 2: Pizza - Distribuição 2026
       const pieData = [
-        { labels: ['Total Atendimentos', 'Pacientes', 'Média/Exp'], values: [total2026, pac2026, media2026], type: 'pie', marker: { colors: ['rgba(14, 143, 111, 0.8)', 'rgba(15, 42, 74, 0.8)', 'rgba(255, 152, 0, 0.8)'] } }
+        { labels: labels1, values: [total2026, pac2026, media2026], type: 'pie', marker: { colors: ['rgba(14, 143, 111, 0.8)', 'rgba(15, 42, 74, 0.8)', 'rgba(255, 152, 0, 0.8)'] } }
       ];
-      Plotly.newPlot('chartPizza', pieData, { title: 'Distribuição 2026', hovermode: 'closest' }, { responsive: true });
+      Plotly.newPlot('chartPizza', pieData, { title: t.chartPieTitle, hovermode: 'closest' }, { responsive: true });
 
       // 3️⃣ GRÁFICO 3: Top 10 Especialidades (Horizontal Bar)
       const topSpecs = Object.entries(allSpecs && allSpecs.length > 0 ? allSpecs.reduce((acc, s) => { acc[s] = (spec2025[s] || 0) + (spec2026[s] || 0); return acc; }, {}) : {})
@@ -918,7 +920,8 @@ function gerarComparativo(exps) {
         orientation: 'h',
         marker: { color: 'rgba(14, 143, 111, 0.8)' }
       };
-      Plotly.newPlot('chartEspecialidades', [specTrace], { title: 'Top 10 Especialidades (Total 2025-2026)', xaxis: { title: 'Atendimentos' }, yaxis: { title: 'Especialidade' }, margin: { l: 200 } }, { responsive: true });
+      const chartTitle3 = t.chartTopSpecTitle + ` (Total 2025-2026)`;
+      Plotly.newPlot('chartEspecialidades', [specTrace], { title: chartTitle3, xaxis: { title: t.metricaAtendimentos }, yaxis: { title: t.reportColEspecialidade }, margin: { l: 200 } }, { responsive: true });
 
       console.log('✅ Gráficos Plotly criados com sucesso!');
     } catch(e) { console.log('❌ Erro nos gráficos:', e.message); }
@@ -971,7 +974,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/10/2026 22:55";
+const GENERATED_AT = "19/10/2026 12:49";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1205,6 +1208,13 @@ const I18N = {
   navColIda:"Ida",
   navColVolta:"Volta",
   navColNota:"Observação",
+  graphsTitle:"Gráficos Interativos",
+  chartCompTitle:"Comparativo 2025 vs 2026",
+  chartPieTitle:"Distribuição 2026",
+  chartTopSpecTitle:"Top 10 Especialidades",
+  chartTotalAtendimentos:"Total Atendimentos",
+  chartPacientes:"Pacientes",
+  chartMediaExp:"Média/Exp",
   tripInfoTitle:"Viagens da Expedição",
   tripInfoSub:"Tempo de navegação do barco (dados de horário de saída e chegada) — veja o menu Navegação para o detalhamento completo.",
   infoTripInfo:"Resumo do tempo que o barco passa navegando, calculado a partir dos horários de saída e chegada de cada expedição. * A distância usa o tempo real de navegação de cada expedição multiplicado por uma velocidade média de 14,15 km/h — calibrada a partir de 2 destinos com distância fluvial real conhecida (Tefé e Novo Aripuanã). Como usa o tempo real, essa estimativa já reflete as curvas do rio, ao contrário de uma simples distância em linha reta no mapa.",
@@ -1398,6 +1408,13 @@ const I18N = {
   navColIda:"Outbound",
   navColVolta:"Return",
   navColNota:"Note",
+  graphsTitle:"Interactive Graphs",
+  chartCompTitle:"Comparison 2025 vs 2026",
+  chartPieTitle:"Distribution 2026",
+  chartTopSpecTitle:"Top 10 Specialties",
+  chartTotalAtendimentos:"Total Attendances",
+  chartPacientes:"Patients",
+  chartMediaExp:"Avg/Exp",
   tripInfoTitle:"Expedition Travel",
   tripInfoSub:"The boat's navigation time (based on departure/arrival times) — see the Navigation menu for the full breakdown.",
   infoTripInfo:"Summary of how much time the boat spends navigating, calculated from each expedition's departure and arrival times. * Distance is a straight-line estimate (Manaus to each municipality, round trip) — the actual river distance is greater, since the river winds.",
@@ -1578,6 +1595,13 @@ const I18N = {
   navColIda:"Hinfahrt",
   navColVolta:"Rückfahrt",
   navColNota:"Anmerkung",
+  graphsTitle:"Interaktive Grafiken",
+  chartCompTitle:"Vergleich 2025 vs 2026",
+  chartPieTitle:"Verteilung 2026",
+  chartTopSpecTitle:"Top 10 Fachrichtungen",
+  chartTotalAtendimentos:"Gesamtbehandlungen",
+  chartPacientes:"Patienten",
+  chartMediaExp:"Ø/Exp",
   tripInfoTitle:"Expeditionsreisen",
   tripInfoSub:"Die Navigationszeit des Bootes (basierend auf Abfahrts-/Ankunftszeiten) — siehe Menü Navigation für die vollständige Aufschlüsselung.",
   infoTripInfo:"Zusammenfassung der Navigationszeit des Bootes, berechnet aus den Abfahrts- und Ankunftszeiten jeder Expedition — eine von der Behandlungstabelle unabhängige Quelle.",
@@ -1754,6 +1778,13 @@ const I18N = {
   navColIda:"Ida",
   navColVolta:"Vuelta",
   navColNota:"Observación",
+  graphsTitle:"Gráficos Interactivos",
+  chartCompTitle:"Comparación 2025 vs 2026",
+  chartPieTitle:"Distribución 2026",
+  chartTopSpecTitle:"Top 10 Especialidades",
+  chartTotalAtendimentos:"Total de Atenciones",
+  chartPacientes:"Pacientes",
+  chartMediaExp:"Promedio/Exp",
   tripInfoTitle:"Viajes de la Expedición",
   tripInfoSub:"Tiempo de navegación del barco (datos de horario de salida y llegada) — vea el menú Navegación para el detalle completo.",
   infoTripInfo:"Resumen del tiempo que el barco pasa navegando, calculado a partir de los horarios de salida y llegada de cada expedición — dato independiente de la planilla de atenciones.",
@@ -2029,6 +2060,13 @@ const I18N = {
   navColIda:"Туда",
   navColVolta:"Обратно",
   navColNota:"Примечание",
+  graphsTitle:"Интерактивные графики",
+  chartCompTitle:"Сравнение 2025 vs 2026",
+  chartPieTitle:"Распределение 2026",
+  chartTopSpecTitle:"Топ-10 Специальностей",
+  chartTotalAtendimentos:"Всего приёмов",
+  chartPacientes:"Пациенты",
+  chartMediaExp:"Ср./Экс.",
   tripInfoTitle:"Переходы экспедиции",
   tripInfoSub:"Время навигации судна (по времени отправления/прибытия) — полную детализацию см. в меню Навигация.",
   infoTripInfo:"Сводка времени, которое судно проводит в навигации, рассчитанная по времени отправления и прибытия каждой экспедиции. * Расстояние использует реальное время навигации экспедиции, умноженное на среднюю скорость 14,15 км/ч — откалиброванную по 2 пунктам назначения с известным реальным речным расстоянием (Тефе и Нову-Арипуана). Поскольку используется реальное время, эта оценка уже отражает изгибы реки, в отличие от простого расстояния по прямой на карте.",
