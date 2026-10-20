@@ -11,7 +11,6 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230f2a4a' d='M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z'/%3E%3Cpath fill='%23b8934a' d='M6 12V6H15L18 12Z'/%3E%3Crect x='11' y='2' width='2' height='4' fill='%230f2a4a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
 :root{
   --bg:#f6f5f2; --panel:#ffffff; --panel-2:#fbfaf7;
@@ -252,7 +251,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 20/10/2026 09:08</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 20/10/2026 15:30</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -570,6 +569,11 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
             <button class="comp-tab active" onclick="showCompTab('especialidades')" style="white-space: nowrap;">Especialidades</button>
             <button class="comp-tab" onclick="showCompTab('exames')" style="white-space: nowrap;">Exames</button>
             <button class="comp-tab" onclick="showCompTab('atendimentos')" style="white-space: nowrap;">Tipo Atendimento</button>
+            <button class="comp-tab" onclick="showCompTab('cirmedia')" style="white-space: nowrap;">Cirurgias Médias</button>
+            <button class="comp-tab" onclick="showCompTab('cirbaixa')" style="white-space: nowrap;">Cirurgias Pequenas</button>
+            <button class="comp-tab" onclick="showCompTab('farmacia')" style="white-space: nowrap;">Farmácia</button>
+            <button class="comp-tab" onclick="showCompTab('alimentacao')" style="white-space: nowrap;">Alimentação</button>
+            <button class="comp-tab" onclick="showCompTab('pacientes')" style="white-space: nowrap;">Pacientes Únicos</button>
           </div>
           <!-- TAB: ESPECIALIDADES -->
           <div id="comp-especialidades" class="comp-content" style="display: block;">
@@ -616,15 +620,81 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
               </tbody>
             </table>
           </div>
-        </div>
-        <!-- GRÁFICOS INTERATIVOS COMPARATIVOS -->
-        <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
-          <h3 class="serif" style="color: var(--navy); margin-bottom: 16px; font-size: 1rem;"><span data-i18n="graphsTitle">📊 Gráficos Interativos</span></h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div id="chartComparativo" style="height: 350px;"></div>
-            <div id="chartPizza" style="height: 350px;"></div>
+          <!-- TAB: CIRURGIAS MÉDIAS -->
+          <div id="comp-cirmedia" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-cirmedia">
+              </tbody>
+            </table>
           </div>
-          <div id="chartEspecialidades" style="height: 400px;"></div>
+          <!-- TAB: CIRURGIAS PEQUENAS -->
+          <div id="comp-cirbaixa" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-cirbaixa">
+              </tbody>
+            </table>
+          </div>
+          <!-- TAB: FARMÁCIA -->
+          <div id="comp-farmacia" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-farmacia">
+              </tbody>
+            </table>
+          </div>
+          <!-- TAB: ALIMENTAÇÃO -->
+          <div id="comp-alimentacao" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-alimentacao">
+              </tbody>
+            </table>
+          </div>
+          <!-- TAB: PACIENTES ÚNICOS -->
+          <div id="comp-pacientes" class="comp-content" style="display: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Métrica</th>
+                  <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Variação</th>
+                </tr>
+              </thead>
+              <tbody id="table-pacientes">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -718,14 +788,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 20/10/2026 09:08</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 20/10/2026 15:30</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 20/10/2026 09:08</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 20/10/2026 15:30</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -923,41 +993,37 @@ function gerarComparativo(exps) {
   });
   document.getElementById('table-atendimentos').innerHTML = htmlTipos;
 
-  // GRÁFICOS INTERATIVOS COM PLOTLY
-  if (window.Plotly) {
-    try {
-      // 1️⃣ GRÁFICO 1: Comparativo de Barras (2025 vs 2026)
-      const t = I18N[CUR_LANG];
-      const labels1 = [t.chartTotalAtendimentos, t.chartPacientes, t.chartMediaExp, 'Dias em Atendimento'];
-      const trace1_2025 = { x: labels1, y: [total2025, pac2025, media2025, dias2025], name: '2025', type: 'bar', marker: { color: 'rgba(15, 42, 74, 0.8)' } };
-      const trace1_2026 = { x: labels1, y: [total2026, pac2026, media2026, dias2026], name: '2026', type: 'bar', marker: { color: 'rgba(14, 143, 111, 0.8)' } };
-      Plotly.newPlot('chartComparativo', [trace1_2025, trace1_2026], { title: t.chartCompTitle, barmode: 'group', hovermode: 'closest', showlegend: true }, { responsive: true });
+  // CIRURGIAS MÉDIAS
+  const cirMed2025 = exp2025.reduce((s, e) => s + (e.cirMedia || 0), 0);
+  const cirMed2026 = exp2026.reduce((s, e) => s + (e.cirMedia || 0), 0);
+  const varCirMed = cirMed2025 > 0 ? (((cirMed2026 - cirMed2025) / cirMed2025) * 100).toFixed(1) : '—';
+  const htmlCirMed = `<tr><td>Cirurgias de Média Complexidade</td><td style="text-align: right;">${cirMed2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirMed2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirMed >= 0 || varCirMed === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirMed === '—' ? '—' : (varCirMed >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirMed) + '%'}</td></tr>`;
+  document.getElementById('table-cirmedia').innerHTML = htmlCirMed;
 
-      // 2️⃣ GRÁFICO 2: Pizza - Distribuição 2026
-      const pieData = [
-        { labels: labels1, values: [total2026, pac2026, media2026], type: 'pie', marker: { colors: ['rgba(14, 143, 111, 0.8)', 'rgba(15, 42, 74, 0.8)', 'rgba(255, 152, 0, 0.8)'] } }
-      ];
-      Plotly.newPlot('chartPizza', pieData, { title: t.chartPieTitle, hovermode: 'closest' }, { responsive: true });
+  // CIRURGIAS PEQUENAS
+  const cirBax2025 = exp2025.reduce((s, e) => s + (e.cirBaixa || 0), 0);
+  const cirBax2026 = exp2026.reduce((s, e) => s + (e.cirBaixa || 0), 0);
+  const varCirBax = cirBax2025 > 0 ? (((cirBax2026 - cirBax2025) / cirBax2025) * 100).toFixed(1) : '—';
+  const htmlCirBax = `<tr><td>Cirurgias de Baixa Complexidade</td><td style="text-align: right;">${cirBax2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirBax2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirBax >= 0 || varCirBax === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirBax === '—' ? '—' : (varCirBax >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirBax) + '%'}</td></tr>`;
+  document.getElementById('table-cirbaixa').innerHTML = htmlCirBax;
 
-      // 3️⃣ GRÁFICO 3: Top 10 Especialidades (Horizontal Bar)
-      const topSpecs = Object.entries(allSpecs && allSpecs.length > 0 ? allSpecs.reduce((acc, s) => { acc[s] = (spec2025[s] || 0) + (spec2026[s] || 0); return acc; }, {}) : {})
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10);
-      const specTrace = {
-        y: topSpecs.map(([s]) => s),
-        x: topSpecs.map(([_, v]) => v),
-        type: 'bar',
-        orientation: 'h',
-        marker: { color: 'rgba(14, 143, 111, 0.8)' }
-      };
-      const chartTitle3 = t.chartTopSpecTitle + ` (Total 2025-2026)`;
-      Plotly.newPlot('chartEspecialidades', [specTrace], { title: chartTitle3, xaxis: { title: t.metricaAtendimentos }, yaxis: { title: t.reportColEspecialidade }, margin: { l: 200 } }, { responsive: true });
+  // FARMÁCIA
+  const farm2025 = exp2025.reduce((s, e) => s + (e.farm || 0), 0);
+  const farm2026 = exp2026.reduce((s, e) => s + (e.farm || 0), 0);
+  const varFarm = farm2025 > 0 ? (((farm2026 - farm2025) / farm2025) * 100).toFixed(1) : '—';
+  const htmlFarm = `<tr><td>Medicamentos/Farmácia</td><td style="text-align: right;">${farm2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${farm2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varFarm >= 0 || varFarm === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varFarm === '—' ? '—' : (varFarm >= 0 ? '▲' : '▼') + ' ' + Math.abs(varFarm) + '%'}</td></tr>`;
+  document.getElementById('table-farmacia').innerHTML = htmlFarm;
 
-      console.log('✅ Gráficos Plotly criados com sucesso!');
-    } catch(e) { console.log('❌ Erro nos gráficos:', e.message); }
-  } else {
-    console.log('⚠️ Plotly.js não carregado');
-  }
+  // ALIMENTAÇÃO
+  const alim2025 = exp2025.reduce((s, e) => s + (e.alim || 0), 0);
+  const alim2026 = exp2026.reduce((s, e) => s + (e.alim || 0), 0);
+  const varAlim = alim2025 > 0 ? (((alim2026 - alim2025) / alim2025) * 100).toFixed(1) : '—';
+  const htmlAlim = `<tr><td>Alimentação</td><td style="text-align: right;">${alim2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${alim2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varAlim >= 0 || varAlim === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varAlim === '—' ? '—' : (varAlim >= 0 ? '▲' : '▼') + ' ' + Math.abs(varAlim) + '%'}</td></tr>`;
+  document.getElementById('table-alimentacao').innerHTML = htmlAlim;
+
+  // PACIENTES ÚNICOS
+  const htmlPac = `<tr><td>Pacientes Únicos</td><td style="text-align: right;">${pac2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${pac2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varPac >= 0 ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varPac >= 0 ? '▲' : '▼'} ${Math.abs(varPac)}%</td></tr>`;
+  document.getElementById('table-pacientes').innerHTML = htmlPac;
 }
 
 function initDashboardApp(){
@@ -1004,7 +1070,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "20/10/2026 09:08";
+const GENERATED_AT = "20/10/2026 15:30";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
