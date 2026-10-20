@@ -252,7 +252,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 19/10/2026 12:49</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 20/10/2026 09:08</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -546,6 +546,22 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 </div>
               </div>
             </div>
+            <!-- CARD: Total Dias em Atendimento -->
+            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Total Dias em Atendimento</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-dias-2025">0.0</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">dias</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-dias-2026">77.5</div>
+                  <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-dias-var">▲ +∞%</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- ABAS DE COMPARATIVO -->
@@ -702,14 +718,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 19/10/2026 12:49</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 20/10/2026 09:08</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 19/10/2026 12:49</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 20/10/2026 09:08</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -816,6 +832,9 @@ function gerarComparativo(exps) {
   const pac2025 = exp2025.reduce((s, e) => s + e.pacientes, 0);
   const pac2026 = exp2026.reduce((s, e) => s + e.pacientes, 0);
   const varPac = (((pac2026 - pac2025) / pac2025) * 100).toFixed(1);
+  const dias2025 = exp2025.reduce((s, e) => s + (e.diasAtendimento || 0), 0);
+  const dias2026 = exp2026.reduce((s, e) => s + (e.diasAtendimento || 0), 0);
+  const varDias = dias2025 > 0 ? (((dias2026 - dias2025) / dias2025) * 100).toFixed(1) : (dias2026 > 0 ? 999 : 0);
 
   document.getElementById('kpi-total-2025').textContent = total2025.toLocaleString('pt-BR');
   document.getElementById('kpi-total-2026').textContent = total2026.toLocaleString('pt-BR');
@@ -827,6 +846,17 @@ function gerarComparativo(exps) {
   document.getElementById('kpi-pac-2026').textContent = pac2026.toLocaleString('pt-BR');
   document.getElementById('kpi-pac-var').textContent = (varPac >= 0 ? '▲' : '▼') + ' ' + Math.abs(varPac) + '%';
   document.getElementById('kpi-pac-var').style.color = varPac >= 0 ? 'var(--teal)' : '#d32f2f';
+
+  // Dias em Atendimento KPI
+  document.getElementById('kpi-dias-2025').textContent = dias2025.toFixed(1);
+  document.getElementById('kpi-dias-2026').textContent = dias2026.toFixed(1);
+  if (dias2025 > 0) {
+    document.getElementById('kpi-dias-var').textContent = (varDias >= 0 ? '▲' : '▼') + ' ' + Math.abs(varDias) + '%';
+    document.getElementById('kpi-dias-var').style.color = varDias >= 0 ? 'var(--teal)' : '#d32f2f';
+  } else if (dias2026 > 0) {
+    document.getElementById('kpi-dias-var').textContent = '▲ +∞%';
+    document.getElementById('kpi-dias-var').style.color = 'var(--teal)';
+  }
 
   // ESPECIALIDADES
   const spec2025 = {}, spec2026 = {};
@@ -898,9 +928,9 @@ function gerarComparativo(exps) {
     try {
       // 1️⃣ GRÁFICO 1: Comparativo de Barras (2025 vs 2026)
       const t = I18N[CUR_LANG];
-      const labels1 = [t.chartTotalAtendimentos, t.chartPacientes, t.chartMediaExp];
-      const trace1_2025 = { x: labels1, y: [total2025, pac2025, media2025], name: '2025', type: 'bar', marker: { color: 'rgba(15, 42, 74, 0.8)' } };
-      const trace1_2026 = { x: labels1, y: [total2026, pac2026, media2026], name: '2026', type: 'bar', marker: { color: 'rgba(14, 143, 111, 0.8)' } };
+      const labels1 = [t.chartTotalAtendimentos, t.chartPacientes, t.chartMediaExp, 'Dias em Atendimento'];
+      const trace1_2025 = { x: labels1, y: [total2025, pac2025, media2025, dias2025], name: '2025', type: 'bar', marker: { color: 'rgba(15, 42, 74, 0.8)' } };
+      const trace1_2026 = { x: labels1, y: [total2026, pac2026, media2026, dias2026], name: '2026', type: 'bar', marker: { color: 'rgba(14, 143, 111, 0.8)' } };
       Plotly.newPlot('chartComparativo', [trace1_2025, trace1_2026], { title: t.chartCompTitle, barmode: 'group', hovermode: 'closest', showlegend: true }, { responsive: true });
 
       // 2️⃣ GRÁFICO 2: Pizza - Distribuição 2026
@@ -974,7 +1004,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "19/10/2026 12:49";
+const GENERATED_AT = "20/10/2026 09:08";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
