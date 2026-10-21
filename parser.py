@@ -258,12 +258,25 @@ def parse_year_sheet(df, year):
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
     datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
 
-    # dias em atendimento
+    # dias em atendimento - USAR VALORES DA LINHA "TOTAL DE DIAS EM ATENDIMENTO"
     dias_atendimento = {c: 0.0 for c in cols}
     r_dias = find_row_by_label(df, "TOTAL DE DIAS EM ATENDIMENTO")
     if r_dias is not None:
         for c in cols:
             dias_atendimento[c] = _numf(df.iloc[r_dias, c])
+
+        # Ler o TOTAL DO ANO (coluna 23) como referência
+        total_col = 23
+        if total_col < len(df.columns):
+            total_ano_value = _numf(df.iloc[r_dias, total_col])
+            soma_calculada = sum(dias_atendimento.values())
+
+            # Se há diferença entre a soma e o TOTAL DO ANO, aplicar fator de correção
+            # para que a soma final bata exatamente com o TOTAL DO ANO (SEM ARREDONDAMENTO INTERMEDIÁRIO)
+            if soma_calculada > 0 and total_ano_value > 0 and abs(soma_calculada - total_ano_value) > 0.1:
+                fator = total_ano_value / soma_calculada
+                for c in cols:
+                    dias_atendimento[c] = dias_atendimento[c] * fator
 
     # specialties
     specialties = {}
