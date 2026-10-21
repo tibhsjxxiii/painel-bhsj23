@@ -17,6 +17,7 @@ import re
 import argparse
 from datetime import datetime
 from parser import extract_all_years
+from validations import validate_all_expeditions, ValidationReport
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_PATH = os.path.join(SCRIPT_DIR, "template.html")
@@ -114,14 +115,42 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
         sys.exit(1)
 
     print()
-    print("🔍 Verificando qualidade dos dados...")
+    print("🔍 Verificando qualidade dos dados (Validação Completa)...")
+
+    # NOVO: Validação rigorosa com módulo validations.py
+    validation_report = validate_all_expeditions(all_expeditions)
+
+    # Legacy quality checks
     warnings = run_quality_checks(all_expeditions, data_by_year)
-    if warnings:
-        print(f"⚠️  {len(warnings)} ponto(s) de atenção encontrados (o arquivo será gerado mesmo assim):")
-        for w in warnings:
-            print(f"   • {w}")
+
+    # Imprimir relatório de validação
+    summary = validation_report.get_summary()
+
+    if validation_report.errors:
+        print(f"\n🔴 ERROS CRÍTICOS ({summary['total_errors']}):")
+        for error in validation_report.errors[:5]:
+            print(f"   ❌ [{error['category']}] {error['message']}")
+        if len(validation_report.errors) > 5:
+            print(f"   ... e mais {len(validation_report.errors) - 5} erros")
+
+        print(f"\n⚠️  O painel será gerado, mas EXISTEM PROBLEMAS CRÍTICOS que devem ser corrigidos:")
+        print(f"   • {summary['total_errors']} erros | {summary['total_warnings']} avisos")
+    elif validation_report.warnings:
+        print(f"⚠️  {summary['total_warnings']} aviso(s) encontrado(s):")
+        for warning in validation_report.warnings[:5]:
+            print(f"   ⚠️  [{warning['category']}] {warning['message']}")
+        if len(validation_report.warnings) > 5:
+            print(f"   ... e mais {len(validation_report.warnings) - 5} avisos")
     else:
-        print("   ✓ Nenhuma inconsistência encontrada.")
+        print("   ✓ Validação completa: Nenhuma inconsistência encontrada.")
+
+    # Legacy warnings
+    if warnings:
+        print(f"\n📋 Validações Legacy ({len(warnings)}):")
+        for w in warnings[:3]:
+            print(f"   • {w}")
+        if len(warnings) > 3:
+            print(f"   ... e mais {len(warnings) - 3}")
 
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     generated_at = datetime.now().strftime("%d/%m/%Y %H:%M")
