@@ -13,12 +13,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f5f2; --panel:#ffffff; --panel-2:#fbfaf7;
+  --bg:#ffffff; --panel:#ffffff; --panel-2:#f9f8f7;
   --navy:#0f2a4a; --navy-2:#173a63; --navy-soft:#e8edf3;
-  --gold:#b8934a; --gold-dim:rgba(184,147,74,0.12);
+  --gold:#d4a574; --gold-dim:rgba(212,165,116,0.12);
   --teal:#0e8f6f; --teal-dim:rgba(14,143,111,0.10);
-  --line:#e7e5df; --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0;
-  --radius:12px; --shadow:0 2px 16px rgba(15,42,74,0.07);
+  --line:#d9d5cc; --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0;
+  --radius:12px; --shadow:0 4px 12px rgba(15,42,74,0.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -33,14 +33,9 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .report-btn:hover{background:var(--navy-2);}
 
 .report-doc{
-  --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0; --line:#e7e5df;
-  --panel-2:#fbfaf7; --navy-soft:#e8edf3; --navy:#0f2a4a; --navy-2:#173a63;
   background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:40px 46px;box-shadow:var(--shadow);
 }
-.modal-card-light{
-  --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0; --line:#e7e5df;
-  --panel-2:#fbfaf7; --navy-soft:#e8edf3; --navy:#0f2a4a; --navy-2:#173a63; --gold:#b8934a; --teal:#0e8f6f; --teal-dim:rgba(14,143,111,0.10);
-}
+.modal-card-light{}
 .report-doc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .report-doc-brand{display:flex;align-items:center;gap:12px;}
 .report-doc-logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(155deg,var(--navy),var(--navy-2));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -62,27 +57,24 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 
 @media print{
   @page{margin:1.8cm;}
-  .report-doc{border:none;box-shadow:none;padding:0;}
-  .report-section{page-break-inside:avoid;}
-  .report-doc-title{font-size:1.35rem;}
-}
-
-@media print{
   body{background:#fff;}
   .sidebar,.mobile-nav-toggle,.sidebar-backdrop,.topbar-controls,.no-print,#errBanner{display:none !important;}
   .main{height:auto !important;overflow:visible !important;padding:0 !important;}
   .app-shell{display:block !important;}
   .view{display:none !important;}
   .view#view-report{display:block !important;}
+  .report-doc{border:none;box-shadow:none;padding:0;}
+  .report-doc-title{font-size:1.35rem;}
+  .report-section{page-break-inside:avoid;}
   .panel{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
   .topbar{margin-bottom:16px;}
 }
 .comp-tab{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--muted);font-size:0.85rem;font-weight:600;transition:all 0.15s;border-bottom:2px solid transparent;}
 .comp-tab:hover{background:var(--panel);color:var(--text);}
 .comp-tab.active{background:var(--panel);color:var(--teal);border-bottom:2px solid var(--teal);}
-.comp-content table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-.comp-content table th{background:var(--navy-soft);color:var(--navy);font-weight:600;padding:8px 10px;text-align:left;font-size:0.7rem;text-transform:uppercase;}
-.comp-content table td{padding:7px 10px;border-bottom:1px solid var(--line);}
+.comp-content table{width:100%;border-collapse:collapse;font-size:0.9rem;}
+.comp-content table th{background:var(--navy-soft);color:var(--navy);font-weight:600;padding:10px 12px;text-align:left;font-size:0.8rem;text-transform:uppercase;}
+.comp-content table td{padding:10px 12px;border-bottom:1px solid var(--line);}
 .comp-content table tbody tr:nth-child(even) td{background:var(--panel-2);}
 .comp-content ul li{padding:6px 0;color:var(--text);font-size:0.9rem;border-bottom:1px solid var(--line-2,rgba(231,229,223,0.5));}
 .comp-content ul li:last-child{border-bottom:none;}
@@ -91,20 +83,23 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .sidebar-backdrop{display:none;}
 @media(max-width:820px){
   .mobile-nav-toggle{display:flex;}
-  .sidebar{position:fixed;left:-100px;top:0;bottom:0;z-index:200;transition:left .25s ease;box-shadow:4px 0 24px rgba(0,0,0,0.25);}
+  .sidebar{position:fixed;left:-120px;top:0;bottom:0;z-index:200;transition:left .25s ease;box-shadow:4px 0 24px rgba(0,0,0,0.25);}
   .sidebar.open{left:0;}
   .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:199;}
   .sidebar-backdrop.open{display:block;}
   .main{padding:16px 16px 20px;}
   .dash-grid{grid-template-columns:1fr !important;height:auto !important;}
   .main{height:auto !important;overflow-y:visible !important;}
+  .topbar{flex-direction:column;align-items:flex-start;}
+  .topbar-controls{flex-direction:column;width:100%;gap:8px;}
+  .year-select,.live-badge,#langSel{width:100%;}
 }
-.sidebar{width:88px;background:var(--navy);display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.sidebar{width:120px;background:var(--navy);display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
 .sidebar-logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(155deg,var(--gold),#8a6c34);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(184,147,74,0.35);margin-bottom:30px;}
-.nav-item{width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 0;color:rgba(255,255,255,0.55);cursor:pointer;border-radius:10px;margin-bottom:5px;transition:all .18s;background:none;border:none;font-family:inherit;}
+.nav-item{width:100px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;color:rgba(255,255,255,0.6);cursor:pointer;border-radius:10px;margin-bottom:6px;transition:all .18s;background:none;border:none;font-family:inherit;}
 .nav-item:focus-visible,.info-icon:focus-visible,.year-select button:focus-visible,#langSel:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-.nav-item svg{width:18px;height:18px;}
-.nav-item span{font-size:0.6rem;letter-spacing:0.02em;text-align:center;line-height:1.15;}
+.nav-item svg{width:24px;height:24px;}
+.nav-item span{font-size:0.7rem;letter-spacing:0.02em;text-align:center;line-height:1.3;font-weight:500;}
 .nav-item:hover{color:#fff;background:rgba(255,255,255,0.06);}
 .nav-item.active{color:var(--gold);background:rgba(184,147,74,0.14);}
 .sidebar-spacer{flex:1;}
@@ -113,8 +108,8 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 
 .main{flex:1;min-width:0;padding:18px 28px 20px;height:100vh;overflow-y:auto;box-sizing:border-box;}
 .topbar{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
-.topbar h1{font-family:'Fraunces';font-size:1.5rem;font-weight:600;color:var(--navy);}
-.topbar .sub{color:var(--muted);font-size:0.82rem;margin-top:4px;}
+.topbar h1{font-family:'Fraunces';font-size:1.6rem;font-weight:600;color:var(--navy);line-height:1.3;}
+.topbar .sub{color:var(--muted);font-size:0.9rem;margin-top:4px;}
 .topbar-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .year-select{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:100px;padding:4px;box-shadow:var(--shadow);}
 .year-select button{background:transparent;border:none;color:var(--muted);font-family:'JetBrains Mono';font-size:0.76rem;padding:7px 14px;border-radius:100px;cursor:pointer;transition:all .18s;}
@@ -122,14 +117,14 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-family:'Inter';font-size:0.82rem;cursor:pointer;box-shadow:var(--shadow);}
 .live-badge{display:flex;align-items:center;gap:7px;font-size:0.7rem;color:var(--teal);letter-spacing:0.04em;text-transform:uppercase;background:var(--teal-dim);border:1px solid rgba(14,143,111,0.22);padding:6px 12px;border-radius:100px;}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;}
-.updated-badge{font-size:0.68rem;color:var(--muted-2);margin-top:6px;}
+.updated-badge{font-size:0.8rem;color:var(--muted-2);margin-top:6px;font-weight:500;}
 
 .view{display:none;}
 .view.visible{display:block;animation:fadein .25s ease;}
 @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
 
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
-.panel-title{font-family:'Fraunces';font-size:0.88rem;font-weight:600;margin-bottom:2px;color:var(--navy);display:flex;align-items:center;gap:6px;}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);}
+.panel-title{font-family:'Fraunces';font-size:0.95rem;font-weight:600;margin-bottom:4px;color:var(--navy);display:flex;align-items:center;gap:6px;}
 .chart-type-toggle{display:inline-flex;gap:2px;margin-left:auto;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:2px;flex-shrink:0;}
 .chart-type-toggle button{background:transparent;border:none;padding:5px 7px;border-radius:6px;cursor:pointer;color:var(--muted);display:flex;align-items:center;transition:all .15s;}
 .chart-type-toggle button svg{width:13px;height:13px;display:block;}
@@ -138,9 +133,9 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .info-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--navy-soft);color:var(--navy);font-size:0.62rem;font-style:italic;font-family:Georgia,serif;cursor:pointer;border:none;flex-shrink:0;}
 .info-icon:hover{background:var(--gold);color:#fff;}
 .info-popover{position:absolute;background:var(--navy);color:#fff;font-size:0.76rem;padding:10px 13px;border-radius:8px;max-width:270px;box-shadow:0 10px 28px rgba(0,0,0,0.3);z-index:9998;line-height:1.5;}
-.panel-sub{color:var(--muted);font-size:0.7rem;margin-bottom:8px;}
+.panel-sub{color:var(--muted);font-size:0.8rem;margin-bottom:10px;}
 
-.dash-grid-v2{display:flex;flex-direction:column;gap:10px;height:calc(100vh - 100px);}
+.dash-grid-v2{display:flex;flex-direction:column;gap:16px;height:calc(100vh - 100px);}
 .breakdown-hero{flex:1.5;display:flex;flex-direction:column;min-height:0;}
 .breakdown-hero-body{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;flex:1;min-height:0;}
 .breakdown-hero-body .chart-wrap{height:100%;min-height:0;}
@@ -156,16 +151,16 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .delta{font-size:0.72rem;font-weight:700;margin-top:3px;display:flex;align-items:center;gap:3px;}
 .delta.up{color:var(--teal);}
 .delta.down{color:#a9564a;}
-.bignum{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;border-top:3px solid var(--gold);}
-.bignum .v{font-family:'Fraunces';font-size:1.05rem;font-weight:600;color:var(--navy);}
-.bignum .l{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.03em;margin-top:2px;}
+.bignum{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px 12px;border-top:3px solid var(--gold);}
+.bignum .v{font-family:'Fraunces';font-size:1.25rem;font-weight:600;color:var(--navy);line-height:1.2;}
+.bignum .l{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.03em;margin-top:4px;font-weight:500;}
 
 .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.mini-stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;}
-.mini-stat .v{font-family:'Fraunces';font-size:0.92rem;font-weight:600;color:var(--navy);}
-.mini-stat .l{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.02em;margin-top:2px;}
+.mini-stat{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px 12px;}
+.mini-stat .v{font-family:'Fraunces';font-size:1.1rem;font-weight:600;color:var(--navy);line-height:1.2;}
+.mini-stat .l{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.02em;margin-top:3px;font-weight:500;}
 
-.chart-wrap{position:relative;height:220px;}
+.chart-wrap{position:relative;height:240px;}
 .chart-wrap:not(.loaded)::before{content:'';position:absolute;inset:0;border-radius:8px;background:linear-gradient(90deg,var(--panel-2) 25%,var(--navy-soft) 50%,var(--panel-2) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 @media(prefers-reduced-motion:reduce){.chart-wrap:not(.loaded)::before{animation:none;}}
@@ -194,9 +189,9 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .stop-val{font-family:'Fraunces';font-size:0.76rem;color:var(--gold);margin-top:3px;font-weight:600;}
 
 table{width:100%;border-collapse:collapse;font-size:0.85rem;}
-thead th{text-align:left;color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em;padding:10px 12px;border-bottom:1px solid var(--line);}
-tbody td{padding:12px;border-bottom:1px solid var(--line);}
-tbody tr:hover{background:var(--gold-dim);}
+thead th{text-align:left;color:var(--muted);font-weight:600;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.04em;padding:12px 14px;border-bottom:1px solid var(--line);}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--line);}
+tbody tr:hover{background:var(--panel-2);}
 .bar-cell{display:flex;align-items:center;gap:10px;}
 .bar-track{flex:1;height:6px;background:var(--navy-soft);border-radius:4px;overflow:hidden;min-width:70px;}
 .bar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:4px;}
@@ -582,7 +577,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Especialidade</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -597,7 +594,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Tipo de Exame</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -612,7 +611,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Tipo de Atendimento</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -627,7 +628,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Métrica</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -642,7 +645,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Métrica</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -657,7 +662,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Métrica</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -672,7 +679,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Métrica</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -687,7 +696,9 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <tr>
                   <th>Métrica</th>
                   <th style="text-align: right;">2025</th>
+                  <th style="text-align: right;">Média 2025</th>
                   <th style="text-align: right;">2026</th>
+                  <th style="text-align: right;">Média 2026</th>
                   <th style="text-align: right;">Variação</th>
                 </tr>
               </thead>
@@ -890,6 +901,18 @@ function gerarComparativo(exps) {
   const exp2025 = exps.filter(e => e.year === 2025);
   const exp2026 = exps.filter(e => e.year === 2026);
 
+  // Helper para traduzir rótulo de MÉDIA
+  const getMediaLabel = () => {
+    const labels = {
+      pt: 'Média',
+      en: 'Average',
+      de: 'Durchschnitt',
+      es: 'Promedio',
+      ru: 'Среднее'
+    };
+    return labels[CUR_LANG] || 'Média';
+  };
+
   // KPIs
   const total2025 = exp2025.reduce((s, e) => s + e.geral, 0);
   const total2026 = exp2026.reduce((s, e) => s + e.geral, 0);
@@ -943,8 +966,10 @@ function gerarComparativo(exps) {
   allSpecs.forEach(s => {
     const v25 = spec2025[s] || 0;
     const v26 = spec2026[s] || 0;
+    const med25 = Math.round(v25 / exp2025.length);
+    const med26 = Math.round(v26 / exp2026.length);
     const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
-    htmlSpec += `<tr><td>${s}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+    htmlSpec += `<tr><td>${s}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
   });
   document.getElementById('table-especialidades').innerHTML = htmlSpec;
 
@@ -966,8 +991,10 @@ function gerarComparativo(exps) {
   allExams.forEach(ex => {
     const v25 = exam2025[ex] || 0;
     const v26 = exam2026[ex] || 0;
+    const med25 = Math.round(v25 / exp2025.length);
+    const med26 = Math.round(v26 / exp2026.length);
     const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
-    htmlExam += `<tr><td>${ex}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+    htmlExam += `<tr><td>${ex}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
   });
   document.getElementById('table-exames').innerHTML = htmlExam;
 
@@ -983,41 +1010,53 @@ function gerarComparativo(exps) {
   Object.entries(tipos).forEach(([tipo, dados]) => {
     const v25 = dados[2025];
     const v26 = dados[2026];
+    const med25 = Math.round(v25 / exp2025.length);
+    const med26 = Math.round(v26 / exp2026.length);
     const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
-    htmlTipos += `<tr><td>${tipo}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+    htmlTipos += `<tr><td>${tipo}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
   });
   document.getElementById('table-atendimentos').innerHTML = htmlTipos;
 
   // CIRURGIAS MÉDIAS
   const cirMed2025 = exp2025.reduce((s, e) => s + (e.cirMedia || 0), 0);
   const cirMed2026 = exp2026.reduce((s, e) => s + (e.cirMedia || 0), 0);
+  const medCirMed2025 = Math.round(cirMed2025 / exp2025.length);
+  const medCirMed2026 = Math.round(cirMed2026 / exp2026.length);
   const varCirMed = cirMed2025 > 0 ? (((cirMed2026 - cirMed2025) / cirMed2025) * 100).toFixed(1) : '—';
-  const htmlCirMed = `<tr><td>Cirurgias de Média Complexidade</td><td style="text-align: right;">${cirMed2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirMed2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirMed >= 0 || varCirMed === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirMed === '—' ? '—' : (varCirMed >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirMed) + '%'}</td></tr>`;
+  const htmlCirMed = `<tr><td>Cirurgias de Média Complexidade</td><td style="text-align: right;">${cirMed2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirMed2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirMed2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirMed2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirMed >= 0 || varCirMed === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirMed === '—' ? '—' : (varCirMed >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirMed) + '%'}</td></tr>`;
   document.getElementById('table-cirmedia').innerHTML = htmlCirMed;
 
   // CIRURGIAS PEQUENAS
   const cirBax2025 = exp2025.reduce((s, e) => s + (e.cirBaixa || 0), 0);
   const cirBax2026 = exp2026.reduce((s, e) => s + (e.cirBaixa || 0), 0);
+  const medCirBax2025 = Math.round(cirBax2025 / exp2025.length);
+  const medCirBax2026 = Math.round(cirBax2026 / exp2026.length);
   const varCirBax = cirBax2025 > 0 ? (((cirBax2026 - cirBax2025) / cirBax2025) * 100).toFixed(1) : '—';
-  const htmlCirBax = `<tr><td>Cirurgias de Baixa Complexidade</td><td style="text-align: right;">${cirBax2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirBax2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirBax >= 0 || varCirBax === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirBax === '—' ? '—' : (varCirBax >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirBax) + '%'}</td></tr>`;
+  const htmlCirBax = `<tr><td>Cirurgias de Baixa Complexidade</td><td style="text-align: right;">${cirBax2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirBax2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirBax2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirBax2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirBax >= 0 || varCirBax === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirBax === '—' ? '—' : (varCirBax >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirBax) + '%'}</td></tr>`;
   document.getElementById('table-cirbaixa').innerHTML = htmlCirBax;
 
   // FARMÁCIA
   const farm2025 = exp2025.reduce((s, e) => s + (e.farm || 0), 0);
   const farm2026 = exp2026.reduce((s, e) => s + (e.farm || 0), 0);
+  const medFarm2025 = Math.round(farm2025 / exp2025.length);
+  const medFarm2026 = Math.round(farm2026 / exp2026.length);
   const varFarm = farm2025 > 0 ? (((farm2026 - farm2025) / farm2025) * 100).toFixed(1) : '—';
-  const htmlFarm = `<tr><td>Medicamentos/Farmácia</td><td style="text-align: right;">${farm2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${farm2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varFarm >= 0 || varFarm === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varFarm === '—' ? '—' : (varFarm >= 0 ? '▲' : '▼') + ' ' + Math.abs(varFarm) + '%'}</td></tr>`;
+  const htmlFarm = `<tr><td>Medicamentos/Farmácia</td><td style="text-align: right;">${farm2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medFarm2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${farm2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medFarm2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varFarm >= 0 || varFarm === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varFarm === '—' ? '—' : (varFarm >= 0 ? '▲' : '▼') + ' ' + Math.abs(varFarm) + '%'}</td></tr>`;
   document.getElementById('table-farmacia').innerHTML = htmlFarm;
 
   // ALIMENTAÇÃO
   const alim2025 = exp2025.reduce((s, e) => s + (e.alim || 0), 0);
   const alim2026 = exp2026.reduce((s, e) => s + (e.alim || 0), 0);
+  const medAlim2025 = Math.round(alim2025 / exp2025.length);
+  const medAlim2026 = Math.round(alim2026 / exp2026.length);
   const varAlim = alim2025 > 0 ? (((alim2026 - alim2025) / alim2025) * 100).toFixed(1) : '—';
-  const htmlAlim = `<tr><td>Alimentação</td><td style="text-align: right;">${alim2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${alim2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varAlim >= 0 || varAlim === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varAlim === '—' ? '—' : (varAlim >= 0 ? '▲' : '▼') + ' ' + Math.abs(varAlim) + '%'}</td></tr>`;
+  const htmlAlim = `<tr><td>Alimentação</td><td style="text-align: right;">${alim2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medAlim2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${alim2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medAlim2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varAlim >= 0 || varAlim === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varAlim === '—' ? '—' : (varAlim >= 0 ? '▲' : '▼') + ' ' + Math.abs(varAlim) + '%'}</td></tr>`;
   document.getElementById('table-alimentacao').innerHTML = htmlAlim;
 
   // PACIENTES ÚNICOS
-  const htmlPac = `<tr><td>Pacientes Únicos</td><td style="text-align: right;">${pac2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${pac2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varPac >= 0 ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varPac >= 0 ? '▲' : '▼'} ${Math.abs(varPac)}%</td></tr>`;
+  const medPac2025 = Math.round(pac2025 / exp2025.length);
+  const medPac2026 = Math.round(pac2026 / exp2026.length);
+  const htmlPac = `<tr><td>Pacientes Únicos</td><td style="text-align: right;">${pac2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medPac2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${pac2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medPac2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varPac >= 0 ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varPac >= 0 ? '▲' : '▼'} ${Math.abs(varPac)}%</td></tr>`;
   document.getElementById('table-pacientes').innerHTML = htmlPac;
 }
 

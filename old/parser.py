@@ -1,0 +1,396 @@
+import pandas as pd
+import re
+from zipfile import ZipFile
+import xml.etree.ElementTree as ET
+
+TOTAL_LABELS = {
+    "Total de Consultas": "consultas",
+    "Total de Oftalmologia": "oft",
+    "Total de Odontologia": "odonto",
+    "Total de Consultas Não Médicas": "naoMed",
+    "Total de Exames": "exames",
+    "Total de Internações e Procedimentos": "intern",
+    "Total de Procedimentos": "proc",
+    "Total de Farmácia": "farm",
+    "Entrega de Alimentação": "alim",
+    "Total de Atendimentos em Saúde": "saude",
+    "Total Geral dos Atendimentos": "geral",
+}
+
+CANONICAL_MUN = {
+    "ANAMA": "Anamã", "ANAMÃ": "Anamã",
+    "URUCARA": "Urucará", "URUCARÁ": "Urucará",
+    "BERURI": "Beruri", "BERURI II": "Beruri",
+    "NOVO AIRÂO": "Novo Airão", "NOVO AIRÃO": "Novo Airão",
+    "NOVO REMANÇO I": "Novo Remanso I", "NOVO REMANSO I": "Novo Remanso I",
+    "NOVO REMANÇO II": "Novo Remanso II", "NOVO REMANSO II": "Novo Remanso II",
+    "CODAJAS": "Codajás", "CODAJÁS": "Codajás",
+    "BELEM": "Belém", "BELÉM": "Belém",
+    "CAREIRO DA VARZEA": "Careiro da Várzea", "CAREIRO DA VÁRZEA": "Careiro da Várzea",
+    "NHAMUNDA": "Nhamundá", "NHAMUNDÁ": "Nhamundá",
+}
+
+def canonicalize_mun(raw):
+    if not raw:
+        return raw
+    key = raw.strip().upper()
+    if key in CANONICAL_MUN:
+        return CANONICAL_MUN[key]
+    return raw.strip().title()
+
+def _clean(v):
+    if v is None:
+        return None
+    s = str(v).strip()
+    return s if s else None
+
+def _num(v):
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return 0
+    try:
+        return int(round(float(v)))
+    except (ValueError, TypeError):
+        return 0
+
+def _numf(v):
+    """Parse float preserving decimals (e.g., 4.5 stays 4.5, not rounded to 5)"""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return 0.0
+    try:
+        return round(float(v), 1)
+    except (ValueError, TypeError):
+        return 0.0
+
+def extract_schedule_data(ods_path):
+    """Extract departure/arrival times from CHEGADA E SAIDA sheet using XML parsing"""
+    try:
+        with ZipFile(ods_path) as z:
+            content = z.read('content.xml').decode('utf-8')
+        root = ET.fromstring(content)
+        namespaces = {
+            'table': 'urn:oasis:names:tc:opendocument:xmlns:table:1.0',
+            'text': 'urn:oasis:names:tc:opendocument:xmlns:text:1.0'
+        }
+
+        def horas_to_minutes(horas_str):
+            """Converte "15:00", "14h30" ou "14.5" para minutos (validando dados)"""
+            if not horas_str:
+                return 0
+            horas_str = str(horas_str).strip().lower()
+
+            # Rejeitar valores vazios ou com caracteres inválidos
+            if not horas_str or horas_str in ["", "0", "00:00", "-", "none"]:
+                return 0
+
+            # ⚠️ CRÍTICO: Rejeitar valores inválidos/corrompidos
+            # Exemplo: "-1110584:30:00" é corrupção de dados, retornar 0
+            if horas_str.startswith('-') or len(horas_str) > 20:
+                return 0
+
+            try:
+                # Rejeitar valores com caracteres inválidos
+                if '/' in horas_str or any(c in horas_str for c in ['@', '#', '$', '%']):
+                    return 0
+
+                # Formato "15:00" (com dois pontos) - permite horas > 24
+                if ':' in horas_str:
+                    parts = horas_str.split(':')
+                    hours = int(parts[0])
+                    mins = int(parts[1]) if len(parts) > 1 else 0
+
+                    # Validação: rejeitar se minutos >= 60 ou valores inválidos
+                    # MAS permitir horas > 24 (durações totais de viagem)
+                    if hours < 0 or mins < 0 or mins >= 60:
+                        return 0
+
+                    # Permitir até 999 horas (durações totais de ~41 dias)
+                    if hours > 999:
+                        return 0
+
+                    return hours * 60 + mins
+                # Formato "14h30" ou "14h 30"
+                elif 'h' in horas_str:
+                    parts = horas_str.replace('h', ' ').split()
+                    hours = int(parts[0])
+                    mins = int(parts[1]) if len(parts) > 1 else 0
+
+                    # Validação
+                    if hours < 0 or hours > 200 or mins < 0 or mins >= 60:
+                        return 0
+
+                    return hours * 60 + mins
+                # Formato decimal "14.5"
+                else:
+                    horas_float = float(horas_str)
+                    if horas_float < 0 or horas_float > 500:
+                        return 0
+                    return int(horas_float * 60)
+            except:
+                return 0
+
+        schedule = {}
+        sheets = root.findall('.//table:table', namespaces)
+
+        for sheet in sheets:
+            name = sheet.get('{urn:oasis:names:tc:opendocument:xmlns:table:1.0}name', '')
+            if 'CHEGADA' not in name.upper():
+                continue
+
+            rows = sheet.findall('.//table:table-row', namespaces)
+            for i, row in enumerate(rows):
+                if i < 2:  # Skip headers
+                    continue
+                cells = row.findall('.//table:table-cell', namespaces)
+                row_data = []
+                for cell in cells:
+                    text_elem = cell.find('.//text:p', namespaces)
+                    value = text_elem.text if text_elem is not None and text_elem.text else ""
+                    row_data.append(value)
+
+                if len(row_data) >= 9:
+                    year = row_data[0].strip()
+                    exp_num = row_data[1].strip()
+                    cidade_destino = row_data[2].strip() if len(row_data) > 2 else ""
+                    comunidade = row_data[3].strip() if len(row_data) > 3 else ""
+                    saida = row_data[4].strip() if len(row_data) > 4 else ""
+                    chegada_dest = row_data[5].strip() if len(row_data) > 5 else ""
+                    nav_ida = row_data[6].strip() if len(row_data) > 6 else ""
+                    retorno = row_data[7].strip() if len(row_data) > 7 else ""
+                    chegada_manaus = row_data[8].strip() if len(row_data) > 8 else ""
+                    nav_volta = row_data[9].strip() if len(row_data) > 9 else ""
+
+                    if year and exp_num and year != 'nan' and year != 'Ano':
+                        try:
+                            year_int = int(year)
+                            # Extract number from strings like "2ª Expedição" or "2º Expedição"
+                            exp_match = re.match(r'(\d+)', exp_num)
+                            exp_num_clean = int(exp_match.group(1)) if exp_match else exp_num
+                            key = (year_int, exp_num_clean)
+
+                            # Calcular dias totais (diferença entre saída de Manaus e chegada em Manaus)
+                            dias_totais = 0.0
+                            try:
+                                from datetime import datetime
+                                if saida and chegada_manaus:
+                                    saida_dt = datetime.strptime(saida.split()[0], '%d/%m/%Y')
+                                    chegada_dt = datetime.strptime(chegada_manaus.split()[0], '%d/%m/%Y')
+                                    dias_totais = (chegada_dt - saida_dt).days + 1
+                            except:
+                                dias_totais = 0.0
+
+                            # Converter horas de navegação para minutos
+                            ida_min = horas_to_minutes(nav_ida)
+                            volta_min = horas_to_minutes(nav_volta)
+
+                            # Usar nome da comunidade se disponível, senão usar cidade
+                            comunidade_display = comunidade if comunidade and comunidade != '-' else cidade_destino
+
+                            schedule[key] = {
+                                'saida': saida,
+                                'chegada_destino': chegada_dest,
+                                'navegacao_ida': nav_ida,
+                                'retorno': retorno,
+                                'chegada_manaus': chegada_manaus,
+                                'navegacao_volta': nav_volta,
+                                'dias_totais': dias_totais,
+                                # Formato compatível com template (em minutos)
+                                'idaMin': ida_min,
+                                'voltaMin': volta_min,
+                                'extraMin': 0,
+                                'diasTotal': dias_totais,
+                                'comunidade': comunidade_display or '',
+                                'nota': None
+                            }
+                        except:
+                            pass
+
+        return schedule
+    except Exception as e:
+        print(f"Erro ao extrair horários: {e}")
+        return {}
+
+def find_expedition_columns(df):
+    """Find the header row listing '<n> EXPEDIÇÃO' and return {col_index: expedition_label}."""
+    for i in range(min(6, len(df))):
+        row = df.iloc[i, :]
+        matches = {}
+        for col in range(1, df.shape[1]):
+            val = _clean(row[col])
+            if val and re.search(r'EXPEDI[ÇC][ÃA]O', val, re.IGNORECASE):
+                m = re.match(r'\s*(\S+)\s*EXPEDI', val, re.IGNORECASE)
+                label = m.group(1) if m else str(col)
+                matches[col] = label
+        if len(matches) >= 2:
+            return i, matches
+    return None, {}
+
+def find_row_by_label(df, label, col=0):
+    for i in range(len(df)):
+        val = _clean(df.iloc[i, col])
+        if val and val.strip().lower() == label.strip().lower():
+            return i
+    return None
+
+def parse_year_sheet(df, year):
+    header_row, exp_cols = find_expedition_columns(df)
+    if not exp_cols:
+        return None
+    cols = sorted(exp_cols.keys())
+    mun_row = header_row + 1
+
+    def expedition_number(label, col):
+        m = re.match(r'^\d+$', label)
+        return int(label) if m else label
+
+    # totals (compute first so we can drop placeholder/empty future-expedition columns)
+    totals = {key: {} for key in TOTAL_LABELS.values()}
+    for label, key in TOTAL_LABELS.items():
+        r = find_row_by_label(df, label)
+        if r is None:
+            continue
+        for c in cols:
+            totals[key][c] = _num(df.iloc[r, c])
+
+    # keep only columns that actually have recorded attendance (drop future/empty placeholder columns)
+    # Also drop "TOTAL DO ANO" column which is a summary, not an actual expedition
+    cols = [c for c in cols if totals["geral"].get(c, 0) > 0 and "TOTAL" not in str(exp_cols.get(c, "")).upper()]
+
+    municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
+    datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
+
+    # dias em atendimento - USAR VALORES DA LINHA "TOTAL DE DIAS EM ATENDIMENTO"
+    dias_atendimento = {c: 0.0 for c in cols}
+    r_dias = find_row_by_label(df, "TOTAL DE DIAS EM ATENDIMENTO")
+    if r_dias is not None:
+        for c in cols:
+            dias_atendimento[c] = _numf(df.iloc[r_dias, c])
+
+        # Ler o TOTAL DO ANO (coluna 23) como referência
+        total_col = 23
+        if total_col < len(df.columns):
+            total_ano_value = _numf(df.iloc[r_dias, total_col])
+            soma_calculada = sum(dias_atendimento.values())
+
+            # Se há diferença entre a soma e o TOTAL DO ANO, aplicar fator de correção
+            # para que a soma final bata exatamente com o TOTAL DO ANO (SEM ARREDONDAMENTO INTERMEDIÁRIO)
+            if soma_calculada > 0 and total_ano_value > 0 and abs(soma_calculada - total_ano_value) > 0.1:
+                fator = total_ano_value / soma_calculada
+                for c in cols:
+                    dias_atendimento[c] = dias_atendimento[c] * fator
+
+    # specialties
+    specialties = {}
+    specialties_per_col = {c: {} for c in cols}
+    r_spec_start = find_row_by_label(df, "Consultas Médicas")
+    r_spec_end = find_row_by_label(df, "Total de Consultas")
+    if r_spec_start is not None and r_spec_end is not None and r_spec_end > r_spec_start:
+        for i in range(r_spec_start + 1, r_spec_end):
+            label = _clean(df.iloc[i, 0])
+            if not label:
+                continue
+            val = sum(_num(df.iloc[i, c]) for c in cols)
+            specialties[label] = specialties.get(label, 0) + val
+            for c in cols:
+                v = _num(df.iloc[i, c])
+                if v:
+                    specialties_per_col[c][label] = specialties_per_col[c].get(label, 0) + v
+
+    # exams
+    exams = {}
+    exams_per_col = {c: {} for c in cols}
+    r_exam_start = find_row_by_label(df, "Exames")
+    if r_exam_start is not None:
+        r_exam_end = None
+        for i in range(r_exam_start + 1, len(df)):
+            label = _clean(df.iloc[i, 0])
+            if label and label.strip() in TOTAL_LABELS:
+                r_exam_end = i
+                break
+        if r_exam_end is None:
+            r_exam_end = min(r_exam_start + 12, len(df))
+        for i in range(r_exam_start + 1, r_exam_end):
+            label = _clean(df.iloc[i, 0])
+            if not label:
+                continue
+            val = sum(_num(df.iloc[i, c]) for c in cols)
+            exams[label] = exams.get(label, 0) + val
+            for c in cols:
+                v = _num(df.iloc[i, c])
+                if v:
+                    exams_per_col[c][label] = exams_per_col[c].get(label, 0) + v
+
+    # detailed breakdown rows
+    DETAIL_LABELS = {
+        "Total de Pacientes Atendidos": "pacientes",
+        "Cirurgias de Baixa Complexidade": "cirBaixa",
+        "Cirurgias de Média Complexidade": "cirMedia",
+        "Procedimentos Odontológicos": "procOdonto",
+        "Consulta Odontológica": "consultaOdonto",
+        "Internações Clinicas/ Cirurgicas": "internClinCir",
+    }
+    detail_totals = {key: {} for key in DETAIL_LABELS.values()}
+    for label, key in DETAIL_LABELS.items():
+        r = find_row_by_label(df, label)
+        if r is None:
+            continue
+        for c in cols:
+            detail_totals[key][c] = _num(df.iloc[r, c])
+
+    expeditions = []
+    for c in cols:
+        expeditions.append({
+            "year": year,
+            "n": expedition_number(exp_cols[c], c),
+            "mun": municipios[c],
+            "data": datas[c],
+            "diasAtendimento": dias_atendimento.get(c, 0.0),
+            "pacientes": detail_totals["pacientes"].get(c, 0),
+            "consultas": totals["consultas"].get(c, 0),
+            "oft": totals["oft"].get(c, 0),
+            "odonto": totals["odonto"].get(c, 0),
+            "naoMed": totals["naoMed"].get(c, 0),
+            "exames": totals["exames"].get(c, 0),
+            "intern": totals["intern"].get(c, 0),
+            "proc": totals["proc"].get(c, 0),
+            "farm": totals["farm"].get(c, 0),
+            "alim": totals["alim"].get(c, 0),
+            "saude": totals["saude"].get(c, 0),
+            "geral": totals["geral"].get(c, 0),
+            "cirBaixa": detail_totals["cirBaixa"].get(c, 0),
+            "cirMedia": detail_totals["cirMedia"].get(c, 0),
+            "procOdonto": detail_totals["procOdonto"].get(c, 0),
+            "consultaOdonto": detail_totals["consultaOdonto"].get(c, 0),
+            "internClinCir": detail_totals["internClinCir"].get(c, 0),
+            "spec": specialties_per_col[c],
+            "exam": exams_per_col[c],
+            "horarios": None,  # Será preenchido se tiver dados na aba CHEGADA E SAIDA
+            "diasTotalExpedicao": 0.0,
+        })
+
+    return {"expeditions": expeditions, "specialties": specialties, "exams": exams}
+
+def extract_all_years(ods_path):
+    xl = pd.ExcelFile(ods_path, engine="odf")
+    result = {}
+    for sheet_name in xl.sheet_names:
+        m = re.search(r'(20\d{2})', sheet_name)
+        if not m:
+            continue
+        year = int(m.group(1))
+        # ⚠️ IMPORTANTE: dtype=object evita conversão automática de "29:40" como datetime
+        # Sem dtype=object, pandas tenta interpretar "29:40" como hora (max 23:59)
+        df = pd.read_excel(ods_path, engine="odf", sheet_name=sheet_name, header=None, dtype=object)
+        parsed = parse_year_sheet(df, year)
+        if parsed and parsed["expeditions"]:
+            result[year] = parsed
+    
+    # Enrich with schedule data
+    schedule = extract_schedule_data(ods_path)
+    for year in result:
+        for exp in result[year]["expeditions"]:
+            key = (exp["year"], int(exp["n"]) if isinstance(exp["n"], int) else exp["n"])
+            if key in schedule:
+                exp["horarios"] = schedule[key]
+                exp["diasTotalExpedicao"] = schedule[key].get("dias_totais", 0.0)
+
+    return result
