@@ -13,6 +13,9 @@ TOTAL_LABELS = {
     "Entrega de Alimentação": "alim",
     "Total de Atendimentos em Saúde": "saude",
     "Total Geral dos Atendimentos": "geral",
+    "Total Dias em Atendimento": "diasAtendimento",
+    "Dias em Atendimento": "diasAtendimento",
+    "TOTAL DE DIAS EM ATENDIMENTO": "diasAtendimento",  # Variação com "DE" (planilha padrão)
 }
 
 CANONICAL_MUN = {
@@ -47,6 +50,15 @@ def _num(v):
         return 0
     try:
         return int(round(float(v)))
+    except (ValueError, TypeError):
+        return 0
+
+def _dias(v):
+    """Convert to float for dias (allows decimals like 4.5)"""
+    if v is None or (isinstance(v, float) and pd.isna(v)):
+        return 0
+    try:
+        return float(v)
     except (ValueError, TypeError):
         return 0
 
@@ -90,7 +102,11 @@ def parse_year_sheet(df, year):
         if r is None:
             continue
         for c in cols:
-            totals[key][c] = _num(df.iloc[r, c])
+            # Use _dias for diasAtendimento to allow decimals (e.g., 4.5 days)
+            if key == "diasAtendimento":
+                totals[key][c] = _dias(df.iloc[r, c])
+            else:
+                totals[key][c] = _num(df.iloc[r, c])
 
     # keep only columns that actually have recorded attendance (drop future/empty placeholder columns)
     cols = [c for c in cols if totals["geral"].get(c, 0) > 0]
@@ -163,6 +179,7 @@ def parse_year_sheet(df, year):
             "n": expedition_number(exp_cols[c], c),
             "mun": municipios[c],
             "data": datas[c],
+            "diasAtendimento": totals.get("diasAtendimento", {}).get(c, 0),
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),
