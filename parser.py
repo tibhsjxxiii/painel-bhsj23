@@ -13,9 +13,6 @@ TOTAL_LABELS = {
     "Entrega de Alimentação": "alim",
     "Total de Atendimentos em Saúde": "saude",
     "Total Geral dos Atendimentos": "geral",
-    "Total Dias em Atendimento": "diasAtendimento",
-    "Dias em Atendimento": "diasAtendimento",
-    "TOTAL DE DIAS EM ATENDIMENTO": "diasAtendimento",  # Variação com "DE" (planilha padrão)
 }
 
 CANONICAL_MUN = {
@@ -50,15 +47,6 @@ def _num(v):
         return 0
     try:
         return int(round(float(v)))
-    except (ValueError, TypeError):
-        return 0
-
-def _dias(v):
-    """Convert to float for dias (allows decimals like 4.5)"""
-    if v is None or (isinstance(v, float) and pd.isna(v)):
-        return 0
-    try:
-        return float(v)
     except (ValueError, TypeError):
         return 0
 
@@ -102,11 +90,7 @@ def parse_year_sheet(df, year):
         if r is None:
             continue
         for c in cols:
-            # Use _dias for diasAtendimento to allow decimals (e.g., 4.5 days)
-            if key == "diasAtendimento":
-                totals[key][c] = _dias(df.iloc[r, c])
-            else:
-                totals[key][c] = _num(df.iloc[r, c])
+            totals[key][c] = _num(df.iloc[r, c])
 
     # keep only columns that actually have recorded attendance (drop future/empty placeholder columns)
     cols = [c for c in cols if totals["geral"].get(c, 0) > 0]
@@ -179,7 +163,6 @@ def parse_year_sheet(df, year):
             "n": expedition_number(exp_cols[c], c),
             "mun": municipios[c],
             "data": datas[c],
-            "diasAtendimento": totals.get("diasAtendimento", {}).get(c, 0),
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),
@@ -202,81 +185,6 @@ def parse_year_sheet(df, year):
         })
 
     return {"expeditions": expeditions, "specialties": specialties, "exams": exams}
-
-def extract_journey_data(ods_path):
-    """Extract journey metadata from 'CHEGADA E SAIDA - EXPEDICAO' sheet"""
-    try:
-        df = pd.read_excel(ods_path, engine="odf", sheet_name="CHEGADA E SAIDA - EXPEDICAO", header=None)
-    except:
-        return {}
-
-    journey_data = {}
-    municipios_data = {}
-
-    # Header is at row 1
-    header_row = 1
-
-    for i in range(header_row + 1, len(df)):
-        num_exp = df.iloc[i, 1]
-        cidade = df.iloc[i, 2]
-        comunidade = df.iloc[i, 3]
-        saida = df.iloc[i, 4]
-        chegada = df.iloc[i, 8]
-        nav_ida = df.iloc[i, 6]
-        nav_volta = df.iloc[i, 9]
-
-        if pd.notna(num_exp) and "expedição" in str(num_exp).lower():
-            match = re.search(r'(\d+)', str(num_exp))
-            if not match:
-                continue
-            exp_num = int(match.group(1))
-
-            # Calculate days
-            dias_exp = 0
-            if pd.notna(saida) and pd.notna(chegada):
-                try:
-                    saida_date = pd.to_datetime(str(saida).strip(), dayfirst=True, errors='coerce')
-                    chegada_date = pd.to_datetime(str(chegada).strip(), dayfirst=True, errors='coerce')
-                    if pd.notna(saida_date) and pd.notna(chegada_date):
-                        dias_exp = max(0, (chegada_date - saida_date).days)
-                except:
-                    dias_exp = 0
-
-            # Parse hours
-            def parse_hours(h_str):
-                if pd.isna(h_str):
-                    return 0
-                h_str = str(h_str).strip()
-                try:
-                    parts = h_str.split(':')
-                    if len(parts) >= 2:
-                        return round(int(parts[0]) + int(parts[1]) / 60, 2)
-                except:
-                    pass
-                return 0
-
-            horas_ida = parse_hours(nav_ida)
-            horas_volta = parse_hours(nav_volta)
-
-            journey_data[exp_num] = {
-                "dias": dias_exp,
-                "horas_ida": horas_ida,
-                "horas_volta": horas_volta,
-                "total_horas": round(horas_ida + horas_volta, 2),
-                "cidade": _clean(cidade) or "-",
-                "comunidade": _clean(comunidade) or "-",
-            }
-
-            # Registrar município
-            mun = str(cidade).strip().title() if pd.notna(cidade) else "-"
-            if mun and mun != "-":
-                if mun not in municipios_data:
-                    municipios_data[mun] = {
-                        "comunidade": str(comunidade).strip() if pd.notna(comunidade) else "-",
-                        "data_primeira": str(saida)[:10] if pd.notna(saida) else "",
-                    }
-
-    return {"journeys": journey_data, "municipios": municipios_data}
 
 def extract_all_years(ods_path):
     xl = pd.ExcelFile(ods_path, engine="odf")

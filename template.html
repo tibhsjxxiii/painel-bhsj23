@@ -766,23 +766,15 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <section class="report-section">
-            <h2>4. <span data-i18n="municipiosVisitados">Municípios e Comunidades Visitadas</span></h2>
+            <h2>4. <span data-i18n="reportS4">Ranking de Municípios Atendidos</span></h2>
             <table>
-              <thead><tr><th data-i18n="colMun">Município</th><th>Comunidade</th><th>Data Primeira Visita</th></tr></thead>
-              <tbody id="reportMunicipiosBody"></tbody>
-            </table>
-          </section>
-
-          <section class="report-section">
-            <h2>5. <span data-i18n="reportS4">Ranking de Municípios Atendidos</span></h2>
-            <table>
-              <thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colDiasAtendimento">Dias Atendimento</th><th>Datas de Visita</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead>
+              <thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colDiasAtendimento">Dias Atendimento</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead>
               <tbody id="reportRankBody"></tbody>
             </table>
           </section>
 
           <section class="report-section">
-            <h2>6. <span data-i18n="reportS5">Especialidades Médicas</span></h2>
+            <h2>5. <span data-i18n="reportS5">Especialidades Médicas</span></h2>
             <table>
               <thead><tr><th data-i18n="reportColEspecialidade">Especialidade</th><th data-i18n="reportColConsultas">Consultas</th></tr></thead>
               <tbody id="reportSpecBody"></tbody>
@@ -790,7 +782,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <section class="report-section">
-            <h2>7. <span data-i18n="reportS6">Exames Realizados</span></h2>
+            <h2>6. <span data-i18n="reportS6">Exames Realizados</span></h2>
             <table>
               <thead><tr><th data-i18n="reportColExame">Exame</th><th data-i18n="colGeral">Total</th></tr></thead>
               <tbody id="reportExamBody"></tbody>
@@ -798,7 +790,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <section class="report-section" id="reportS7Section" style="display:none;">
-            <h2>8. <span data-i18n="reportS7">Pacientes Únicos Atendidos (Sistema Hospitalar)</span></h2>
+            <h2>7. <span data-i18n="reportS7">Pacientes Únicos Atendidos (Sistema Hospitalar)</span></h2>
             <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;" data-i18n="reportS7Note">Dado do sistema de gestão hospitalar (contagem de pacientes únicos no ano) — fonte independente da planilha de expedições do barco.</p>
             <table>
               <thead><tr><th data-i18n="colAno">Ano</th><th data-i18n="reportColAtendimentos">Atendimentos</th><th data-i18n="pacientesL">Pacientes Únicos</th></tr></thead>
@@ -1257,7 +1249,6 @@ const I18N = {
   reportS1:"Resumo Executivo",
   reportS2:"Indicadores Principais",
   reportS3:"Detalhamento por Categoria de Atendimento",
-  municipiosVisitados:"Municípios e Comunidades Visitadas",
   reportS4:"Ranking de Municípios Atendidos",
   reportS5:"Especialidades Médicas",
   reportS6:"Exames Realizados",
@@ -3688,32 +3679,11 @@ function renderReport(){
   }
   document.getElementById('reportOftNote').innerHTML = oftNote;
 
-  // Municípios visitados (nova seção)
-  const jData = window.JOURNEY_DATA || {journeys:{}, municipios:{}};
-  const municipiosList = Object.entries(jData.municipios || {})
-    .sort((a,b) => a[0].localeCompare(b[0]))
-    .map(([mun, data]) =>
-      `<tr><td><strong>${mun}</strong></td><td>${data.comunidade || '—'}</td><td>${data.data_primeira || '—'}</td></tr>`
-    ).join('');
-  document.getElementById('reportMunicipiosBody').innerHTML = municipiosList;
-
-  // ranking (com datas)
+  // ranking
   const map = {};
-  exp.forEach(d=>{
-    if(!map[d.mun]) map[d.mun]={geral:0,exp:0,dias:0.0,datas:[]};
-    map[d.mun].geral+=d.geral;
-    map[d.mun].exp+=1;
-    map[d.mun].dias+=(d.diasAtendimento||0.0);
-    // Adicionar data se disponível
-    if(d.data && !map[d.mun].datas.includes(d.data)) {
-      map[d.mun].datas.push(d.data);
-    }
-  });
+  exp.forEach(d=>{ if(!map[d.mun]) map[d.mun]={geral:0,exp:0,dias:0.0}; map[d.mun].geral+=d.geral; map[d.mun].exp+=1; map[d.mun].dias+=(d.diasAtendimento||0.0); });
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
-  document.getElementById('reportRankBody').innerHTML = rows.map(r=>{
-    const datasStr = r[1].datas.length > 0 ? r[1].datas.join(', ') : '—';
-    return `<tr><td>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${r[1].dias.toFixed(1)}</td><td style="font-size:0.8rem;">${datasStr}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`;
-  }).join('');
+  document.getElementById('reportRankBody').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${r[1].dias.toFixed(1)}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`).join('');
 
   // specialties
   const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);

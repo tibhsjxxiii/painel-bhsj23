@@ -18,7 +18,7 @@ for %%f in (*.ods) do (
 if "%ODS_FILE%"=="" (
     echo [ERRO] Nenhum arquivo .ods foi encontrado nesta pasta.
     echo.
-    echo Coloque a planilha oficial ^(ex: EXPEDICOES_BHSJXXIII_2025_2026.ods^)
+    echo Coloque a planilha oficial ^(ex: EXPEDICOES BHSJXXIII 2025_2026.ods^)
     echo na mesma pasta deste arquivo .bat e execute novamente.
     echo.
     pause
@@ -47,19 +47,33 @@ if not %GEN_RESULT%==0 (
     echo.
     echo Erros comuns:
     echo   - "ModuleNotFoundError: No module named 'pandas'"
-    echo     Solucao: abra este terminal e rode
+    echo     Solucao: abra um CMD nesta pasta e rode:
     echo       pip install pandas odfpy openpyxl
     echo     e tente novamente.
+    echo.
     echo   - "Arquivo nao encontrado" ou aba de ano invalida
     echo     Confira se a planilha esta na pasta certa e se as abas
     echo     tem o ano no nome ^(ex: "2025", "2026"^).
+    echo.
+    echo   - KeyError: 'specialties' ou 'exams'
+    echo     Solucao: Atualize parser.py e gerar_dashboard.py
+    echo     com as versoes corrigidas.
     echo.
     pause
     exit /b 1
 )
 
-echo Painel gerado com sucesso! Abrindo no navegador...
-start "" "index.html"
+echo [SUCESSO] Painel gerado com sucesso!
+echo.
+
+rem --- tentar abrir automaticamente ---
+if exist "index.html" (
+    echo Abrindo dashboard no navegador...
+    timeout /t 2
+    start "" "index.html"
+) else (
+    echo [AVISO] index.html nao foi criado.
+)
 
 echo.
 echo Tudo pronto. Voce pode fechar esta janela.

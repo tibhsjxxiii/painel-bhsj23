@@ -16,7 +16,7 @@ import json
 import re
 import argparse
 from datetime import datetime
-from parser import extract_all_years, extract_journey_data
+from parser import extract_all_years
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_PATH = os.path.join(SCRIPT_DIR, "template.html")
@@ -90,7 +90,6 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
 
     print(f"📖 Lendo planilha: {ods_path}")
     data_by_year = extract_all_years(ods_path)
-    journey_data = extract_journey_data(ods_path)  # Extract journey metadata
 
     if not data_by_year:
         print("❌ Nenhuma aba com ano válido (ex: 2025, 2026) foi encontrada na planilha.")
@@ -143,7 +142,6 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     html = html.replace("__SPECIALTIES_BY_YEAR__", json.dumps(specialties_by_year, ensure_ascii=False))
     html = html.replace("__EXAMS_BY_YEAR__", json.dumps(exams_by_year, ensure_ascii=False))
     html = html.replace("__PATIENT_DATA_BY_YEAR__", json.dumps(patient_data_by_year, ensure_ascii=False))
-    html = html.replace("__JOURNEY_DATA__", json.dumps(journey_data, ensure_ascii=False))
     html = html.replace("__GENERATED_AT__", generated_at)
     html = html.replace("__PROXY_URL__", proxy_url)
     html = html.replace("__PROXY_SECRET__", proxy_secret)
