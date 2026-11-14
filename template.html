@@ -2445,7 +2445,13 @@ function renderYoyBadge(elId, metricKey){
 }
 function getNavData(exp){ return exp.horarios || NAVIGATION_DATA[`${exp.year}_${exp.n}`] || null; }
 function navMinToHours(min){ return min/60; }
-function minToHHMM(min){ const h = Math.floor(min/60); const m = Math.round(min%60); return `${h}:${String(m).padStart(2,'0')}`; }
+function minToHHMM(min){
+  if(!min) return 'nada consta';
+  const h = Math.floor(min/60);
+  const m = Math.round(min%60);
+  if(m === 0) return `${h}h`;
+  return `${h}h${String(m).padStart(2,'0')}min`;
+}
 
 function haversineKm(lat1, lon1, lat2, lon2){
   const R = 6371;
@@ -2486,16 +2492,18 @@ function renderTripInfo(){
   const exp = currentExpeditions();
 
   // Filtrar expedições com dados de navegação VÁLIDOS
-  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
+  const withNav = exp.map(e=>({e, nav:getNavData(e)||{comunidade:'nada consta',data:'',diasTotal:'nada consta',idaMin:0,voltaMin:0,extraMin:0}}));
 
-  if(!withNav.length){
+  // Calcular totais apenas com dados válidos
+  const withValidNav = withNav.filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
+  if(!withValidNav.length){
     document.getElementById('tripInfoCompact').innerHTML = `<div style="color:var(--muted);">—</div>`;
     return;
   }
 
   // Calcular totais
-  const totalIdaMin = withNav.reduce((a,x)=>a+(x.nav.idaMin||0),0);
-  const totalVoltaMin = withNav.reduce((a,x)=>a+(x.nav.voltaMin||0),0);
+  const totalIdaMin = withValidNav.reduce((a,x)=>a+(x.nav.idaMin||0),0);
+  const totalVoltaMin = withValidNav.reduce((a,x)=>a+(x.nav.voltaMin||0),0);
   const totalMin = totalIdaMin + totalVoltaMin;
   const avgDias = withNav.length > 0 ? withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length : 0;
 
@@ -2608,9 +2616,11 @@ function renderNavegacao(){
   if(document.getElementById('mapAmazonas')) renderNavMap();
   const t = I18N[CUR_LANG];
   const exp = [...currentExpeditions()].sort((a,b)=> a.year-b.year || (parseFloat(a.n)||0)-(parseFloat(b.n)||0));
-  const withNav = exp.map(e=>({e, nav:getNavData(e)})).filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
+  const withNav = exp.map(e=>({e, nav:getNavData(e)||{comunidade:'nada consta',data:'',diasTotal:'nada consta',idaMin:0,voltaMin:0,extraMin:0}}));
 
-  if(!withNav.length){
+  // Para gráficos e totais, usar apenas dados válidos
+  const withValidNav = withNav.filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
+  if(!withValidNav.length){
     document.getElementById('bigNavHoras').textContent = '—';
     document.getElementById('bigNavDias').textContent = '—';
     document.getElementById('bigNavIncidente').textContent = '—';
@@ -2620,9 +2630,9 @@ function renderNavegacao(){
     return;
   }
 
-  const totalMin = withNav.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+x.nav.extraMin,0);
-  const incidentMin = withNav.reduce((a,x)=>a+x.nav.extraMin,0);
-  const avgDias = withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length;
+  const totalMin = withValidNav.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+x.nav.extraMin,0);
+  const incidentMin = withValidNav.reduce((a,x)=>a+x.nav.extraMin,0);
+  const avgDias = withValidNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withValidNav.length;
   document.getElementById('bigNavHoras').textContent = fmtAvg(navMinToHours(totalMin))+'h';
   document.getElementById('bigNavDias').textContent = fmtAvg(avgDias);
   document.getElementById('bigNavIncidente').textContent = fmtAvg(navMinToHours(incidentMin))+'h';
@@ -2634,8 +2644,8 @@ function renderNavegacao(){
     <td style="font-size:0.78rem;color:var(--muted);">${nav.nota||''}</td></tr>`).join('');
 
   // highlights: longest total nav time + most incident time
-  const longest = [...withNav].sort((a,b)=>(b.nav.idaMin+b.nav.voltaMin+b.nav.extraMin)-(a.nav.idaMin+a.nav.voltaMin+a.nav.extraMin))[0];
-  const incidentOnes = withNav.filter(x=>x.nav.extraMin>0).sort((a,b)=>b.nav.extraMin-a.nav.extraMin);
+  const longest = [...withValidNav].sort((a,b)=>(b.nav.idaMin+b.nav.voltaMin+b.nav.extraMin)-(a.nav.idaMin+a.nav.voltaMin+a.nav.extraMin))[0];
+  const incidentOnes = withValidNav.filter(x=>x.nav.extraMin>0).sort((a,b)=>b.nav.extraMin-a.nav.extraMin);
   const hlPanel = document.getElementById('navHighlightPanel');
   if(longest || incidentOnes.length){
     hlPanel.style.display = '';
@@ -2651,10 +2661,10 @@ function renderNavegacao(){
   if(window.HAS_CHART && document.getElementById('chartNav')){
     const ctx = document.getElementById('chartNav').getContext('2d');
     chartNav = new Chart(ctx,{type:'bar',
-      data:{labels:withNav.map(({e})=>`${e.mun} #${e.n}`),
+      data:{labels:withValidNav.map(({e})=>`${e.mun} #${e.n}`),
         datasets:[
-          {label:t.navColIda, data:withNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:'#0f2a4a', borderRadius:4, maxBarThickness:16},
-          {label:t.navColVolta, data:withNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:'#b8934a', borderRadius:4, maxBarThickness:16}
+          {label:t.navColIda, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:'#0f2a4a', borderRadius:4, maxBarThickness:16},
+          {label:t.navColVolta, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:'#b8934a', borderRadius:4, maxBarThickness:16}
         ]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}}},
         scales:{x:{ticks:{font:{size:8},maxRotation:60,minRotation:60},grid:{display:false}},y:{title:{display:true,text:'h',font:{size:9}},grid:{color:'rgba(15,42,74,0.05)'}}}}
@@ -3742,11 +3752,23 @@ function renderReport(){
   }
   document.getElementById('reportOftNote').innerHTML = oftNote;
 
-  // ranking
+  // ranking com comunidades e datas
   const map = {};
-  exp.forEach(d=>{ if(!map[d.mun]) map[d.mun]={geral:0,exp:0,dias:0.0}; map[d.mun].geral+=d.geral; map[d.mun].exp+=1; map[d.mun].dias+=(d.diasAtendimento||0.0); });
+  exp.forEach(d=>{
+    if(!map[d.mun]) map[d.mun]={geral:0,exp:0,dias:0.0,comunidades:new Set(),datas:[]};
+    map[d.mun].geral+=d.geral;
+    map[d.mun].exp+=1;
+    map[d.mun].dias+=(d.diasAtendimento||0.0);
+    const nav = getNavData(d);
+    if(nav && nav.comunidade && nav.comunidade !== 'nada consta') map[d.mun].comunidades.add(nav.comunidade);
+    if(d.data) map[d.mun].datas.push(d.data);
+  });
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
-  document.getElementById('reportRankBody').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${r[1].dias.toFixed(1)}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`).join('');
+  document.getElementById('reportRankBody').innerHTML = rows.map(r=>{
+    const comunStr = r[1].comunidades.size > 0 ? Array.from(r[1].comunidades).join(', ') : '—';
+    const datasStr = r[1].datas.length > 0 ? r[1].datas.slice(0,3).join(' | ') + (r[1].datas.length > 3 ? '...' : '') : '—';
+    return `<tr><td>${r[0]}</td><td style="font-size:0.75rem;color:var(--muted);">${comunStr}</td><td style="font-size:0.75rem;color:var(--muted);">${datasStr}</td><td>${r[1].exp}</td><td class="mono">${r[1].dias.toFixed(1)}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`;
+  }).join('');
 
   // specialties
   const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
@@ -3874,7 +3896,7 @@ async function exportPdfDocument(){
 
   addSection(2, 'reportS2', 'reportKpiBody', [t.reportColIndicador, t.reportColValor]);
   addSection(3, 'reportS3', 'reportBreakdownBody', [t.reportColCategoria, t.colGeral, t.reportColPct]);
-  addSection(4, 'reportS4', 'reportRankBody', [t.colMun, t.colExp, t.colGeral]);
+  addSection(4, 'reportS4', 'reportRankBody', [t.colMun, 'Comunidades', 'Datas', t.colExp, t.colDiasAtendimento, t.colGeral]);
   addSection(5, 'reportS5', 'reportSpecBody', [t.reportColEspecialidade, t.reportColConsultas]);
   addSection(6, 'reportS6', 'reportExamBody', [t.reportColExame, t.colGeral]);
   if(document.getElementById('reportS7Section').style.display !== 'none'){

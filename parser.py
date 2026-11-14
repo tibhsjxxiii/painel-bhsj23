@@ -95,8 +95,9 @@ def parse_year_sheet(df, year):
         for c in cols:
             totals[key][c] = _num(df.iloc[r, c])
 
-    # keep only columns that actually have recorded attendance (drop future/empty placeholder columns)
-    cols = [c for c in cols if totals["geral"].get(c, 0) > 0]
+    # MANTER TODAS AS EXPEDIÇÕES, INCLUINDO AS SEM DADOS (serão preenchidas com 0)
+    # Isso garante que expedições futuras ou com 0 atendimentos apareçam no dashboard
+    # cols = [c for c in cols if totals["geral"].get(c, 0) > 0]  # DESATIVADO
 
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
     datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
