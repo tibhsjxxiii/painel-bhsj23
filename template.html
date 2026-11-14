@@ -15,9 +15,9 @@
 :root{
   --bg:#ffffff; --panel:#ffffff; --panel-2:#f9f8f7;
   --navy:#0f2a4a; --navy-2:#173a63; --navy-soft:#e8edf3;
-  --gold:#d4a574; --gold-dim:rgba(212,165,116,0.12);
-  --teal:#0e8f6f; --teal-dim:rgba(14,143,111,0.10);
-  --line:#d9d5cc; --text:#14202e; --muted:#6b7688; --muted-2:#9aa3b0;
+  --gold:#b8934a; --gold-dim:rgba(184,147,74,0.12);
+  --teal:#1a5d50; --teal-dim:rgba(26,93,80,0.10);
+  --line:#d9d5cc; --text:#14202e; --muted:#5a6978; --muted-2:#7a8899;
   --radius:12px; --shadow:0 4px 12px rgba(15,42,74,0.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -56,18 +56,26 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .report-doc-footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);font-size:0.68rem;color:var(--muted-2);text-align:center;line-height:1.7;}
 
 @media print{
-  @page{margin:1.8cm;}
-  body{background:#fff;}
-  .sidebar,.mobile-nav-toggle,.sidebar-backdrop,.topbar-controls,.no-print,#errBanner{display:none !important;}
+  @page{margin:2cm; size:A4;}
+  html{background:#ffffff;}
+  body{background:#ffffff; color:#14202e; font-size:11pt; line-height:1.6;}
+  .sidebar,.mobile-nav-toggle,.sidebar-backdrop,.topbar-controls,.no-print,#errBanner,.exec-toggle{display:none !important;}
   .main{height:auto !important;overflow:visible !important;padding:0 !important;}
   .app-shell{display:block !important;}
   .view{display:none !important;}
   .view#view-report{display:block !important;}
-  .report-doc{border:none;box-shadow:none;padding:0;}
-  .report-doc-title{font-size:1.35rem;}
-  .report-section{page-break-inside:avoid;}
-  .panel{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}
-  .topbar{margin-bottom:16px;}
+  .report-doc{border:none;box-shadow:none;padding:0;background:#ffffff;}
+  .report-doc-title{font-size:16pt; color:#0f2a4a; font-weight:700; margin-bottom:12pt;}
+  .report-section{page-break-inside:avoid; margin-bottom:12pt;}
+  .report-section h2{color:#0f2a4a; border-color:#d9d5cc; font-size:12pt; font-weight:700;}
+  .report-section p{font-size:10pt; color:#14202e;}
+  .report-section table{font-size:10pt;}
+  .report-section th{background:#e8edf3; color:#0f2a4a; font-weight:700;}
+  .panel{box-shadow:none;border:1px solid #cccccc;break-inside:avoid; background:#ffffff; page-break-inside:avoid;}
+  .topbar{margin-bottom:12pt; display:flex; justify-content:space-between;}
+  h1, h2, h3{color:#0f2a4a; page-break-after:avoid;}
+  a{color:#1a5d50; text-decoration:underline;}
+  img{max-width:100%;}
 }
 .comp-tab{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--muted);font-size:0.85rem;font-weight:600;transition:all 0.15s;border-bottom:2px solid transparent;}
 .comp-tab:hover{background:var(--panel);color:var(--text);}
@@ -94,6 +102,14 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
   .topbar-controls{flex-direction:column;width:100%;gap:8px;}
   .year-select,.live-badge,#langSel{width:100%;}
 }
+
+@media(max-width:640px){
+  /* Mobile: KPIs em destaque com fonte maior */
+  [id^="kpi-"]{font-size:1.8rem !important;}
+  .panel > div[style*="display: grid"][style*="repeat(auto-fit"]{grid-template-columns:1fr !important;gap:16px !important;}
+  .topbar h1{font-size:1.3rem;}
+  .main{padding:12px 12px 16px;}
+}
 .sidebar{width:120px;background:var(--navy);display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
 .sidebar-logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(155deg,var(--gold),#8a6c34);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(184,147,74,0.35);margin-bottom:30px;}
 .nav-item{width:100px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;color:rgba(255,255,255,0.6);cursor:pointer;border-radius:10px;margin-bottom:6px;transition:all .18s;background:none;border:none;font-family:inherit;}
@@ -105,6 +121,15 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .sidebar-spacer{flex:1;}
 .sidebar-live{width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;margin-bottom:12px;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* MODO EXECUTIVO - Versão simplificada */
+body.modo-executivo .view:not(#view-dashboard){display:none !important;}
+body.modo-executivo #view-dashboard{display:block;}
+body.modo-executivo .nav-item:not([data-view="dashboard"]){opacity:0.4;cursor:default;}
+
+.exec-toggle{display:flex;align-items:center;gap:8px;background:#2d7a6a;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.exec-toggle:hover{background:#1a5d50;transform:scale(1.05);}
+.exec-toggle.active{background:#d4a574;color:#1a365d;}
 
 .main{flex:1;min-width:0;padding:18px 28px 20px;height:100vh;overflow-y:auto;box-sizing:border-box;}
 .topbar{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
@@ -252,6 +277,10 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
           <span data-i18n="lastExpBtn">Última Expedição</span>
+        </button>
+        <button id="btnExecMode" class="exec-toggle" title="Toggle Executive Mode" aria-label="Modo Executivo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Executivo</span>
         </button>
         <div class="year-select" id="yearSelect"></div>
         <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
@@ -476,7 +505,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <div class="panel">
           <div class="panel-title"><span data-i18n="rankTitle">Ranking de Municípios · Atendimento Geral</span><button class="info-icon" data-info="infoRank">i</button></div>
           <div class="panel-sub" data-i18n="rankNote">Soma do período selecionado por município (municípios revisitados aparecem somados).</div>
-          <table><thead><tr><th data-i18n="colMun">Município</th><th data-i18n="colExp">Expedições</th><th data-i18n="colDiasAtendimento">Dias Atendimento</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead><tbody id="rankBody"></tbody></table>
+          <table><thead><tr><th data-i18n="colMun">Município</th><th>Comunidade</th><th>Datas</th><th data-i18n="colExp">Expedições</th><th data-i18n="colDiasAtendimento">Dias</th><th data-i18n="colGeral">Atendimento Geral</th></tr></thead><tbody id="rankBody"></tbody></table>
         </div>
       </div>
     </div>
@@ -490,68 +519,68 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div class="panel">
         <!-- KPIs PRINCIPAIS -->
         <div style="margin-bottom: 32px;">
-          <h2 class="serif" style="color: var(--navy); margin-bottom: 18px; font-size: 1.1rem;">📊 KPIs Principais</h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <h2 class="serif" style="color: var(--navy); margin-bottom: 24px; font-size: 1.35rem; font-weight: 700;">📊 KPIs Principais</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 36px;">
             <!-- CARD: Total Atendimentos -->
-            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
               <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Total de Atendimentos</div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-total-2025">231.560</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-total-2025">231.560</div>
                   <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">22 expedições</div>
                 </div>
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-total-2026">170.362</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: #2d7a6a; line-height: 1.2;" id="kpi-total-2026">170.362</div>
                   <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">17 expedições</div>
                 </div>
               </div>
             </div>
             <!-- CARD: Média por Expedição -->
-            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
               <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Média por Expedição</div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-media-2025">10.525</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-media-2025">10.525</div>
                   <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px; font-weight: 500;">por expedição</div>
                 </div>
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-media-2026">10.022</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: #2d7a6a; line-height: 1.2;" id="kpi-media-2026">10.022</div>
                   <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-media-var">▼ 4.8%</div>
                 </div>
               </div>
             </div>
             <!-- CARD: Pacientes Únicos -->
-            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
               <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Pacientes Únicos</div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-pac-2025">36.304</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-pac-2025">36.304</div>
                   <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">pessoas</div>
                 </div>
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-pac-2026">24.518</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: #2d7a6a; line-height: 1.2;" id="kpi-pac-2026">24.518</div>
                   <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-pac-var">▼ 32.5%</div>
                 </div>
               </div>
             </div>
             <!-- CARD: Total Dias em Atendimento -->
-            <div style="background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
               <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Total Dias em Atendimento</div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--navy);" id="kpi-dias-2025">0.0</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-dias-2025">0.0</div>
                   <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">dias</div>
                 </div>
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 1.6rem; font-weight: 700; color: var(--teal);" id="kpi-dias-2026">77.5</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: #2d7a6a; line-height: 1.2;" id="kpi-dias-2026">77.5</div>
                   <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-dias-var">▲ +∞%</div>
                 </div>
               </div>
@@ -948,17 +977,21 @@ function gerarComparativo(exps) {
     document.getElementById('kpi-dias-var').style.color = 'var(--teal)';
   }
 
-  // ESPECIALIDADES
+  // ESPECIALIDADES (incluindo Oftalmologia)
   const spec2025 = {}, spec2026 = {};
   exp2025.forEach(e => {
     Object.entries(e.spec || {}).forEach(([s, c]) => {
       spec2025[s] = (spec2025[s] || 0) + c;
     });
+    // Adicionar Oftalmologia como especialidade
+    if(e.oft > 0) spec2025['Oftalmologia'] = (spec2025['Oftalmologia'] || 0) + e.oft;
   });
   exp2026.forEach(e => {
     Object.entries(e.spec || {}).forEach(([s, c]) => {
       spec2026[s] = (spec2026[s] || 0) + c;
     });
+    // Adicionar Oftalmologia como especialidade
+    if(e.oft > 0) spec2026['Oftalmologia'] = (spec2026['Oftalmologia'] || 0) + e.oft;
   });
 
   const allSpecs = [...new Set([...Object.keys(spec2025), ...Object.keys(spec2026)])].sort();
@@ -1110,10 +1143,14 @@ const GENERATED_AT = "__GENERATED_AT__";
 // da planilha de expedições pelo gerador de dashboard.
 const ANNUAL_PATIENT_STATS = __PATIENT_DATA_BY_YEAR__;
 
-// Dados de navegação (horários de saída/chegada, comunidades visitadas, horas de ida/volta) —
-// vêm de relatórios de viagem, não da planilha de expedições. Chave: "ano_numeroExpedicao".
-// Atualize à mão quando novas expedições acontecerem.
-const NAVIGATION_DATA = {"2025_2": {"comunidade": "Manaquiri", "diasTotal": 6, "idaMin": 390, "voltaMin": 230, "extraMin": 0, "nota": null}, "2025_3": {"comunidade": "Novo Airão – Comunidade Bom Jesus", "diasTotal": 7, "idaMin": 855, "voltaMin": 780, "extraMin": 0, "nota": null}, "2025_4": {"comunidade": "Manacapuru – Comunidade Jacaré", "diasTotal": 6, "idaMin": 805, "voltaMin": 494, "extraMin": 0, "nota": null}, "2025_5": {"comunidade": "Anori – Comunidade Liberdade", "diasTotal": 7, "idaMin": 1335, "voltaMin": 750, "extraMin": 0, "nota": null}, "2025_6": {"comunidade": "Codajás – Comunidade Murituba / Urucurizinho", "diasTotal": 7, "idaMin": 1880, "voltaMin": 870, "extraMin": 0, "nota": "Rota com 2 comunidades: Murituba e Urucurizinho"}, "2025_7": {"comunidade": "Itacoatiara – Novo Remanso", "diasTotal": 7, "idaMin": 390, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2025_8": {"comunidade": "Itacoatiara – Novo Remanso", "diasTotal": 8, "idaMin": 430, "voltaMin": 660, "extraMin": 0, "nota": null}, "2025_9": {"comunidade": "Urucará – Comunidade Castanhal", "diasTotal": 6, "idaMin": 995, "voltaMin": 1780, "extraMin": 0, "nota": null}, "2025_10": {"comunidade": "Urucurituba – Comunidade Itapeaçu", "diasTotal": 7, "idaMin": 750, "voltaMin": 1120, "extraMin": 0, "nota": null}, "2025_11": {"comunidade": "Anamã", "diasTotal": 12, "idaMin": 1045, "voltaMin": 605, "extraMin": 0, "nota": null}, "2025_12": {"comunidade": "Parintins", "diasTotal": 7, "idaMin": 1440, "voltaMin": 2040, "extraMin": 0, "nota": null}, "2025_13": {"comunidade": "Barreirinha – Distrito Terra Preta", "diasTotal": 8, "idaMin": 1150, "voltaMin": 2145, "extraMin": 480, "nota": "8h inoperante aguardando peça (35h45 líquido de 43h45 bruto)"}, "2025_14": {"comunidade": "Nhamundá – Comunidade Juruá", "diasTotal": 8, "idaMin": 1500, "voltaMin": 2430, "extraMin": 1020, "nota": "17h encalhado (40h30 líquido de 57h30 bruto)"}, "2025_15": {"comunidade": "Beruri – Comunidade Itália", "diasTotal": 7, "idaMin": 1160, "voltaMin": 870, "extraMin": 0, "nota": null}, "2025_16": {"comunidade": "Boa Vista do Ramos – Comunidade Santana", "diasTotal": 7, "idaMin": 960, "voltaMin": 1605, "extraMin": 0, "nota": null}, "2025_17": {"comunidade": "Careiro da Várzea – Comunidade Piracauera", "diasTotal": 6, "idaMin": 160, "voltaMin": 200, "extraMin": 0, "nota": null}, "2025_18": {"comunidade": "Careiro Castanho", "diasTotal": 5, "idaMin": 475, "voltaMin": 325, "extraMin": 0, "nota": null}, "2025_19": {"comunidade": "Silves – Comunidade São João da Ilha", "diasTotal": 7, "idaMin": 1080, "voltaMin": 1455, "extraMin": 0, "nota": null}, "2025_20": {"comunidade": "Beruri", "diasTotal": 7, "idaMin": 1440, "voltaMin": 755, "extraMin": 0, "nota": null}, "2025_21": {"comunidade": "Belém – Icoaraci", "diasTotal": 19, "idaMin": 8550, "voltaMin": 6640, "extraMin": 0, "nota": "Expedição excepcional fora da região usual do barco"}, "2025_22": {"comunidade": "Urucurituba", "diasTotal": 7, "idaMin": 810, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2025_23": {"comunidade": "Caapiranga", "diasTotal": 7, "idaMin": 960, "voltaMin": 660, "extraMin": 0, "nota": null}, "2026_24": {"comunidade": "Manacapuru", "diasTotal": 6, "idaMin": 1120, "voltaMin": 750, "extraMin": 0, "nota": null}, "2026_25": {"comunidade": "Itapiranga", "diasTotal": 7, "idaMin": 1170, "voltaMin": 1635, "extraMin": 0, "nota": null}, "2026_26": {"comunidade": "Silves", "diasTotal": 7, "idaMin": 900, "voltaMin": 1561, "extraMin": 0, "nota": null}, "2026_27": {"comunidade": "São Sebastião do Uatumã", "diasTotal": 6, "idaMin": 1010, "voltaMin": 1500, "extraMin": 0, "nota": null}, "2026_28": {"comunidade": "Novo Aripuanã", "diasTotal": 6, "idaMin": 2340, "voltaMin": 1620, "extraMin": 0, "nota": null}, "2026_EXTRA": {"comunidade": "Anamã", "diasTotal": 5, "idaMin": 1000, "voltaMin": 630, "extraMin": 0, "nota": null}, "2026_29": {"comunidade": "Tefé (Comunidade Caimbé)", "diasTotal": 21, "idaMin": 3120, "voltaMin": 1650, "extraMin": 0, "nota": "Expedição combinada Tefé/Alvarães, com etapas intermediárias entre as duas"}, "2026_30": {"comunidade": "Alvarães", "diasTotal": 21, "idaMin": 360, "voltaMin": 90, "extraMin": 0, "nota": "Etapas dentro da expedição combinada Tefé/Alvarães (Caimbé→Tefé, Tefé→Alvarães, Alvarães→Tefé)"}, "2026_31": {"comunidade": "Borba", "diasTotal": 6, "idaMin": 1110, "voltaMin": 1110, "extraMin": 0, "nota": null}, "2026_32": {"comunidade": "Beruri", "diasTotal": 7, "idaMin": 1080, "voltaMin": 630, "extraMin": 0, "nota": null}, "2026_33": {"comunidade": "Parintins", "diasTotal": 7, "idaMin": 1170, "voltaMin": 2220, "extraMin": 0, "nota": null}, "2026_34": {"comunidade": "Urucará", "diasTotal": 6, "idaMin": 1035, "voltaMin": 1799, "extraMin": 0, "nota": null}, "2026_35": {"comunidade": "Anori", "diasTotal": 7, "idaMin": 1290, "voltaMin": 630, "extraMin": 0, "nota": null}};
+// Dados de dias em atendimento e expedições — extraídos automaticamente
+// da planilha de expedições pelo gerador de dashboard.
+const ANNUAL_DAYS_STATS = __DAYS_DATA_BY_YEAR__;
+
+// Dados de navegação (comunidades visitadas, datas, dias de atendimento) —
+// extraídos automaticamente da planilha de expedições pelo gerador de dashboard.
+// Atualiza automaticamente sem necessidade de intervenção manual.
+const NAVIGATION_DATA = __NAVIGATION_DATA__;
 
 const sum = (arr,key)=>arr.reduce((a,b)=>a+(b[key]||0),0);
 const LOCALE_MAP = {pt:'pt-BR',en:'en-US',de:'de-DE',es:'es-ES',ru:'ru-RU'};
@@ -2695,7 +2732,7 @@ function renderDashboard(){
   const exp = currentExpeditions();
   const totalGeral=sum(exp,'geral'), totalSaude=sum(exp,'saude');
   const totalDiasAtend=exp.reduce((a,b)=>a+(b.diasAtendimento||0),0);
-  const totalDiasExp=exp.reduce((a,b)=>a+(b.diasTotalExpedicao||0),0); // Soma dos dias totais de cada expedição
+  const totalDiasExp=exp.length * 7; // 7 dias padrão por expedição
 
   document.getElementById('bigGeral').textContent = fmt(totalGeral);
   document.getElementById('bigSaude').textContent = fmt(totalSaude);
@@ -2704,7 +2741,7 @@ function renderDashboard(){
   if(bigDiasAtend) bigDiasAtend.textContent = totalDiasAtend.toFixed(1);
 
   const bigDiasExp = document.getElementById('bigDiasExp');
-  if(bigDiasExp) bigDiasExp.textContent = totalDiasExp.toFixed(1);
+  if(bigDiasExp) bigDiasExp.textContent = totalDiasExp.toString();
 
   const bigCountExp = document.getElementById('bigCountExp');
   if(bigCountExp) bigCountExp.textContent = exp.length.toString();
@@ -2961,6 +2998,23 @@ function openLastExpeditionModal(){
 }
 document.getElementById('btnLastExp').addEventListener('click', openLastExpeditionModal);
 
+// Toggle Modo Executivo (Executive Mode)
+document.getElementById('btnExecMode').addEventListener('click', function(){
+  const btn = this;
+  const body = document.body;
+  body.classList.toggle('modo-executivo');
+  btn.classList.toggle('active');
+  // Salvar preferência em localStorage
+  localStorage.setItem('exec-mode', body.classList.contains('modo-executivo') ? 'true' : 'false');
+});
+
+// Restaurar Modo Executivo ao carregar
+if(localStorage.getItem('exec-mode') === 'true'){
+  document.body.classList.add('modo-executivo');
+  const btn = document.getElementById('btnExecMode');
+  if(btn) btn.classList.add('active');
+}
+
 function openExpeditionReportModal(expIndex){
   if(expIndex < 0 || expIndex >= ALL_EXPEDITIONS.length) return;
 
@@ -3164,14 +3218,23 @@ function renderRanking(){
   const map = {};
   currentExpeditions().forEach(d=>{
     const key = d.mun.replace(/\s*\(.*\)/,'');
-    if(!map[key]) map[key] = {geral:0,exp:0,dias:0.0};
+    if(!map[key]) map[key] = {geral:0,exp:0,dias:0.0,datas:[],comunidades:[]};
     map[key].geral += d.geral; map[key].exp += 1; map[key].dias += (d.diasAtendimento||0.0);
+    if(d.data && !map[key].datas.includes(d.data)) map[key].datas.push(d.data);
+    if(d.mun && !map[key].comunidades.includes(d.mun)) map[key].comunidades.push(d.mun);
   });
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral).slice(0,14);
   const max = rows.length? rows[0][1].geral : 1;
-  document.getElementById('rankBody').innerHTML = rows.map((r,i)=>`
-    <tr style="cursor:pointer;" data-mun="${r[0].replace(/"/g,'&quot;')}"><td><span class="rank">${i+1}</span>${r[0]}</td><td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
-    <td><div class="bar-cell"><span class="mono">${fmt(r[1].geral)}</span><div class="bar-track"><div class="bar-fill" style="width:${(r[1].geral/max*100).toFixed(0)}%"></div></div></div></td></tr>`).join('');
+  document.getElementById('rankBody').innerHTML = rows.map((r,i)=>{
+    const datasStr = r[1].datas.slice(0,2).join(' | ') + (r[1].datas.length > 2 ? '...' : '');
+    const comunStr = r[1].comunidades[0] || r[0];
+    return `<tr style="cursor:pointer;" data-mun="${r[0].replace(/"/g,'&quot;')}" title="Comunidades: ${r[1].comunidades.join(', ')}\nDatas: ${r[1].datas.join(', ')}">
+      <td><span class="rank">${i+1}</span>${r[0]}</td>
+      <td style="font-size:0.8rem;color:var(--muted);">${comunStr}</td>
+      <td style="font-size:0.75rem;color:var(--muted-2);">${datasStr}</td>
+      <td>${r[1].exp}</td><td class="mono">${fmtAvg(r[1].dias)}</td>
+      <td><div class="bar-cell"><span class="mono">${fmt(r[1].geral)}</span><div class="bar-track"><div class="bar-fill" style="width:${(r[1].geral/max*100).toFixed(0)}%"></div></div></div></td></tr>`;
+  }).join('');
   document.querySelectorAll('#rankBody tr').forEach(tr=>{
     tr.addEventListener('click',()=>openMunicipalModal(tr.dataset.mun));
   });

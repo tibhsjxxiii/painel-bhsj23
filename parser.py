@@ -15,6 +15,9 @@ TOTAL_LABELS = {
     "Total Geral dos Atendimentos": "geral",
 }
 
+# Dias em atendimento (extracted separately)
+DAYS_LABEL = "Total de Dias em Atendimento"
+
 CANONICAL_MUN = {
     "ANAMA": "Anamã", "ANAMÃ": "Anamã",
     "URUCARA": "Urucará", "URUCARÁ": "Urucará",
@@ -98,6 +101,31 @@ def parse_year_sheet(df, year):
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
     datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
 
+    # Extract "Total de Dias em Atendimento" for each expedition
+    dias_atendimento = {}
+    r_dias = find_row_by_label(df, DAYS_LABEL)
+    if r_dias is not None:
+        for c in cols:
+            val = df.iloc[r_dias, c]
+            # Handle NaN/None/empty values FIRST
+            if val is None or (isinstance(val, float) and pd.isna(val)):
+                dias_atendimento[c] = 0
+            elif isinstance(val, str):
+                # Try to parse "5,5" or "4.5" formats
+                val = val.strip().replace(",", ".")
+                try:
+                    dias_atendimento[c] = float(val) if val else 0
+                except (ValueError, TypeError):
+                    dias_atendimento[c] = 0
+            else:
+                try:
+                    dias_atendimento[c] = float(val) if val else 0
+                except (ValueError, TypeError):
+                    dias_atendimento[c] = 0
+    else:
+        # Default to 0 if row not found
+        dias_atendimento = {c: 0 for c in cols}
+
     # specialties: rows strictly between "Consultas Médicas" and "Total de Consultas"
     specialties = {}
     specialties_per_col = {c: {} for c in cols}
@@ -163,6 +191,8 @@ def parse_year_sheet(df, year):
             "n": expedition_number(exp_cols[c], c),
             "mun": municipios[c],
             "data": datas[c],
+            "diasAtendimento": dias_atendimento.get(c, 0),
+            "diasExpedicao": 7,  # Padrão de 7 dias por expedição
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),
@@ -185,6 +215,72 @@ def parse_year_sheet(df, year):
         })
 
     return {"expeditions": expeditions, "specialties": specialties, "exams": exams}
+
+def time_to_minutes(time_str):
+    """Converte formato HH:MM ou H:MM para minutos totais."""
+    if not time_str or (isinstance(time_str, float) and pd.isna(time_str)):
+        return 0
+    time_str = str(time_str).strip()
+    if not time_str or time_str == "-":
+        return 0
+    try:
+        parts = time_str.split(":")
+        if len(parts) >= 2:
+            hours = int(parts[0])
+            minutes = int(parts[1])
+            return hours * 60 + minutes
+    except:
+        pass
+    return 0
+
+def extract_navigation_data(ods_path):
+    """Extrai dados de navegação da aba 'CHEGADA E SAIDA - EXPEDICAO'."""
+    navigation = {}
+    try:
+        df = pd.read_excel(ods_path, engine="odf", sheet_name="CHEGADA E SAIDA - EXPEDICAO", header=None)
+
+        # Pular header (linha 0)
+        for idx in range(1, len(df)):
+            row = df.iloc[idx]
+            ano = row[0]
+            num_exp = row[1]
+            comunidade = row[3]
+            nav_ida = row[6]  # Navegação Ida
+            nav_volta = row[9]  # Navegação Volta
+
+            # Validar ano (deve ser número)
+            if not ano or (isinstance(ano, float) and pd.isna(ano)):
+                continue
+            try:
+                ano = int(float(ano))
+            except:
+                continue
+
+            if 2020 <= ano <= 2030:
+                # Extrair número da expedição (ex: "2ª Expedição" -> 2)
+                try:
+                    num_match = re.search(r'(\d+)', str(num_exp))
+                    if num_match:
+                        num = int(num_match.group(1))
+                    else:
+                        continue
+                except:
+                    continue
+
+                key = f"{ano}_{num}"
+                ida_min = time_to_minutes(nav_ida)
+                volta_min = time_to_minutes(nav_volta)
+
+                navigation[key] = {
+                    "comunidade": _clean(comunidade),
+                    "idaMin": ida_min,
+                    "voltaMin": volta_min,
+                }
+
+    except Exception as e:
+        print(f"⚠️  Aviso: não foi possível ler aba de navegação: {e}")
+
+    return navigation
 
 def extract_all_years(ods_path):
     xl = pd.ExcelFile(ods_path, engine="odf")

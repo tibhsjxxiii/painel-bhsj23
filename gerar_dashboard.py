@@ -15,8 +15,9 @@ import os
 import json
 import re
 import argparse
+import pandas as pd
 from datetime import datetime
-from parser import extract_all_years
+from parser import extract_all_years, extract_navigation_data
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_PATH = os.path.join(SCRIPT_DIR, "template.html")
@@ -126,22 +127,61 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     generated_at = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    # Calcular totais de pacientes e atendimentos por ano
+    # Calcular totais de pacientes, atendimentos e dias por ano
     patient_data_by_year = {}
+    days_data_by_year = {}
+
+    # Extrair dados de navegação da aba "CHEGADA E SAIDA - EXPEDICAO"
+    navigation_raw = extract_navigation_data(ods_path)
+
+    # Enriquecer navigation_data com informações das expedições
+    navigation_data = {}
     for year in sorted(data_by_year.keys()):
         exps = data_by_year[year]["expeditions"]
         total_pacientes = sum(e.get("pacientes", 0) for e in exps)
         total_atendimentos = sum(e.get("geral", 0) for e in exps)
+        total_dias_atendimento = sum(e.get("diasAtendimento", 0) for e in exps)
+        total_dias_expedicoes = len(exps) * 7  # 7 dias padrão por expedição
+
         patient_data_by_year[str(year)] = {
             "atendimentos": total_atendimentos,
             "pacientes": total_pacientes
         }
+        days_data_by_year[str(year)] = {
+            "diasAtendimento": round(total_dias_atendimento, 1),
+            "diasExpedicoes": total_dias_expedicoes,
+            "expedicoes": len(exps)
+        }
+
+        # Gerar dados de navegação dinamicamente da planilha
+        for exp in exps:
+            key = f"{year}_{exp['n']}"
+            dias_val = exp.get("diasAtendimento", 0)
+            # Proteção contra NaN
+            if dias_val is None or (isinstance(dias_val, float) and pd.isna(dias_val)):
+                dias_val = 0
+            dias_total = round(dias_val) or 7
+
+            # Buscar dados de navegação extraídos (ida/volta/extra minutos)
+            nav_info = navigation_raw.get(key, {})
+
+            navigation_data[key] = {
+                "comunidade": nav_info.get("comunidade") or exp.get("mun", ""),
+                "data": exp.get("data", ""),
+                "diasTotal": dias_total,
+                "idaMin": nav_info.get("idaMin", 0),
+                "voltaMin": nav_info.get("voltaMin", 0),
+                "extraMin": 0,
+                "nota": None
+            }
 
     html = template
     html = html.replace("__ALL_EXPEDITIONS__", json.dumps(all_expeditions, ensure_ascii=False))
     html = html.replace("__SPECIALTIES_BY_YEAR__", json.dumps(specialties_by_year, ensure_ascii=False))
     html = html.replace("__EXAMS_BY_YEAR__", json.dumps(exams_by_year, ensure_ascii=False))
     html = html.replace("__PATIENT_DATA_BY_YEAR__", json.dumps(patient_data_by_year, ensure_ascii=False))
+    html = html.replace("__DAYS_DATA_BY_YEAR__", json.dumps(days_data_by_year, ensure_ascii=False))
+    html = html.replace("__NAVIGATION_DATA__", json.dumps(navigation_data, ensure_ascii=False))
     html = html.replace("__GENERATED_AT__", generated_at)
     html = html.replace("__PROXY_URL__", proxy_url)
     html = html.replace("__PROXY_SECRET__", proxy_secret)
@@ -165,8 +205,8 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
 
 if __name__ == "__main__":
     parser_args = argparse.ArgumentParser(description="Gera o painel executivo a partir da planilha de expedições.")
-    parser_args.add_argument("planilha", nargs="?", default="EXPEDICOES_BHSJXXIII_2025_2026.ods",
-                              help="Caminho para o arquivo .ods (padrão: EXPEDICOES_BHSJXXIII_2025_2026.ods na mesma pasta)")
+    parser_args.add_argument("planilha", nargs="?", default="EXPEDICOES BHSJXXIII_2025_2026.ods",
+                              help="Caminho para o arquivo .ods (padrão: EXPEDICOES BHSJXXIII_2025_2026.ods na mesma pasta)")
     parser_args.add_argument("-o", "--output", default="index.html",
                               help="Nome do arquivo de saída (padrão: index.html, pronto para publicar sem precisar renomear)")
     parser_args.add_argument("--proxy-url", default="https://api-ia-bhsj23.alsf.workers.dev",
