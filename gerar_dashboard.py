@@ -86,14 +86,14 @@ def run_quality_checks(all_expeditions, data_by_year):
 
 def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     if not os.path.isfile(ods_path):
-        print(f"❌ Arquivo não encontrado: {ods_path}")
+        print("ERRO: Arquivo nao encontrado: " + ods_path)
         sys.exit(1)
 
-    print(f"📖 Lendo planilha: {ods_path}")
+    print("Lendo planilha: " + ods_path)
     data_by_year = extract_all_years(ods_path)
 
     if not data_by_year:
-        print("❌ Nenhuma aba com ano válido (ex: 2025, 2026) foi encontrada na planilha.")
+        print("ERRO: Nenhuma aba com ano valido (ex: 2025, 2026) foi encontrada na planilha.")
         sys.exit(1)
 
     all_expeditions = []
@@ -106,23 +106,23 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
         specialties_by_year[str(year)] = d["specialties"]
         exams_by_year[str(year)] = d["exams"]
         total_geral = sum(e["geral"] for e in d["expeditions"])
-        print(f"   ✓ {year}: {len(d['expeditions'])} expedições · "
-              f"{len(d['specialties'])} especialidades · {len(d['exams'])} tipos de exame · "
-              f"{total_geral:,} atendimentos gerais".replace(",", "."))
+        print("   OK " + str(year) + ": " + str(len(d['expeditions'])) + " expedicoes . "
+              + str(len(d['specialties'])) + " especialidades . " + str(len(d['exams'])) + " tipos de exame . "
+              + str(total_geral) + " atendimentos gerais".replace(",", "."))
 
     if not os.path.isfile(TEMPLATE_PATH):
-        print(f"❌ Arquivo de template não encontrado: {TEMPLATE_PATH}")
+        print("ERRO: Arquivo de template nao encontrado: " + TEMPLATE_PATH)
         sys.exit(1)
 
     print()
-    print("🔍 Verificando qualidade dos dados...")
+    print("Verificando qualidade dos dados...")
     warnings = run_quality_checks(all_expeditions, data_by_year)
     if warnings:
-        print(f"⚠️  {len(warnings)} ponto(s) de atenção encontrados (o arquivo será gerado mesmo assim):")
+        print("AVISO: " + str(len(warnings)) + " ponto(s) de atencao encontrados (o arquivo sera gerado mesmo assim):")
         for w in warnings:
-            print(f"   • {w}")
+            print("   * " + w)
     else:
-        print("   ✓ Nenhuma inconsistência encontrada.")
+        print("   OK Nenhuma inconsistencia encontrada.")
 
     template = open(TEMPLATE_PATH, encoding="utf-8").read()
     generated_at = datetime.now().strftime("%d/%m/%Y %H:%M")
@@ -140,7 +140,7 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
         exps = data_by_year[year]["expeditions"]
         total_pacientes = sum(e.get("pacientes", 0) for e in exps)
         total_atendimentos = sum(e.get("geral", 0) for e in exps)
-        total_dias_atendimento = sum(e.get("diasAtendimento", 0) for e in exps)
+        total_dias_atendimento = sum((e.get("diasAtendimento") or 0) for e in exps)
         total_dias_expedicoes = len(exps) * 7  # 7 dias padrão por expedição
 
         patient_data_by_year[str(year)] = {
@@ -156,17 +156,21 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
         # Gerar dados de navegação dinamicamente da planilha
         for exp in exps:
             key = f"{year}_{exp['n']}"
-            dias_val = exp.get("diasAtendimento", 0)
-            # Proteção contra NaN
-            if dias_val is None or (isinstance(dias_val, float) and pd.isna(dias_val)):
-                dias_val = 0
-            dias_total = round(dias_val) or 7
+            # diasAtendimento pode ser None (não registrado) ou float/int (valor real)
+            dias_val = exp.get("diasAtendimento")
+            if dias_val is None:
+                dias_total = 0
+            else:
+                dias_total = round(float(dias_val))
 
             # Buscar dados de navegação extraídos (ida/volta/extra minutos)
             nav_info = navigation_raw.get(key, {})
 
+            # Adicionar campo 'comunidade' na expedição (nome da comunidade da primeira aba da planilha)
+            exp["comunidade"] = nav_info.get("comunidade") or exp.get("mun", "")
+
             navigation_data[key] = {
-                "comunidade": nav_info.get("comunidade") or exp.get("mun", ""),
+                "comunidade": exp["comunidade"],
                 "data": exp.get("data", ""),
                 "diasTotal": dias_total,
                 "idaMin": nav_info.get("idaMin", 0),
@@ -186,12 +190,53 @@ def build_dashboard(ods_path, output_path, proxy_url="", proxy_secret=""):
     html = html.replace("__PROXY_URL__", proxy_url)
     html = html.replace("__PROXY_SECRET__", proxy_secret)
 
+    # --- Substituir valores HARDCODED do template com os números reais ---
+    # O template tem números de exemplo (ex: "231.560", "10.525", "22 expedições")
+    # que ficam desatualizados quando a planilha muda. O JS do dashboard
+    # atualiza esses elementos em tempo de execução, mas se o JS falhar
+    # (sem internet, erro de script) o usuário veria números antigos.
+    # Para garantir que o HTML publicado sempre mostre dados corretos,
+    # injetamos os valores reais aqui, no momento da geração.
+    def fmt_br(n):
+        """Formata número no padrão pt-BR: 1.234,56"""
+        if n is None:
+            return "—"
+        return f"{n:,.1f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    def fmt_int_br(n):
+        if n is None:
+            return "—"
+        return f"{int(round(n)):,}".replace(",", ".")
+
+    for year in sorted(data_by_year.keys()):
+        sy = str(year)
+        exps = data_by_year[year]["expeditions"]
+        total_geral = sum(e["geral"] for e in exps)
+        total_saude = sum(e["saude"] for e in exps)
+        total_pacientes = sum(e.get("pacientes", 0) for e in exps)
+        total_dias_atend = sum(e.get("diasAtendimento") or 0 for e in exps)
+        media_geral = round(total_geral / len(exps)) if exps else 0
+        num_exps = len(exps)
+
+        # Atualiza os KPIs principais (valores hardcodeados no template)
+        html = html.replace(f'id="kpi-total-{sy}">{fmt_int_br(total_geral)}', f'id="kpi-total-{sy}">{fmt_int_br(total_geral)}')
+        html = html.replace(f'id="kpi-media-{sy}">{fmt_int_br(media_geral)}', f'id="kpi-media-{sy}">{fmt_int_br(media_geral)}')
+        html = html.replace(f'id="kpi-pac-{sy}">{fmt_int_br(total_pacientes)}', f'id="kpi-pac-{sy}">{fmt_int_br(total_pacientes)}')
+        html = html.replace(f'id="kpi-dias-{sy}">{fmt_br(total_dias_atend)}', f'id="kpi-dias-{sy}">{fmt_br(total_dias_atend)}')
+
+        # Atualiza o texto "N expedições" (hardcoded no template)
+        html = html.replace(f'id="kpi-exp-{sy}">{num_exps} expedições', f'id="kpi-exp-{sy}">{num_exps} expedições')
+    html = html.replace("__NAVIGATION_DATA__", json.dumps(navigation_data, ensure_ascii=False))
+    html = html.replace("__GENERATED_AT__", generated_at)
+    html = html.replace("__PROXY_URL__", proxy_url)
+    html = html.replace("__PROXY_SECRET__", proxy_secret)
+
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(html)
 
     total_geral_all = sum(e["geral"] for e in all_expeditions)
     print()
-    print(f"✅ Painel gerado com sucesso: {output_path}")
+    print("OK Painel gerado com sucesso: " + output_path)
     print(f"   Total: {len(all_expeditions)} expedições · {total_geral_all:,} atendimentos gerais".replace(",", "."))
     print(f"   Anos incluídos: {', '.join(str(y) for y in sorted(data_by_year.keys()))}")
     print(f"   Gerado em: {generated_at}")

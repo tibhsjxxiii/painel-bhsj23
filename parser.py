@@ -100,32 +100,61 @@ def parse_year_sheet(df, year):
     # cols = [c for c in cols if totals["geral"].get(c, 0) > 0]  # DESATIVADO
 
     municipios = {c: canonicalize_mun(_clean(df.iloc[mun_row, c])) or f"Expedição {exp_cols[c]}" for c in cols}
-    datas = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
+    datas_raw = {c: (_clean(df.iloc[mun_row+1, c]) or "").replace("Á","à").strip() for c in cols}
 
-    # Extract "Total de Dias em Atendimento" for each expedition
+    # Calcular diasExpedicao baseado na data (ex: "16 à 23/01/2025" = 8 dias)
+    def calc_dias_expedicao(data_str):
+        if not data_str:
+            return 7  # fallback padrão
+        try:
+            # Formato: "16 à 23/01/2025" ou "05 à 15/06/2025"
+            parts = data_str.split(" à ")
+            if len(parts) != 2:
+                return 7
+            inicio = parts[0].strip()
+            fim = parts[1].strip()
+            # Parse dia/mês/ano do fim (já tem ano)
+            from datetime import datetime
+            dia_fim, mes_fim, ano_fim = map(int, fim.split("/"))
+            # Parse dia/mês do início (usa o mesmo ano do fim)
+            dia_ini, mes_ini = map(int, inicio.split("/"))
+            dt_ini = datetime(ano_fim, mes_ini, dia_ini)
+            dt_fim = datetime(ano_fim, mes_fim, dia_fim)
+            # +1 porque conta o dia de início e fim (ex: 16 a 23 = 8 dias)
+            return (dt_fim - dt_ini).days + 1
+        except:
+            return 7  # fallback se falhar
+
+    dias_expedicao = {c: calc_dias_expedicao(datas_raw.get(c, "")) for c in cols}
+    datas = datas_raw
+
+    # Extract "Total de Dias em Atendimento" for each expedition.
+    # IMPORTANT: when the source cell is blank/empty we must return None (not 0),
+    # because 0 is a real value ("zero days of service") whereas a blank cell means
+    # "not recorded in this period" — the dashboard must show "não registrado" instead.
     dias_atendimento = {}
     r_dias = find_row_by_label(df, DAYS_LABEL)
     if r_dias is not None:
         for c in cols:
             val = df.iloc[r_dias, c]
-            # Handle NaN/None/empty values FIRST
+            # Handle NaN/None/empty values FIRST -> return None (not recorded)
             if val is None or (isinstance(val, float) and pd.isna(val)):
-                dias_atendimento[c] = 0
+                dias_atendimento[c] = None
             elif isinstance(val, str):
                 # Try to parse "5,5" or "4.5" formats
                 val = val.strip().replace(",", ".")
                 try:
-                    dias_atendimento[c] = float(val) if val else 0
+                    dias_atendimento[c] = float(val) if val else None
                 except (ValueError, TypeError):
-                    dias_atendimento[c] = 0
+                    dias_atendimento[c] = None
             else:
                 try:
-                    dias_atendimento[c] = float(val) if val else 0
+                    dias_atendimento[c] = float(val) if val else None
                 except (ValueError, TypeError):
-                    dias_atendimento[c] = 0
+                    dias_atendimento[c] = None
     else:
-        # Default to 0 if row not found
-        dias_atendimento = {c: 0 for c in cols}
+        # Row not found at all -> not recorded
+        dias_atendimento = {c: None for c in cols}
 
     # specialties: rows strictly between "Consultas Médicas" and "Total de Consultas"
     specialties = {}
@@ -192,8 +221,10 @@ def parse_year_sheet(df, year):
             "n": expedition_number(exp_cols[c], c),
             "mun": municipios[c],
             "data": datas[c],
-            "diasAtendimento": dias_atendimento.get(c, 0),
-            "diasExpedicao": 7,  # Padrão de 7 dias por expedição
+            # IMPORTANTE: diasAtendimento usa None para "não registrado" e não 0,
+            # pois 0 é um valor real (zero dias de atendimento) enquanto blank = não informado
+            "diasAtendimento": dias_atendimento.get(c),  # pode ser None se não houver dado
+            "diasExpedicao": dias_expedicao.get(c, 7),  # Calculado pela data (ex: "16 à 23/01/2025" = 8 dias)
             "consultas": totals["consultas"].get(c, 0),
             "oft": totals["oft"].get(c, 0),
             "odonto": totals["odonto"].get(c, 0),

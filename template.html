@@ -13,12 +13,73 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
+  /* Light theme (default) */
   --bg:#ffffff; --panel:#ffffff; --panel-2:#f9f8f7;
   --navy:#0f2a4a; --navy-2:#173a63; --navy-soft:#e8edf3;
   --gold:#b8934a; --gold-dim:rgba(184,147,74,0.12);
   --teal:#1a5d50; --teal-dim:rgba(26,93,80,0.10);
-  --line:#d9d5cc; --text:#14202e; --muted:#5a6978; --muted-2:#7a8899;
+  --line:#c4bfb3; --text:#14202e; --muted:#4a5a6e; --muted-2:#6a7a8f;
   --radius:12px; --shadow:0 4px 12px rgba(15,42,74,0.12);
+  --shadow-lg:0 12px 32px rgba(15,42,74,0.18);
+  --focus:var(--gold);
+  --danger:#a9564a; --danger-dim:rgba(169,86,74,0.12);
+
+  /* Fluid typography scale */
+  --fs-xs:clamp(0.65rem,0.6rem+0.25vw,0.75rem);
+  --fs-sm:clamp(0.75rem,0.7rem+0.25vw,0.875rem);
+  --fs-base:clamp(0.875rem,0.8rem+0.375vw,1rem);
+  --fs-lg:clamp(1rem,0.9rem+0.5vw,1.125rem);
+  --fs-xl:clamp(1.25rem,1.1rem+0.75vw,1.5rem);
+  --fs-2xl:clamp(1.5rem,1.3rem+1vw,2rem);
+  --fs-3xl:clamp(2rem,1.7rem+1.5vw,3rem);
+  --fs-4xl:clamp(2.5rem,2rem+2vw,4rem);
+
+  /* Spacing scale */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:24px; --space-6:32px; --space-8:48px; --space-10:64px;
+
+  /* Z-index scale */
+  --z-dropdown:100; --z-sticky:200; --z-fixed:300; --z-modal-backdrop:400;
+  --z-modal:500; --z-popover:600; --z-toast:700;
+}
+
+/* Dark mode - respects system preference */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1a2e; --panel:#11243d; --panel-2:#0f1f38;
+    --navy:#e8edf3; --navy-2:#b8c5d6; --navy-soft:#1a3555;
+    --gold:#c9a85c; --gold-dim:rgba(201,168,92,0.18);
+    --teal:#2ec4b6; --teal-dim:rgba(46,196,182,0.15);
+    --line:#2a3f5a; --text:#e8edf3; --muted:#9aa8b8; --muted-2:#7a8a9f;
+    --shadow:0 4px 12px rgba(0,0,0,0.35);
+    --shadow-lg:0 12px 32px rgba(0,0,0,0.45);
+    --focus:var(--gold);
+    --danger:#e57c6b; --danger-dim:rgba(229,124,107,0.18);
+  }
+}
+
+/* Allow manual theme override via data-theme attribute */
+:root[data-theme="light"]{
+  --bg:#ffffff; --panel:#ffffff; --panel-2:#f9f8f7;
+  --navy:#0f2a4a; --navy-2:#173a63; --navy-soft:#e8edf3;
+  --gold:#b8934a; --gold-dim:rgba(184,147,74,0.12);
+  --teal:#1a5d50; --teal-dim:rgba(26,93,80,0.10);
+  --line:#c4bfb3; --text:#14202e; --muted:#4a5a6e; --muted-2:#6a7a8f;
+  --shadow:0 4px 12px rgba(15,42,74,0.12);
+  --shadow-lg:0 12px 32px rgba(15,42,74,0.18);
+  --focus:var(--gold);
+  --danger:#a9564a; --danger-dim:rgba(169,86,74,0.12);
+}
+:root[data-theme="dark"]{
+  --bg:#0b1a2e; --panel:#11243d; --panel-2:#0f1f38;
+  --navy:#e8edf3; --navy-2:#b8c5d6; --navy-soft:#1a3555;
+  --gold:#c9a85c; --gold-dim:rgba(201,168,92,0.18);
+  --teal:#2ec4b6; --teal-dim:rgba(46,196,182,0.15);
+  --line:#2a3f5a; --text:#e8edf3; --muted:#9aa8b8; --muted-2:#7a8a9f;
+  --shadow:0 4px 12px rgba(0,0,0,0.35);
+  --shadow-lg:0 12px 32px rgba(0,0,0,0.45);
+  --focus:var(--gold);
+  --danger:#e57c6b; --danger-dim:rgba(229,124,107,0.18);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -278,10 +339,6 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
           <span data-i18n="lastExpBtn">Última Expedição</span>
         </button>
-        <button id="btnExecMode" class="exec-toggle" title="Toggle Executive Mode" aria-label="Modo Executivo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          <span>Executivo</span>
-        </button>
         <div class="year-select" id="yearSelect"></div>
         <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
         <select id="langSel">
@@ -528,12 +585,12 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
                   <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-total-2025">231.560</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">22 expedições</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" id="kpi-exp-2025">22 expedições</div>
                 </div>
                 <div>
                   <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: #2d7a6a; line-height: 1.2;" id="kpi-total-2026">170.362</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">17 expedições</div>
+                  <div style="font-size: 2.4rem; font-weight: 700; color: #2d7a6a; line-height: 1.2;" id="kpi-total-2026">204.563</div>
+                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" id="kpi-exp-2026">22 expedições</div>
                 </div>
               </div>
             </div>
@@ -956,7 +1013,9 @@ function gerarComparativo(exps) {
   const varDias = dias2025 > 0 ? (((dias2026 - dias2025) / dias2025) * 100).toFixed(1) : (dias2026 > 0 ? 999 : 0);
 
   document.getElementById('kpi-total-2025').textContent = total2025.toLocaleString('pt-BR');
+  document.getElementById('kpi-exp-2025').textContent = exp2025.length + ' expedições';
   document.getElementById('kpi-total-2026').textContent = total2026.toLocaleString('pt-BR');
+  document.getElementById('kpi-exp-2026').textContent = exp2026.length + ' expedições';
   document.getElementById('kpi-media-2025').textContent = media2025.toLocaleString('pt-BR');
   document.getElementById('kpi-media-2026').textContent = media2026.toLocaleString('pt-BR');
   document.getElementById('kpi-media-var').textContent = (varMedia >= 0 ? '▲' : '▼') + ' ' + Math.abs(varMedia) + '%';
@@ -3009,21 +3068,6 @@ function openLastExpeditionModal(){
 document.getElementById('btnLastExp').addEventListener('click', openLastExpeditionModal);
 
 // Toggle Modo Executivo (Executive Mode)
-document.getElementById('btnExecMode').addEventListener('click', function(){
-  const btn = this;
-  const body = document.body;
-  body.classList.toggle('modo-executivo');
-  btn.classList.toggle('active');
-  // Salvar preferência em localStorage
-  localStorage.setItem('exec-mode', body.classList.contains('modo-executivo') ? 'true' : 'false');
-});
-
-// Restaurar Modo Executivo ao carregar
-if(localStorage.getItem('exec-mode') === 'true'){
-  document.body.classList.add('modo-executivo');
-  const btn = document.getElementById('btnExecMode');
-  if(btn) btn.classList.add('active');
-}
 
 function openExpeditionReportModal(expIndex){
   if(expIndex < 0 || expIndex >= ALL_EXPEDITIONS.length) return;
@@ -3227,13 +3271,17 @@ function buildAllCharts(){
 function renderRanking(){
   const map = {};
   currentExpeditions().forEach(d=>{
-    const key = d.mun.replace(/\s*\(.*\)/,'');
+    // d.mun já vem canônico do parser.py (função canonicalize_mun), ex: "Anamã", "Careiro da Várzea", etc.
+    // d.comunidade vem da primeira aba da planilha (nome da comunidade específica)
+    const key = d.mun;
     if(!map[key]) map[key] = {geral:0,exp:0,dias:0.0,datas:[],comunidades:[]};
     map[key].geral += d.geral; map[key].exp += 1; map[key].dias += (d.diasAtendimento||0.0);
     if(d.data && !map[key].datas.includes(d.data)) map[key].datas.push(d.data);
-    if(d.mun && !map[key].comunidades.includes(d.mun)) map[key].comunidades.push(d.mun);
+    // Usar d.comunidade (nome da comunidade da planilha) se disponível, senão fallback para d.mun
+    const nomeComunidade = d.comunidade || d.mun;
+    if(nomeComunidade && !map[key].comunidades.includes(nomeComunidade)) map[key].comunidades.push(nomeComunidade);
   });
-  const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral).slice(0,14);
+  const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
   const max = rows.length? rows[0][1].geral : 1;
   document.getElementById('rankBody').innerHTML = rows.map((r,i)=>{
     const datasStr = r[1].datas.slice(0,2).join(' | ') + (r[1].datas.length > 2 ? '...' : '');
@@ -3266,13 +3314,14 @@ function renderCirurgias(){
 
   const map = {};
   exp.forEach(d=>{
-    const key = d.mun.replace(/\s*\(.*\)/,'');
+    // d.mun já vem canônico do parser.py
+    const key = d.mun;
     if(!map[key]) map[key] = {media:0, baixa:0};
     map[key].media += (d.cirMedia||0);
     map[key].baixa += (d.cirBaixa||0);
   });
   const rows = Object.entries(map).map(([mun,v])=>[mun, v.media, v.baixa, v.media+v.baixa])
-    .sort((a,b)=>b[3]-a[3]).slice(0,10);
+    .sort((a,b)=>b[3]-a[3]);
   const max = rows.length? rows[0][3] : 1;
 
   document.getElementById('cirRankBody').innerHTML = rows.map((r,i)=>`
@@ -3686,7 +3735,7 @@ function renderInsightsAuto(){
   const items = [];
   if(topSpec) items.push(t.ansTopSpec(trSpec(topSpec[0]), topSpec[1]));
   if(topExam) items.push(t.ansTopExam(trExam(topExam[0]), topExam[1]));
-  if(topExp) items.push(t.ansTopExp(topExp.mun.replace(/\s*\(.*\)/,''), topExp.n, topExp.geral));
+  if(topExp) items.push(t.ansTopExp(topExp.mun, topExp.n, topExp.geral));
   if(YEARS.length>1){
     const y1=YEARS[0], y2=YEARS[YEARS.length-1];
     const g1=sum(ALL_EXPEDITIONS.filter(d=>d.year===y1),'geral');
@@ -3713,7 +3762,7 @@ function renderReport(){
 
   // KPIs
   const totalDiasAtend = exp.reduce((a,b)=>a+(b.diasAtendimento||0),0);
-  const totalDiasExp = exp.reduce((a,b)=>a+(b.diasTotalExpedicao||0),0);
+  const totalDiasExp = exp.reduce((a,b)=>a+(b.diasExpedicao||0),0);
   const kpis = [
     [t.miniExpL, exp.length],
     [t.miniMunL, municipios.size],
@@ -4043,7 +4092,7 @@ function openMunicipalModal(munName){
   const exp = currentExpeditions();
 
   // Agregar dados por município
-  const allExps = exp.filter(e=>e.mun.replace(/\s*\(.*\)/,'')==munName.replace(/\s*\(.*\)/,''));
+  const allExps = exp.filter(e=>e.mun===munName);
   if(!allExps.length) return;
 
   const totalGeral = allExps.reduce((s,e)=>s+(e.geral||0),0);
