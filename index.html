@@ -604,7 +604,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 17:18</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 17:36</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -809,7 +809,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <div class="panel">
           <div class="panel-title"><span data-i18n="navChartTitle">Navegação por Expedição — Ida vs. Volta</span><button class="info-icon" data-info="infoNavChart">i</button></div>
           <div class="panel-sub" data-i18n="navChartSub">Horas de navegação de ida e de volta, na ordem cronológica das expedições.</div>
-          <div class="chart-wrap" style="height:320px;"><canvas id="chartNav"></canvas></div>
+          <div class="chart-wrap" style="height:320px;min-height:320px;"><canvas id="chartNav"></canvas></div>
         </div>
         <div class="panel" id="navHighlightPanel" style="display:none;">
           <div class="panel-title"><span data-i18n="navHighlightTitle">Destaques Operacionais</span></div>
@@ -1167,14 +1167,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 17:18</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 17:36</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 17:18</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 17:36</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1494,7 +1494,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 17:18";
+const GENERATED_AT = "15/11/2026 17:36";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3731,7 +3731,7 @@ function renderRanking(){
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
   const max = rows.length? rows[0][1].geral : 1;
   document.getElementById('rankBody').innerHTML = rows.map((r,i)=>{
-    const datasStr = r[1].datas.slice(0,2).join(' | ') + (r[1].datas.length > 2 ? '...' : '');
+    const datasStr = r[1].datas.join(' | ');
     const comunStr = r[1].comunidades[0] || r[0];
     return `<tr style="cursor:pointer;" data-mun="${r[0].replace(/"/g,'&quot;')}" title="Comunidades: ${r[1].comunidades.join(', ')}\nDatas: ${r[1].datas.join(', ')}">
       <td><span class="rank">${i+1}</span>${r[0]}</td>
@@ -4264,7 +4264,7 @@ function renderReport(){
   const rows = Object.entries(map).sort((a,b)=>b[1].geral-a[1].geral);
   document.getElementById('reportRankBody').innerHTML = rows.map(r=>{
     const comunStr = r[1].comunidades.size > 0 ? Array.from(r[1].comunidades).join(', ') : '—';
-    const datasStr = r[1].datas.length > 0 ? r[1].datas.slice(0,3).join(' | ') + (r[1].datas.length > 3 ? '...' : '') : '—';
+    const datasStr = r[1].datas.length > 0 ? r[1].datas.join(' | ') : '—';
     return `<tr><td>${r[0]}</td><td style="font-size:0.75rem;color:var(--muted);">${comunStr}</td><td style="font-size:0.75rem;color:var(--muted);">${datasStr}</td><td>${r[1].exp}</td><td class="mono">${r[1].dias.toFixed(1)}</td><td class="mono">${fmt(r[1].geral)}</td></tr>`;
   }).join('');
 
