@@ -249,6 +249,7 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .chart-wrap{position:relative;height:240px;}
 .chart-wrap:not(.loaded)::before{content:'';position:absolute;inset:0;border-radius:8px;background:linear-gradient(90deg,var(--panel-2) 25%,var(--navy-soft) 50%,var(--panel-2) 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 @media(prefers-reduced-motion:reduce){.chart-wrap:not(.loaded)::before{animation:none;}}
 .chart-wrap.tall{height:100%;min-height:210px;}
 .chart-wrap.short{height:140px;}
@@ -332,12 +333,16 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 11:51</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 13:46</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
           <span data-i18n="lastExpBtn">Última Expedição</span>
+        </button>
+        <button id="btnViewReport" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--navy);" title="Gerar relatório PDF deste menu">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg>
+          <span data-i18n="navReport">Relatório</span>
         </button>
         <div class="year-select" id="yearSelect"></div>
         <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
@@ -885,14 +890,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 11:51</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 13:46</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 11:51</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 13:46</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1196,7 +1201,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 11:51";
+const GENERATED_AT = "15/11/2026 13:46";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2450,6 +2455,155 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     if(item.dataset.view==='navegacao') renderNavMap();
   });
 });
+
+/* ================= View-specific PDF Report Button ================= */
+document.getElementById('btnViewReport').addEventListener('click', async function(){
+  const viewId = document.querySelector('.view.visible')?.id || '';
+  const viewName = viewId.replace('view-', '');
+  await exportViewPdf(viewName);
+});
+
+async function exportViewPdf(viewName){
+  const btn = document.getElementById('btnViewReport');
+  const original = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"/><path d="M12 2a10 10 0 0 1 10 10" stroke-opacity="1"/></svg> <span>Gerando...</span>';
+
+  const ok = await ensureJsPDF();
+  btn.disabled = false; btn.innerHTML = original;
+  if(!ok){ window.print(); return; }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4'});
+  const ml = 15, pageW = 210, contentW = pageW - 30;
+  let y = 24;
+  const t = I18N[CUR_LANG];
+  const exp = currentExpeditions();
+
+  function header(){
+    doc.setFillColor(15,42,74); doc.rect(0,0,210,12,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(255,255,255);
+    doc.text('Barco Hospital São João XXIII', 15, 8);
+  }
+  header();
+  y = 24;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(90,100,115);
+  doc.text(I18N[CUR_LANG].reportDocSub, 105, y, {align:'center'});
+  y += 10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.setTextColor(15,42,74);
+  doc.text('Relatório: ' + (document.querySelector('.nav-item.active span')?.textContent || viewName), 105, y, {align:'center'});
+  y += 8;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(100,100,100);
+  const periodText = document.getElementById('reportPeriod')?.textContent || (YEAR==='all' ? 'Todos os anos' : YEAR);
+  const genText = document.getElementById('reportGenDate')?.textContent || GENERATED_AT;
+  doc.text(`Período: ${periodText}      Emitido em: ${genText}`, 105, y, {align:'center'});
+  y += 5;
+  doc.setDrawColor(184,147,74); doc.setLineWidth(0.8);
+  doc.line(15, y, 195, y);
+  y += 9;
+
+  function addTableSection(title, tableId, headRow, customBody){
+    if(y > 255){ doc.addPage(); header(); y = 22; }
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(15,42,74);
+    doc.text(title, 15, y);
+    y += 3;
+    const table = document.getElementById(tableId);
+    if(!table) return;
+    let rows = [];
+    if(customBody){
+      rows = customBody();
+    } else {
+      rows = [...table.querySelectorAll('tr')].map(tr=>[...tr.children].map(td=>td.textContent.trim()));
+    }
+    if(rows.length === 0) return;
+    doc.autoTable({
+      startY: y, head: [headRow], body: rows, theme: 'striped',
+      headStyles:{fillColor:[15,42,74], textColor:255, fontSize:8, halign:'left'},
+      bodyStyles:{fontSize:8, textColor:30}, alternateRowStyles:{fillColor:[247,246,243]},
+      margin:{left:15, right:15},
+      didDrawPage:()=>{ if(doc.internal.getCurrentPageInfo().pageNumber>1) header(); }
+    });
+    y = doc.lastAutoTable.finalY + 9;
+  }
+
+  switch(viewName){
+    case 'dashboard':
+      const totalGeral = sum(exp,'geral'), totalSaude = sum(exp,'saude'), totalAlim = sum(exp,'alim'), totalPacientes = sum(exp,'pacientes');
+      const totalDiasAtend = exp.reduce((a,b)=>a+(b.diasAtendimento||0),0);
+      const totalDiasExp = exp.reduce((a,b)=>a+(b.diasExpedicao||0),0);
+      const municipios = new Set(exp.map(d=>d.mun));
+      const avgPerExp = exp.length? totalGeral/exp.length : 0;
+
+      addTableSection('Indicadores Principais', '', [I18N[CUR_LANG].reportColIndicador, I18N[CUR_LANG].reportColValor], ()=>[
+        [I18N[CUR_LANG].miniExpL, String(exp.length)],
+        [I18N[CUR_LANG].miniMunL, String(municipios.size)],
+        [I18N[CUR_LANG].diasExpTitle, totalDiasExp.toFixed(1)],
+        [I18N[CUR_LANG].diasAtendTitle, totalDiasAtend.toFixed(1)],
+        [I18N[CUR_LANG].bigGeralL, fmt(totalGeral)],
+        [I18N[CUR_LANG].bigSaudeL, fmt(totalSaude)],
+        [I18N[CUR_LANG].pacientesL, totalPacientes>0 ? fmt(totalPacientes) : I18N[CUR_LANG].pacientesNA],
+        [I18N[CUR_LANG].miniAlimL, fmt(totalAlim)],
+        [I18N[CUR_LANG].miniAvgL, fmt(Math.round(avgPerExp))],
+      ]);
+      break;
+
+    case 'specialties':
+      addTableSection('Especialidades Médicas', 'reportSpecBody', [I18N[CUR_LANG].reportColEspecialidade, I18N[CUR_LANG].reportColConsultas]);
+      break;
+
+    case 'exams':
+      addTableSection('Exames por Tipo', 'reportExamBody', [I18N[CUR_LANG].reportColExame, I18N[CUR_LANG].colGeral]);
+      break;
+
+    case 'cirurgias':
+      addTableSection('Cirurgias e Internações', 'cirRankBody', [I18N[CUR_LANG].colMun, I18N[CUR_LANG].cirColMedia, I18N[CUR_LANG].cirColBaixa, I18N[CUR_LANG].cirColTotal]);
+      break;
+
+    case 'navegacao':
+      addTableSection('Detalhamento por Expedição', 'navTableBody', [I18N[CUR_LANG].colExp, I18N[CUR_LANG].colMun, I18N[CUR_LANG].navColDias, I18N[CUR_LANG].navColIda, I18N[CUR_LANG].navColVolta, I18N[CUR_LANG].navColNota]);
+      break;
+
+    case 'municipios':
+      addTableSection('Ranking de Municípios · Atendimento Geral', 'rankBody', [I18N[CUR_LANG].colMun, 'Comunidades', 'Datas', I18N[CUR_LANG].colExp, I18N[CUR_LANG].colDiasAtendimento, I18N[CUR_LANG].colGeral]);
+      break;
+
+    case 'comparativo':
+      // KPIs comparativos - SEMPRE usar ALL_EXPEDITIONS para ter 2025 e 2026
+      const allExp = ALL_EXPEDITIONS;
+      const exp2025 = allExp.filter(e=>e.year===2025);
+      const exp2026 = allExp.filter(e=>e.year===2026);
+      const total2025 = sum(exp2025,'geral'), total2026 = sum(exp2026,'geral');
+      const media2025 = exp2025.length? Math.round(total2025/exp2025.length) : 0;
+      const media2026 = exp2026.length? Math.round(total2026/exp2026.length) : 0;
+      const pac2025 = sum(exp2025,'pacientes'), pac2026 = sum(exp2026,'pacientes');
+
+      addTableSection('KPIs Comparativos', '', [I18N[CUR_LANG].reportColIndicador, '2025', '2026', I18N[CUR_LANG].yoyVs], ()=>[
+        ['Total Atendimentos', fmt(total2025), fmt(total2026), ((total2026-total2025)/total2025*100).toFixed(1)+'%'],
+        ['Média/Expedição', fmt(media2025), fmt(media2026), ((media2026-media2025)/media2025*100).toFixed(1)+'%'],
+        ['Pacientes Únicos', fmt(pac2025), fmt(pac2026), ((pac2026-pac2025)/pac2025*100).toFixed(1)+'%'],
+        ['Expedições', String(exp2025.length), String(exp2026.length), '—'],
+      ]);
+      break;
+
+    case 'report':
+      // O menu Relatório já tem seu próprio botão de exportação - não precisa duplicar
+      alert('Use o botão "Exportar PDF" dentro do menu Relatório para gerar o relatório completo.');
+      return;
+  }
+
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  const footerText = document.querySelector('[data-i18n="footerText"]')?.textContent || '';
+  const lgpdText = document.querySelector('[data-i18n="footerLgpd"]')?.textContent || '';
+  for(let i=1;i<=doc.internal.getNumberOfPages();i++){
+    doc.setPage(i);
+    doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(150,150,150);
+    doc.text(footerText.replace('{date}', GENERATED_AT), 105, 287, {align:'center'});
+    doc.text(I18N[CUR_LANG].footerLgpd, 105, 291, {align:'center'});
+    doc.text(`${i} / ${pageCount}`, 195, 291, {align:'right'});
+  }
+
+  doc.save('relatorio_'+viewName+'_'+(YEAR==='all'?'todos':YEAR)+'.pdf');
+}
 
 /* ================= year selector (dynamic, any number of years) ================= */
 function renderYearSelector(){
@@ -3748,7 +3902,9 @@ function renderInsightsAuto(){
 /* ================= relatório (report) ================= */
 function renderReport(){
   const t = I18N[CUR_LANG];
-  const exp = currentExpeditions();
+  // Usa ALL_EXPEDITIONS para o relatório (dados completos dos 2 anos)
+  // independentemente do filtro de ano selecionado no seletor
+  const exp = ALL_EXPEDITIONS;
   const totalGeral = sum(exp,'geral'), totalSaude = sum(exp,'saude'), totalAlim = sum(exp,'alim'), totalPacientes = sum(exp,'pacientes');
   const municipios = new Set(exp.map(d=>d.mun));
   const avgPerExp = exp.length? totalGeral/exp.length : 0;
