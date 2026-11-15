@@ -604,7 +604,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 16:54</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 17:18</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -614,6 +614,12 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <button id="btnViewReport" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--navy);" title="Gerar relatório PDF deste menu">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg>
           <span data-i18n="navReport">Relatório</span>
+        </button>
+        <div class="year-select" id="yearSelect"></div>
+        <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
+        <button id="themeToggle" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);" title="Alternar tema claro/escuro" aria-label="Alternar tema">
+          <svg id="themeIconSun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="themeIconMoon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="flex-shrink:0;display:block;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
         <div class="year-select" id="yearSelect"></div>
         <div class="live-badge"><span class="live-dot"></span><span data-i18n="live">Fonte: planilha oficial</span></div>
@@ -1161,14 +1167,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 16:54</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 17:18</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 16:54</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 17:18</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1260,44 +1266,40 @@ function gerarComparativo(exps) {
   if (!exps || exps.length === 0) {
     return;
   }
-  const exp2025 = exps.filter(e => e.year === 2025);
-  const exp2026 = exps.filter(e => e.year === 2026);
+  // SEMPRE usar ALL_EXPEDITIONS para comparativo (dados completos 2025+2026)
+  const allExp = ALL_EXPEDITIONS;
+  const exp2025 = allExp.filter(e => e.year === 2025);
+  const exp2026 = allExp.filter(e => e.year === 2026);
 
-  // Helper para traduzir rótulo de MÉDIA
-  const getMediaLabel = () => {
-    const labels = {
-      pt: 'Média',
-      en: 'Average',
-      de: 'Durchschnitt',
-      es: 'Promedio',
-      ru: 'Среднее'
-    };
-    return labels[CUR_LANG] || 'Média';
-  };
+  const t = I18N[CUR_LANG];
+  const fmtLocal = (n, locale) => n.toLocaleString(locale);
+  const localeMap = { pt: 'pt-BR', en: 'en-US', de: 'de-DE', es: 'es-ES', ru: 'ru-RU' };
+  const loc = localeMap[CUR_LANG] || 'pt-BR';
 
-  // KPIs
+  // KPIs - usando chaves i18n
   const total2025 = exp2025.reduce((s, e) => s + e.geral, 0);
   const total2026 = exp2026.reduce((s, e) => s + e.geral, 0);
-  const media2025 = Math.round(total2025 / exp2025.length);
-  const media2026 = Math.round(total2026 / exp2026.length);
-  const varMedia = (((media2026 - media2025) / media2025) * 100).toFixed(1);
+  const media2025 = exp2025.length ? Math.round(total2025 / exp2025.length) : 0;
+  const media2026 = exp2026.length ? Math.round(total2026 / exp2026.length) : 0;
+  const varMedia = media2025 ? (((media2026 - media2025) / media2025) * 100).toFixed(1) : '0.0';
   const pac2025 = exp2025.reduce((s, e) => s + e.pacientes, 0);
   const pac2026 = exp2026.reduce((s, e) => s + e.pacientes, 0);
-  const varPac = (((pac2026 - pac2025) / pac2025) * 100).toFixed(1);
+  const varPac = pac2025 ? (((pac2026 - pac2025) / pac2025) * 100).toFixed(1) : '0.0';
   const dias2025 = exp2025.reduce((s, e) => s + (e.diasAtendimento || 0), 0);
   const dias2026 = exp2026.reduce((s, e) => s + (e.diasAtendimento || 0), 0);
-  const varDias = dias2025 > 0 ? (((dias2026 - dias2025) / dias2025) * 100).toFixed(1) : (dias2026 > 0 ? 999 : 0);
+  const varDias = dias2025 ? (((dias2026 - dias2025) / dias2025) * 100).toFixed(1) : (dias2026 ? '∞' : '0.0');
 
-  document.getElementById('kpi-total-2025').textContent = total2025.toLocaleString('pt-BR');
-  document.getElementById('kpi-exp-2025').textContent = exp2025.length + ' expedições';
-  document.getElementById('kpi-total-2026').textContent = total2026.toLocaleString('pt-BR');
-  document.getElementById('kpi-exp-2026').textContent = exp2026.length + ' expedições';
-  document.getElementById('kpi-media-2025').textContent = media2025.toLocaleString('pt-BR');
-  document.getElementById('kpi-media-2026').textContent = media2026.toLocaleString('pt-BR');
+  // KPIs - usando locale correto e textos i18n
+  document.getElementById('kpi-total-2025').textContent = fmtLocal(total2025, loc);
+  document.getElementById('kpi-exp-2025').textContent = `${exp2025.length} ${t.metricaExpedicoes || 'expedições'}`;
+  document.getElementById('kpi-total-2026').textContent = fmtLocal(total2026, loc);
+  document.getElementById('kpi-exp-2026').textContent = `${exp2026.length} ${t.metricaExpedicoes || 'expedições'}`;
+  document.getElementById('kpi-media-2025').textContent = fmtLocal(media2025, loc);
+  document.getElementById('kpi-media-2026').textContent = fmtLocal(media2026, loc);
   document.getElementById('kpi-media-var').textContent = (varMedia >= 0 ? '▲' : '▼') + ' ' + Math.abs(varMedia) + '%';
   document.getElementById('kpi-media-var').style.color = varMedia >= 0 ? 'var(--teal)' : '#d32f2f';
-  document.getElementById('kpi-pac-2025').textContent = pac2025.toLocaleString('pt-BR');
-  document.getElementById('kpi-pac-2026').textContent = pac2026.toLocaleString('pt-BR');
+  document.getElementById('kpi-pac-2025').textContent = fmtLocal(pac2025, loc);
+  document.getElementById('kpi-pac-2026').textContent = fmtLocal(pac2026, loc);
   document.getElementById('kpi-pac-var').textContent = (varPac >= 0 ? '▲' : '▼') + ' ' + Math.abs(varPac) + '%';
   document.getElementById('kpi-pac-var').style.color = varPac >= 0 ? 'var(--teal)' : '#d32f2f';
 
@@ -1318,14 +1320,12 @@ function gerarComparativo(exps) {
     Object.entries(e.spec || {}).forEach(([s, c]) => {
       spec2025[s] = (spec2025[s] || 0) + c;
     });
-    // Adicionar Oftalmologia como especialidade
     if(e.oft > 0) spec2025['Oftalmologia'] = (spec2025['Oftalmologia'] || 0) + e.oft;
   });
   exp2026.forEach(e => {
     Object.entries(e.spec || {}).forEach(([s, c]) => {
       spec2026[s] = (spec2026[s] || 0) + c;
     });
-    // Adicionar Oftalmologia como especialidade
     if(e.oft > 0) spec2026['Oftalmologia'] = (spec2026['Oftalmologia'] || 0) + e.oft;
   });
 
@@ -1337,7 +1337,8 @@ function gerarComparativo(exps) {
     const med25 = Math.round(v25 / exp2025.length);
     const med26 = Math.round(v26 / exp2026.length);
     const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
-    htmlSpec += `<tr><td>${s}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+    const sTranslated = trSpec(s);
+    htmlSpec += `<tr><td>${sTranslated}</td><td style="text-align: right;">${fmtLocal(v25, loc)}</td><td style="text-align: right;">${fmtLocal(med25, loc)}</td><td style="text-align: right;">${fmtLocal(v26, loc)}</td><td style="text-align: right;">${fmtLocal(med26, loc)}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
   });
   document.getElementById('table-especialidades').innerHTML = htmlSpec;
 
@@ -1362,16 +1363,17 @@ function gerarComparativo(exps) {
     const med25 = Math.round(v25 / exp2025.length);
     const med26 = Math.round(v26 / exp2026.length);
     const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
-    htmlExam += `<tr><td>${ex}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+    const exTranslated = trExam(ex);
+    htmlExam += `<tr><td>${exTranslated}</td><td style="text-align: right;">${fmtLocal(v25, loc)}</td><td style="text-align: right;">${fmtLocal(med25, loc)}</td><td style="text-align: right;">${fmtLocal(v26, loc)}</td><td style="text-align: right;">${fmtLocal(med26, loc)}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
   });
   document.getElementById('table-exames').innerHTML = htmlExam;
 
-  // TIPOS DE ATENDIMENTO
+  // TIPOS DE ATENDIMENTO - usando i18n
   const tipos = {
-    'Saúde': { 2025: exp2025.reduce((s, e) => s + e.saude, 0), 2026: exp2026.reduce((s, e) => s + e.saude, 0) },
-    'Alimentação': { 2025: exp2025.reduce((s, e) => s + e.alim, 0), 2026: exp2026.reduce((s, e) => s + e.alim, 0) },
-    'Consultas': { 2025: exp2025.reduce((s, e) => s + e.consultas, 0), 2026: exp2026.reduce((s, e) => s + e.consultas, 0) },
-    'Exames': { 2025: exp2025.reduce((s, e) => s + e.exames, 0), 2026: exp2026.reduce((s, e) => s + e.exames, 0) },
+    [t.catEspecialidade || 'Saúde']: { 2025: exp2025.reduce((s, e) => s + e.saude, 0), 2026: exp2026.reduce((s, e) => s + e.saude, 0) },
+    [t.catAlimentacao || 'Alimentação']: { 2025: exp2025.reduce((s, e) => s + e.alim, 0), 2026: exp2026.reduce((s, e) => s + e.alim, 0) },
+    [t.catEspecialidade || 'Consultas']: { 2025: exp2025.reduce((s, e) => s + e.consultas, 0), 2026: exp2026.reduce((s, e) => s + e.consultas, 0) },
+    [t.catExames || 'Exames']: { 2025: exp2025.reduce((s, e) => s + e.exames, 0), 2026: exp2026.reduce((s, e) => s + e.exames, 0) },
   };
 
   let htmlTipos = '';
@@ -1381,7 +1383,7 @@ function gerarComparativo(exps) {
     const med25 = Math.round(v25 / exp2025.length);
     const med26 = Math.round(v26 / exp2026.length);
     const var_ = v25 > 0 ? (((v26 - v25) / v25) * 100).toFixed(1) : '—';
-    htmlTipos += `<tr><td>${tipo}</td><td style="text-align: right;">${v25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med25.toLocaleString('pt-BR')}</td><td style="text-align: right;">${v26.toLocaleString('pt-BR')}</td><td style="text-align: right;">${med26.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
+    htmlTipos += `<tr><td>${tipo}</td><td style="text-align: right;">${fmtLocal(v25, loc)}</td><td style="text-align: right;">${fmtLocal(med25, loc)}</td><td style="text-align: right;">${fmtLocal(v26, loc)}</td><td style="text-align: right;">${fmtLocal(med26, loc)}</td><td style="text-align: right; color: ${var_ >= 0 || var_ === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${var_ === '—' ? '—' : (var_ >= 0 ? '▲' : '▼') + ' ' + Math.abs(var_) + '%'}</td></tr>`;
   });
   document.getElementById('table-atendimentos').innerHTML = htmlTipos;
 
@@ -1390,8 +1392,8 @@ function gerarComparativo(exps) {
   const cirMed2026 = exp2026.reduce((s, e) => s + (e.cirMedia || 0), 0);
   const medCirMed2025 = Math.round(cirMed2025 / exp2025.length);
   const medCirMed2026 = Math.round(cirMed2026 / exp2026.length);
-  const varCirMed = cirMed2025 > 0 ? (((cirMed2026 - cirMed2025) / cirMed2025) * 100).toFixed(1) : '—';
-  const htmlCirMed = `<tr><td>Cirurgias de Média Complexidade</td><td style="text-align: right;">${cirMed2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirMed2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirMed2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirMed2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirMed >= 0 || varCirMed === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirMed === '—' ? '—' : (varCirMed >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirMed) + '%'}</td></tr>`;
+  const varCirMed = cirMed2025 ? (((cirMed2026 - cirMed2025) / cirMed2025) * 100).toFixed(1) : '—';
+  const htmlCirMed = `<tr><td>${t.cirColMedia || 'Cirurgia Média'}</td><td style="text-align: right;">${fmtLocal(cirMed2025, loc)}</td><td style="text-align: right;">${fmtLocal(medCirMed2025, loc)}</td><td style="text-align: right;">${fmtLocal(cirMed2026, loc)}</td><td style="text-align: right;">${fmtLocal(medCirMed2026, loc)}</td><td style="text-align: right; color: ${varCirMed >= 0 || varCirMed === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirMed === '—' ? '—' : (varCirMed >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirMed) + '%'}</td></tr>`;
   document.getElementById('table-cirmedia').innerHTML = htmlCirMed;
 
   // CIRURGIAS PEQUENAS
@@ -1399,8 +1401,8 @@ function gerarComparativo(exps) {
   const cirBax2026 = exp2026.reduce((s, e) => s + (e.cirBaixa || 0), 0);
   const medCirBax2025 = Math.round(cirBax2025 / exp2025.length);
   const medCirBax2026 = Math.round(cirBax2026 / exp2026.length);
-  const varCirBax = cirBax2025 > 0 ? (((cirBax2026 - cirBax2025) / cirBax2025) * 100).toFixed(1) : '—';
-  const htmlCirBax = `<tr><td>Cirurgias de Baixa Complexidade</td><td style="text-align: right;">${cirBax2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirBax2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${cirBax2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medCirBax2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varCirBax >= 0 || varCirBax === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirBax === '—' ? '—' : (varCirBax >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirBax) + '%'}</td></tr>`;
+  const varCirBax = cirBax2025 ? (((cirBax2026 - cirBax2025) / cirBax2025) * 100).toFixed(1) : '—';
+  const htmlCirBax = `<tr><td>${t.cirColBaixa || 'Cirurgia Pequena'}</td><td style="text-align: right;">${fmtLocal(cirBax2025, loc)}</td><td style="text-align: right;">${fmtLocal(medCirBax2025, loc)}</td><td style="text-align: right;">${fmtLocal(cirBax2026, loc)}</td><td style="text-align: right;">${fmtLocal(medCirBax2026, loc)}</td><td style="text-align: right; color: ${varCirBax >= 0 || varCirBax === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varCirBax === '—' ? '—' : (varCirBax >= 0 ? '▲' : '▼') + ' ' + Math.abs(varCirBax) + '%'}</td></tr>`;
   document.getElementById('table-cirbaixa').innerHTML = htmlCirBax;
 
   // FARMÁCIA
@@ -1408,8 +1410,8 @@ function gerarComparativo(exps) {
   const farm2026 = exp2026.reduce((s, e) => s + (e.farm || 0), 0);
   const medFarm2025 = Math.round(farm2025 / exp2025.length);
   const medFarm2026 = Math.round(farm2026 / exp2026.length);
-  const varFarm = farm2025 > 0 ? (((farm2026 - farm2025) / farm2025) * 100).toFixed(1) : '—';
-  const htmlFarm = `<tr><td>Medicamentos/Farmácia</td><td style="text-align: right;">${farm2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medFarm2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${farm2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medFarm2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varFarm >= 0 || varFarm === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varFarm === '—' ? '—' : (varFarm >= 0 ? '▲' : '▼') + ' ' + Math.abs(varFarm) + '%'}</td></tr>`;
+  const varFarm = farm2025 ? (((farm2026 - farm2025) / farm2025) * 100).toFixed(1) : '—';
+  const htmlFarm = `<tr><td>${t.catMedicamento || 'Medicamentos/Farmácia'}</td><td style="text-align: right;">${fmtLocal(farm2025, loc)}</td><td style="text-align: right;">${fmtLocal(medFarm2025, loc)}</td><td style="text-align: right;">${fmtLocal(farm2026, loc)}</td><td style="text-align: right;">${fmtLocal(medFarm2026, loc)}</td><td style="text-align: right; color: ${varFarm >= 0 || varFarm === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varFarm === '—' ? '—' : (varFarm >= 0 ? '▲' : '▼') + ' ' + Math.abs(varFarm) + '%'}</td></tr>`;
   document.getElementById('table-farmacia').innerHTML = htmlFarm;
 
   // ALIMENTAÇÃO
@@ -1417,15 +1419,35 @@ function gerarComparativo(exps) {
   const alim2026 = exp2026.reduce((s, e) => s + (e.alim || 0), 0);
   const medAlim2025 = Math.round(alim2025 / exp2025.length);
   const medAlim2026 = Math.round(alim2026 / exp2026.length);
-  const varAlim = alim2025 > 0 ? (((alim2026 - alim2025) / alim2025) * 100).toFixed(1) : '—';
-  const htmlAlim = `<tr><td>Alimentação</td><td style="text-align: right;">${alim2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medAlim2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${alim2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medAlim2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varAlim >= 0 || varAlim === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varAlim === '—' ? '—' : (varAlim >= 0 ? '▲' : '▼') + ' ' + Math.abs(varAlim) + '%'}</td></tr>`;
+  const varAlim = alim2025 ? (((alim2026 - alim2025) / alim2025) * 100).toFixed(1) : '—';
+  const htmlAlim = `<tr><td>${t.catAlimentacao || 'Alimentação'}</td><td style="text-align: right;">${fmtLocal(alim2025, loc)}</td><td style="text-align: right;">${fmtLocal(medAlim2025, loc)}</td><td style="text-align: right;">${fmtLocal(alim2026, loc)}</td><td style="text-align: right;">${fmtLocal(medAlim2026, loc)}</td><td style="text-align: right; color: ${varAlim >= 0 || varAlim === '—' ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varAlim === '—' ? '—' : (varAlim >= 0 ? '▲' : '▼') + ' ' + Math.abs(varAlim) + '%'}</td></tr>`;
   document.getElementById('table-alimentacao').innerHTML = htmlAlim;
 
   // PACIENTES ÚNICOS
   const medPac2025 = Math.round(pac2025 / exp2025.length);
   const medPac2026 = Math.round(pac2026 / exp2026.length);
-  const htmlPac = `<tr><td>Pacientes Únicos</td><td style="text-align: right;">${pac2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medPac2025.toLocaleString('pt-BR')}</td><td style="text-align: right;">${pac2026.toLocaleString('pt-BR')}</td><td style="text-align: right;">${medPac2026.toLocaleString('pt-BR')}</td><td style="text-align: right; color: ${varPac >= 0 ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varPac >= 0 ? '▲' : '▼'} ${Math.abs(varPac)}%</td></tr>`;
+  const htmlPac = `<tr><td>${t.pacientesL || 'Pacientes Únicos'}</td><td style="text-align: right;">${fmtLocal(pac2025, loc)}</td><td style="text-align: right;">${fmtLocal(medPac2025, loc)}</td><td style="text-align: right;">${fmtLocal(pac2026, loc)}</td><td style="text-align: right;">${fmtLocal(medPac2026, loc)}</td><td style="text-align: right; color: ${varPac >= 0 ? 'var(--teal)' : '#d32f2f'}; font-weight: 500;">${varPac >= 0 ? '▲' : '▼'} ${Math.abs(varPac)}%</td></tr>`;
   document.getElementById('table-pacientes').innerHTML = htmlPac;
+
+  // Atualizar abas do comparativo com i18n
+  updateCompTabsI18n();
+}
+
+// Atualizar labels das abas do comparativo
+function updateCompTabsI18n() {
+  const t = I18N[CUR_LANG];
+  const tabs = document.querySelectorAll('.comp-tab');
+  tabs.forEach(tab => {
+    const onclick = tab.getAttribute('onclick') || '';
+    if (onclick.includes('especialidades')) tab.textContent = t.compTabEspec || 'Especialidades';
+    else if (onclick.includes('exames')) tab.textContent = t.compTabExames || 'Exames';
+    else if (onclick.includes('atendimentos')) tab.textContent = t.compTabAtendimentos || 'Tipos Atendimento';
+    else if (onclick.includes('cirmedia')) tab.textContent = t.compTabCirMed || 'Cirurgias Médias';
+    else if (onclick.includes('cirbaixa')) tab.textContent = t.compTabCirBaixa || 'Cirurgias Pequenas';
+    else if (onclick.includes('farmacia')) tab.textContent = t.compTabFarmacia || 'Farmácia';
+    else if (onclick.includes('alimentacao')) tab.textContent = t.compTabAlimentacao || 'Alimentação';
+    else if (onclick.includes('pacientes')) tab.textContent = t.compTabPacientes || 'Pacientes Únicos';
+  });
 }
 
 function initDashboardApp(){
@@ -1472,7 +1494,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 16:54";
+const GENERATED_AT = "15/11/2026 17:18";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1602,7 +1624,7 @@ const I18N = {
   internEvolTitle:"Evolução de Internações",internEvolSub:"Acompanhamento de internações ao longo das expedições",
   internRankTitle:"Ranking de Municípios por Internações",internRankSub:"Municípios com maior número de internações",
   internColBaixa:"Baixa",internColMedia:"Média",internColTotal:"Total",
-  compTabGeral:"Geral",compTabEspec:"Especialidades",compTabMun:"Municípios",compTabEfic:"Eficiência",
+  compTabGeral:"Geral",compTabEspec:"Especialidades",compTabMun:"Municípios",compTabExames:"Exames",compTabAtendimentos:"Tipos Atendimento",compTabCirMed:"Cirurgias Médias",compTabCirBaixa:"Cirurgias Pequenas",compTabFarmacia:"Farmácia",compTabAlimentacao:"Alimentação",compTabPacientes:"Pacientes Únicos",compTabEfic:"Eficiência",
   compGeralTitle:"Comparação Geral de Atendimentos",compMetricasTitle:"Métricas Principais",
   metricaAno:"Ano",metricaExpedicoes:"Expedições",metricaAtendimentos:"Atendimentos",metricaDias:"Dias Atendimento",metricaMedia:"Média/Expedição",
   compEspecTitle:"Especialidades: Novas e Removidas",compNovas:"✨ Novas em 2026",compRemovidas:"➖ Removidas de 2026",
@@ -1802,7 +1824,7 @@ const I18N = {
   internEvolTitle:"Hospitalizations Evolution",internEvolSub:"Tracking hospitalizations throughout expeditions",
   internRankTitle:"Top Municipalities by Hospitalizations",internRankSub:"Municipalities with highest hospitalization numbers",
   internColBaixa:"Low",internColMedia:"Medium",internColTotal:"Total",
-  compTabGeral:"General",compTabEspec:"Specialties",compTabMun:"Municipalities",compTabEfic:"Efficiency",
+  compTabGeral:"General",compTabEspec:"Specialties",compTabMun:"Municipalities",compTabExames:"Exams",compTabAtendimentos:"Attendance Types",compTabCirMed:"Medium Surgeries",compTabCirBaixa:"Low Complexity Surgeries",compTabFarmacia:"Pharmacy",compTabAlimentacao:"Meals",compTabPacientes:"Unique Patients",compTabEfic:"Efficiency",
   compGeralTitle:"General Attendance Comparison",compMetricasTitle:"Key Metrics",
   metricaAno:"Year",metricaExpedicoes:"Expeditions",metricaAtendimentos:"Attendances",metricaDias:"Attendance Days",metricaMedia:"Avg/Expedition",
   compEspecTitle:"Specialties: New and Removed",compNovas:"✨ New in 2026",compRemovidas:"➖ Removed from 2026",
@@ -4728,6 +4750,35 @@ renderReport();
 chartsInitialized = true;
 
 document.getElementById('langSel').addEventListener('change',e=>{ CUR_LANG = e.target.value; applyI18n(); writeUrlState(); });
+
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+const themeIconSun = document.getElementById('themeIconSun');
+const themeIconMoon = document.getElementById('themeIconMoon');
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  if(theme === 'dark'){
+    themeIconSun.style.display = 'block';
+    themeIconMoon.style.display = 'none';
+  }else{
+    themeIconSun.style.display = 'none';
+    themeIconMoon.style.display = 'block';
+  }
+}
+if(themeToggle){
+  // Check saved theme or system preference
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+  applyTheme(initialTheme);
+
+  themeToggle.addEventListener('click',()=>{
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', newTheme);
+    applyTheme(newTheme);
+  });
+}
 
 } /* end initDashboardApp */
 </script>
