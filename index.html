@@ -370,7 +370,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 23:27</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 23:39</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -931,14 +931,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:27</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:39</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:27</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:39</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1242,7 +1242,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 23:27";
+const GENERATED_AT = "15/11/2026 23:39";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3385,10 +3385,10 @@ function markLoaded(canvasId){ const el=document.getElementById(canvasId); const
 function buildAllCharts(){
   if(!window.HAS_CHART) return;
   const exp = currentExpeditions();
+  const colors = getChartColors();
 
   destroyIfExists(chartArea);
   const ctx3 = document.getElementById('chartArea').getContext('2d');
-  const colors = getChartColors();
   const gradFill = ctx3.createLinearGradient(0,0,0,220);
   gradFill.addColorStop(0,'rgba(184,147,74,0.35)'); gradFill.addColorStop(1,'rgba(184,147,74,0.02)');
   chartArea = new Chart(ctx3,{type:'line',
@@ -3475,10 +3475,10 @@ function buildAllCharts(){
 
   destroyIfExists(chartExamsDonut);
   const ctx6 = document.getElementById('chartExamsDonut').getContext('2d');
-  const colors = getChartColors();
+  const donutColors = getChartColors();
   chartExamsDonut = new Chart(ctx6,{type:'doughnut',
     data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:colors.legendText,boxWidth:10,font:{size:9}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:donutColors.legendText,boxWidth:10,font:{size:9}}}}}
   });
   markLoaded('chartExamsDonut');
 }
