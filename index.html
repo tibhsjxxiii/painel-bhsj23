@@ -26,10 +26,10 @@
   --overlay-bg:rgba(15,42,74,0.45);
   --navy-text:#fff;
 
-  /* Chart theme variables (light) */
+  /* Chart theme variables (light) - Using teal/green for hospital dashboard */
   --chart-axis-text:#14202e;
   --chart-grid-color:rgba(15,42,74,0.05);
-  --chart-line-primary:#0f2a4a;
+  --chart-line-primary:#1a5d50;
   --chart-legend-text:#14202e;
 
   /* Fluid typography scale */
@@ -66,10 +66,10 @@
     --overlay-bg:rgba(0,0,0,0.55);
     --navy-text:var(--bg);
 
-    /* Chart theme variables (dark) - white for bars, text for axes */
+    /* Chart theme variables (dark) - Using teal/green for hospital dashboard */
     --chart-axis-text:#ffffff;
     --chart-grid-color:rgba(255,255,255,0.15);
-    --chart-line-primary:#ffffff;
+    --chart-line-primary:#2ec4b6;
     --chart-legend-text:#ffffff;
   }
 }
@@ -86,10 +86,10 @@
   --focus:var(--gold);
   --danger:#a9564a; --danger-dim:rgba(169,86,74,0.12);
   --overlay-bg:rgba(15,42,74,0.45);
-  /* Chart theme variables (light) */
+  /* Chart theme variables (light) - Using teal/green for hospital dashboard */
   --chart-axis-text:#14202e;
   --chart-grid-color:rgba(15,42,74,0.05);
-  --chart-line-primary:#0f2a4a;
+  --chart-line-primary:#1a5d50;
   --chart-legend-text:#14202e;
 }
 :root[data-theme="dark"]{
@@ -104,12 +104,11 @@
   --danger:#e57c6b; --danger-dim:rgba(229,124,107,0.18);
   --overlay-bg:rgba(0,0,0,0.55);
   --navy-text:var(--bg);
-  /* Chart theme variables (dark) - white for visibility on dark blue */
+  /* Chart theme variables (dark) - Using teal/green for hospital dashboard */
   --chart-axis-text:#ffffff;
   --chart-grid-color:rgba(255,255,255,0.15);
-  --chart-line-primary:#ffffff;
+  --chart-line-primary:#2ec4b6;
   --chart-legend-text:#ffffff;
-  --chart-legend-text:#e8edf3;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -382,7 +381,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 13:00</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 13:18</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -935,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:00</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:18</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:00</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:18</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -964,6 +963,27 @@ async function ensureMapLibre(){
 // Coordenadas aproximadas (lat, lng) dos municípios/comunidades já visitados. Mantida à mão —
 // se um novo município aparecer na planilha e não tiver coordenada aqui, ele simplesmente não
 // aparece no mapa (sem quebrar nada). Manaus é a base do barco.
+/* MapLibre popup dark mode styles */
+.maplibregl-popup-content, .mapboxgl-popup-content {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+}
+.maplibregl-popup-tip, .mapboxgl-popup-tip {
+  border-top-color: var(--panel) !important;
+}
+.maplibregl-popup-close-button, .mapboxgl-popup-close-button {
+  color: var(--text) !important;
+  background: var(--panel-2) !important;
+}
+.maplibregl-popup-close-button:hover, .mapboxgl-popup-close-button:hover {
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+}
+
 const MUN_COORDS = {
   "Manaus": [-3.1019, -60.0250],
   "Alvarães": [-3.2233, -64.8039],
@@ -1246,7 +1266,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 13:00";
+const GENERATED_AT = "16/11/2026 13:18";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2879,11 +2899,11 @@ async function renderNavMap(){
   }
 
   const attachMunMarkers = ()=>{
-    const navyColor = getComputedStyle(document.documentElement).getPropertyValue('--navy').trim() || '#0f2a4a';
+    const tealColor = getComputedStyle(document.documentElement).getPropertyValue('--teal').trim() || '#2ec4b6';
     Object.values(byCoord).forEach(({coord, names, exps})=>{
       const uniqueNames = [...new Set(names)];
       const label = uniqueNames.join(' / ');
-      const marker = addMarker(coord, popupHtml(label, exps), navyColor, 13);
+      const marker = addMarker(coord, popupHtml(label, exps), tealColor, 13);
       mapMarkers.push(marker);
     });
   };
@@ -2941,17 +2961,12 @@ function renderNavegacao(){
   destroyIfExists(chartNav);
   if(window.HAS_CHART && document.getElementById('chartNav')){
     const colors = getChartColors();
-    // Use theme-adaptive bar colors
-    const barColors = {
-      ida: colors.linePrimary,
-      volta: colors.linePrimary === '#ffffff' ? '#ffffff' : '#b8934a'  // white in dark, gold in light
-    };
     const ctx = document.getElementById('chartNav').getContext('2d');
     chartNav = new Chart(ctx,{type:'bar',
       data:{labels:withValidNav.map(({e})=>`${e.mun} #${e.n}`),
         datasets:[
-          {label:t.navColIda, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:barColors.ida, borderRadius:4, maxBarThickness:16},
-          {label:t.navColVolta, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:barColors.volta, borderRadius:4, maxBarThickness:16}
+          {label:t.navColIda, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:colors.linePrimary, borderRadius:4, maxBarThickness:16},
+          {label:t.navColVolta, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:colors.linePrimary === '#ffffff' ? '#2ec4b6' : '#1a5d50', borderRadius:4, maxBarThickness:16}
         ]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10},color:colors.legendText}}},
         scales:{x:{ticks:{font:{size:8},color:colors.axisText,maxRotation:60,minRotation:60},grid:{display:false}},y:{title:{display:true,text:'h',font:{size:9},color:colors.axisText},grid:{color:colors.gridColor}}}}
