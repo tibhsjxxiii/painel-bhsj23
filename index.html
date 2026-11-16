@@ -382,7 +382,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 12:28</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 13:00</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -935,14 +935,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 12:28</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:00</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 12:28</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:00</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1246,7 +1246,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 12:28";
+const GENERATED_AT = "16/11/2026 13:00";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3136,41 +3136,41 @@ function openExpeditionModal(exp){
   overlay.id = 'expModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);border:1px solid var(--line);">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <div>
-          <div class="serif" style="font-size:1.25rem;font-weight:600;color:var(--navy);">${exp.mun}</div>
+          <div class="serif" style="font-size:1.25rem;font-weight:600;color:var(--text);">${exp.mun}</div>
           <div style="color:var(--muted);font-size:0.82rem;">${exp.year} · Expedição ${exp.n}${exp.data? ' · '+exp.data : ''}</div>
         </div>
         <button id="expModalClose" style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--muted);">✕</button>
       </div>
       <div style="display:flex;gap:10px;margin:16px 0;">
         <div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--gold);">
-          <div class="serif" style="font-size:1.3rem;font-weight:600;color:var(--navy);">${fmt(exp.geral)}</div>
+          <div class="serif" style="font-size:1.3rem;font-weight:600;color:var(--text);">${fmt(exp.geral)}</div>
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">${t.bigGeralL}</div>
         </div>
         <div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--teal);">
-          <div class="serif" style="font-size:1.3rem;font-weight:600;color:var(--navy);">${fmt(exp.saude)}</div>
+          <div class="serif" style="font-size:1.3rem;font-weight:600;color:var(--text);">${fmt(exp.saude)}</div>
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">${t.bigSaudeL}</div>
         </div>
       </div>
       ${dias || exp.diasAtendimento ? `<div style="display:flex;gap:10px;margin:0 0 16px 0;">
         ${dias ? `<div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--navy);">
-          <div class="serif" style="font-size:1rem;font-weight:600;color:var(--navy);">${dias}</div>
+          <div class="serif" style="font-size:1rem;font-weight:600;color:var(--text);">${dias}</div>
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">Dias de Viagem</div>
         </div>` : ''}
         ${exp.diasAtendimento ? `<div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--danger);">
-          <div class="serif" style="font-size:1rem;font-weight:600;color:var(--navy);">${fmt(exp.diasAtendimento)}</div>
+          <div class="serif" style="font-size:1rem;font-weight:600;color:var(--text);">${fmt(exp.diasAtendimento)}</div>
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">Dias de Atendimento</div>
         </div>` : ''}
       </div>` : ''}
-      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:14px 0 6px;">${t.bigGeralL}</div>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--text);margin:14px 0 6px;">${t.bigGeralL}</div>
       <table style="width:100%;font-size:0.85rem;">${rows}</table>
-      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.procMiniTitle}</div>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--text);margin:16px 0 6px;">${t.procMiniTitle}</div>
       <table style="width:100%;font-size:0.85rem;">${detailRows}</table>
-      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.specTitle}</div>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--text);margin:16px 0 6px;">${t.specTitle}</div>
       <table style="width:100%;font-size:0.85rem;">${specRows}</table>
-      <div style="font-weight:600;font-size:0.85rem;color:var(--navy);margin:16px 0 6px;">${t.examTitle}</div>
+      <div style="font-weight:600;font-size:0.85rem;color:var(--text);margin:16px 0 6px;">${t.examTitle}</div>
       <table style="width:100%;font-size:0.85rem;">${examRows}</table>
       <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;">
         <button id="expModalExportPdfBtn" class="report-btn" style="display:flex;align-items:center;gap:7px;">
@@ -3271,7 +3271,7 @@ function openLastExpeditionModal(){
   overlay.id = 'lastExpModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);border:1px solid var(--line);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
@@ -3344,7 +3344,7 @@ function openExpeditionReportModal(expIndex){
   overlay.id = 'expReportModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);border:1px solid var(--line);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
@@ -4389,7 +4389,7 @@ function openMunicipalModal(munName){
   overlay.id = 'munModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);border:1px solid var(--line);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
