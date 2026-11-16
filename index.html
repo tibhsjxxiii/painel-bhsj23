@@ -381,7 +381,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 00:22</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 00:25</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -934,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:22</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:25</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:22</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:25</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1245,7 +1245,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 00:22";
+const GENERATED_AT = "16/11/2026 00:25";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1836,6 +1836,9 @@ const I18N = {
   aiSrcLocalFallback:"Lokale Engine — Online-KI fehlgeschlagen",
   dqTitle:"Hinweis zur Datenqualität —",dqBody:"Jede Zahl in diesem Dashboard wurde Zeile für Zeile, Spalte für Spalte direkt aus der offiziellen Tabelle extrahiert — ohne manuelle Übertragung.",
   prodTitle:"Aktualisierung nach jeder Expedition —",prodBody:"Führen Sie gerar_dashboard.py mit der aktualisierten .ods-Tabelle aus. Das Skript erkennt automatisch jedes Jahres-Tab (2025, 2026, 2027...), berechnet alles neu und erstellt ein neues dashboard.html, bereit zur Veröffentlichung.",
+  compTotalAtend:"Gesamtbehandlungen",compMediaExp:"Ø pro Expedition",compPacUnicos:"Einzelpatienten",compDiasAtend:"Gesamte Servicetage",compPorExp:"pro Expedition",compPessoas:"Personen",compDias:"Tage",
+  compTabEspecialidades:"Fachrichtungen",compTabExames:"Untersuchungen",compTabAtendimentos:"Behandlungsarten",compTabCirmedia:"Mittlere OPs",compTabCirbaixa:"Kleine OPs",compTabFarmacia:"Apotheke",compTabAlimentacao:"Mahlzeiten",compTabPacientes:"Einzelpatienten",
+  compEspecTitle:"Fachrichtungen: Neu und Entfernt",compNovas:"✨ Neu in 2026",compRemovidas:"➖ Entfernt 2026",
   chips:["Durchschnitt chirurgische Beratungen","Welche Fachrichtung hatte die meisten Konsultationen?","Welche Untersuchung wird am häufigsten durchgeführt?","Vergleiche die Jahre"],
   top10Title:"Top 10 Gemeinden · Gesamtbehandlungen",
   top10Sub:"Die 10 Gemeinden mit dem höchsten Gesamtvolumen im gewählten Zeitraum",
@@ -2019,6 +2022,9 @@ const I18N = {
   aiSrcLocalFallback:"Motor local — la IA en línea falló",
   dqTitle:"Nota de calidad de datos —",dqBody:"Cada cifra de este panel fue extraída fila por fila, columna por columna, directamente de la planilla oficial mediante lectura programática — sin transcripción manual.",
   prodTitle:"Cómo actualizar después de cada expedición —",prodBody:"Ejecute gerar_dashboard.py apuntando a la planilla .ods actualizada. El script detecta automáticamente cada pestaña de año (2025, 2026, 2027...), recalcula todo y genera un nuevo dashboard.html listo para publicar.",
+  compTotalAtend:"Total de Atenciones",compMediaExp:"Promedio por Expedición",compPacUnicos:"Pacientes Únicos",compDiasAtend:"Total Días de Atención",compPorExp:"por expedición",compPessoas:"personas",compDias:"días",
+  compTabEspecialidades:"Especialidades",compTabExames:"Exámenes",compTabAtendimentos:"Tipos de Atención",compTabCirmedia:"Cirugías Medianas",compTabCirbaixa:"Cirugías Pequeñas",compTabFarmacia:"Farmacia",compTabAlimentacao:"Alimentación",compTabPacientes:"Pacientes Únicos",
+  compEspecTitle:"Especialidades: Nuevas y Eliminadas",compNovas:"✨ Nuevas en 2026",compRemovidas:"➖ Eliminadas 2026",
   chips:["Promedio de consultas quirúrgicas","¿Qué especialidad tuvo más consultas?","¿Cuál es el examen más realizado?","Compara los años"],
   top10Title:"Top 10 Municipios · Atención General",
   top10Sub:"Los 10 municipios con mayor volumen total en el período seleccionado",
@@ -2196,6 +2202,9 @@ const I18N = {
   aiPlaceholder:"Например: Какое среднее количество хирургических консультаций?",aiAskBtn:"Спросить",
   dqTitle:"Примечание о качестве данных —",dqBody:"Каждая цифра в этой панели была извлечена построчно, столбец за столбцом непосредственно из официальной таблицы посредством программного считывания — без ручного переписывания.",
   prodTitle:"Как обновлять после каждой экспедиции —",prodBody:"Запустите gerar_dashboard.py, указав на обновленную таблицу .ods. Скрипт автоматически обнаруживает каждую вкладку года (2025, 2026, 2027...), пересчитывает все и создает новый файл dashboard.html, готовый к публикации. Редактирование кода не требуется.",
+  compTotalAtend:"Всего услуг",compMediaExp:"Среднее/Экспедиция",compPacUnicos:"Уникальные пациенты",compDiasAtend:"Всего дней обслуживания",compPorExp:"на экспедицию",compPessoas:"человек",compDias:"дней",
+  compTabEspecialidades:"Специальности",compTabExames:"Обследования",compTabAtendimentos:"Типы приема",compTabCirmedia:"Операции средней",compTabCirbaixa:"Операции малые",compTabFarmacia:"Аптека",compTabAlimentacao:"Питание",compTabPacientes:"Уникальные пациенты",
+  compEspecTitle:"Специальности: Новые и Удаленные",compNovas:"✨ Новые в 2026",compRemovidas:"➖ Удалены 2026",
   chips:["Среднее хирургических консультаций","Какая специальность имела больше всего консультаций?","Какое обследование проводится чаще всего?","Сравнить годы"],
   top10Title:"Топ-10 городов · Общее обслуживание",
   top10Sub:"10 городов с наибольшим объемом услуг в выбранном периоде",
@@ -2301,6 +2310,9 @@ const I18N = {
   aiSrcLocalFallback:"Локальный движок — онлайн-ИИ не сработал",
   dqTitle:"Примечание о качестве данных —",dqBody:"Каждая цифра в этой панели была извлечена построчно и по столбцам напрямую из официальной таблицы путём программного чтения — без ручного переноса.",
   prodTitle:"Как обновлять после каждой экспедиции —",prodBody:"Запустите gerar_dashboard.py, указав обновлённую таблицу .ods. Скрипт автоматически определяет каждую годовую вкладку (2025, 2026, 2027...), пересчитывает всё и создаёт новый dashboard.html, готовый к публикации. Редактировать код не нужно.",
+  compTotalAtend:"Общий приём",compMediaExp:"В среднем/экспедиция",compPacUnicos:"Уникальные пациенты",compDiasAtend:"Всего дней обслуживания",compPorExp:"на экспедицию",compPessoas:"человек",compDias:"дней",
+  compTabEspecialidades:"Специальности",compTabExames:"Обследования",compTabAtendimentos:"Типы приёма",compTabCirmedia:"Операции средней",compTabCirbaixa:"Операции малые",compTabFarmacia:"Аптека",compTabAlimentacao:"Питание",compTabPacientes:"Уникальные пациенты",
+  compEspecTitle:"Специальности: Новые и Удаленные",compNovas:"✨ Новые в 2026",compRemovidas:"➖ Удалены 2026",
   chips:["Средний показатель хирургических консультаций","Какая специальность имела больше всего приёмов?","Какое обследование проводится чаще всего?","Сравнить годы"],
   top10Title:"Топ-10 муниципалитетов · Общий приём",
   top10Sub:"10 муниципалитетов с наибольшим общим объёмом за выбранный период",
