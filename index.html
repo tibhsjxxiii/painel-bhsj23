@@ -23,6 +23,13 @@
   --shadow-lg:0 12px 32px rgba(15,42,74,0.18);
   --focus:var(--gold);
   --danger:#a9564a; --danger-dim:rgba(169,86,74,0.12);
+  --overlay-bg:rgba(15,42,74,0.45);
+
+  /* Chart theme variables (light) */
+  --chart-axis-text:#14202e;
+  --chart-grid-color:rgba(15,42,74,0.05);
+  --chart-line-primary:#0f2a4a;
+  --chart-legend-text:#14202e;
 
   /* Fluid typography scale */
   --fs-xs:clamp(0.65rem,0.6rem+0.25vw,0.75rem);
@@ -55,6 +62,13 @@
     --shadow-lg:0 12px 32px rgba(0,0,0,0.45);
     --focus:var(--gold);
     --danger:#e57c6b; --danger-dim:rgba(229,124,107,0.18);
+    --overlay-bg:rgba(0,0,0,0.55);
+
+    /* Chart theme variables (dark) */
+    --chart-axis-text:#e8edf3;
+    --chart-grid-color:rgba(255,255,255,0.08);
+    --chart-line-primary:#e8edf3;
+    --chart-legend-text:#e8edf3;
   }
 }
 
@@ -69,6 +83,12 @@
   --shadow-lg:0 12px 32px rgba(15,42,74,0.18);
   --focus:var(--gold);
   --danger:#a9564a; --danger-dim:rgba(169,86,74,0.12);
+  --overlay-bg:rgba(15,42,74,0.45);
+  /* Chart theme variables (light) */
+  --chart-axis-text:#14202e;
+  --chart-grid-color:rgba(15,42,74,0.05);
+  --chart-line-primary:#0f2a4a;
+  --chart-legend-text:#14202e;
 }
 :root[data-theme="dark"]{
   --bg:#0b1a2e; --panel:#11243d; --panel-2:#0f1f38;
@@ -80,6 +100,13 @@
   --shadow-lg:0 12px 32px rgba(0,0,0,0.45);
   --focus:var(--gold);
   --danger:#e57c6b; --danger-dim:rgba(229,124,107,0.18);
+  --overlay-bg:rgba(0,0,0,0.55);
+  --danger:#e57c6b; --danger-dim:rgba(229,124,107,0.18);
+  /* Chart theme variables (dark) */
+  --chart-axis-text:#e8edf3;
+  --chart-grid-color:rgba(255,255,255,0.08);
+  --chart-line-primary:#e8edf3;
+  --chart-legend-text:#e8edf3;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -173,16 +200,27 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
   .topbar h1{font-size:1.3rem;}
   .main{padding:12px 12px 16px;}
 }
-.sidebar{width:120px;background:var(--navy);display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
-.sidebar-logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(155deg,var(--gold),#8a6c34);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(184,147,74,0.35);margin-bottom:30px;}
-.nav-item{width:100px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;color:rgba(255,255,255,0.6);cursor:pointer;border-radius:10px;margin-bottom:6px;transition:all .18s;background:none;border:none;font-family:inherit;}
+.sidebar{width:120px;background:var(--sidebar-bg, var(--navy));display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.sidebar-logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(155deg,var(--gold),var(--gold-dim));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px var(--gold-dim);margin-bottom:30px;}
+.nav-item{width:100px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;color:var(--sidebar-text-muted, rgba(255,255,255,0.6));cursor:pointer;border-radius:10px;margin-bottom:6px;transition:all .18s;background:none;border:none;font-family:inherit;}
 .nav-item:focus-visible,.info-icon:focus-visible,.year-select button:focus-visible,#langSel:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-.nav-item svg{width:24px;height:24px;}
+.nav-item svg{width:24px;height:24px;stroke:currentColor;}
 .nav-item span{font-size:0.7rem;letter-spacing:0.02em;text-align:center;line-height:1.3;font-weight:500;}
-.nav-item:hover{color:#fff;background:rgba(255,255,255,0.06);}
-.nav-item.active{color:var(--gold);background:rgba(184,147,74,0.14);}
+.nav-item:hover{color:var(--sidebar-text-hover, #fff);background:var(--sidebar-hover-bg, rgba(255,255,255,0.06));}
+.nav-item.active{color:var(--gold);background:var(--gold-dim);}
 .sidebar-spacer{flex:1;}
 .sidebar-live{width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;margin-bottom:12px;}
+
+/* Dark mode sidebar overrides */
+:root[data-theme="dark"] .sidebar,
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .sidebar {
+    --sidebar-bg: var(--panel);
+    --sidebar-text-muted: var(--muted);
+    --sidebar-text-hover: var(--text);
+    --sidebar-hover-bg: rgba(255,255,255,0.08);
+  }
+}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
 /* MODO EXECUTIVO - Versão simplificada */
@@ -238,7 +276,7 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .bignum-row{display:flex;gap:8px;}
 .delta{font-size:0.72rem;font-weight:700;margin-top:3px;display:flex;align-items:center;gap:3px;}
 .delta.up{color:var(--teal);}
-.delta.down{color:#a9564a;}
+.delta.down{color:var(--danger);}
 .bignum{flex:1;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px 12px;border-top:3px solid var(--gold);}
 .bignum .v{font-family:'Fraunces';font-size:1.25rem;font-weight:600;color:var(--navy);line-height:1.2;}
 .bignum .l{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.03em;margin-top:4px;font-weight:500;}
@@ -315,7 +353,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
   <aside class="sidebar">
-    <div class="sidebar-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z" stroke="#0f2a4a" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 12V6H15L18 12" stroke="#0f2a4a" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 6V3" stroke="#0f2a4a" stroke-width="1.7"/></svg></div>
+    <div class="sidebar-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M6 12V6H15L18 12" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 6V3" stroke="currentColor" stroke-width="1.7"/></svg></div>
     <button class="nav-item active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="11" width="8" height="10" rx="1.5"/><rect x="3" y="14" width="8" height="7" rx="1.5"/></svg><span data-i18n="navDash">Painel</span></button>
     <button class="nav-item" data-view="specialties"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v7a6 6 0 0012 0V4"/><path d="M9 4V2M15 4V2"/><circle cx="18" cy="15" r="3"/></svg><span data-i18n="navSpec">Especialidades</span></button>
     <button class="nav-item" data-view="exams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2v6L4 19a2 2 0 002 3h12a2 2 0 002-3l-5-11V2"/><path d="M9 2h6"/></svg><span data-i18n="navExam">Exames</span></button>
@@ -335,7 +373,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 18:49</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 23:07</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -896,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 18:49</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:07</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 18:49</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:07</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1207,7 +1245,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 18:49";
+const GENERATED_AT = "15/11/2026 23:07";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2810,7 +2848,7 @@ async function renderNavMap(){
     });
     mapInstance.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'top-right');
     mapInstance.on('load', ()=>{
-      addMarker(MUN_COORDS["Manaus"], '<strong>Manaus</strong><br>Base do Barco Hospital', '#b8934a', 16);
+      addMarker(MUN_COORDS["Manaus"], '<strong>Manaus</strong><br>Base do Barco Hospital', getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#b8934a', 16);
     });
   } else {
     mapMarkers.forEach(m=>m.remove());
@@ -2818,10 +2856,11 @@ async function renderNavMap(){
   }
 
   const attachMunMarkers = ()=>{
+    const navyColor = getComputedStyle(document.documentElement).getPropertyValue('--navy').trim() || '#0f2a4a';
     Object.values(byCoord).forEach(({coord, names, exps})=>{
       const uniqueNames = [...new Set(names)];
       const label = uniqueNames.join(' / ');
-      const marker = addMarker(coord, popupHtml(label, exps), '#0f2a4a', 13);
+      const marker = addMarker(coord, popupHtml(label, exps), navyColor, 13);
       mapMarkers.push(marker);
     });
   };
@@ -2878,15 +2917,16 @@ function renderNavegacao(){
   // chart
   destroyIfExists(chartNav);
   if(window.HAS_CHART && document.getElementById('chartNav')){
+    const colors = getChartColors();
     const ctx = document.getElementById('chartNav').getContext('2d');
     chartNav = new Chart(ctx,{type:'bar',
       data:{labels:withValidNav.map(({e})=>`${e.mun} #${e.n}`),
         datasets:[
-          {label:t.navColIda, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:'#0f2a4a', borderRadius:4, maxBarThickness:16},
+          {label:t.navColIda, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:colors.linePrimary, borderRadius:4, maxBarThickness:16},
           {label:t.navColVolta, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:'#b8934a', borderRadius:4, maxBarThickness:16}
         ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}}},
-        scales:{x:{ticks:{font:{size:8},maxRotation:60,minRotation:60},grid:{display:false}},y:{title:{display:true,text:'h',font:{size:9}},grid:{color:'rgba(15,42,74,0.05)'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10},color:colors.legendText}}},
+        scales:{x:{ticks:{font:{size:8},color:colors.axisText,maxRotation:60,minRotation:60},grid:{display:false}},y:{title:{display:true,text:'h',font:{size:9},color:colors.axisText},grid:{color:colors.gridColor}}}}
     });
     markLoaded('chartNav');
   }
@@ -3066,7 +3106,7 @@ function openExpeditionModal(exp){
   const dias = parseExpDurationDays(exp.data);
   const overlay = document.createElement('div');
   overlay.id = 'expModalOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
     <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
@@ -3091,7 +3131,7 @@ function openExpeditionModal(exp){
           <div class="serif" style="font-size:1rem;font-weight:600;color:var(--navy);">${dias}</div>
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">Dias de Viagem</div>
         </div>` : ''}
-        ${exp.diasAtendimento ? `<div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid #a9564a;">
+        ${exp.diasAtendimento ? `<div style="flex:1;background:var(--panel-2);border-radius:10px;padding:12px;border-top:3px solid var(--danger);">
           <div class="serif" style="font-size:1rem;font-weight:600;color:var(--navy);">${fmt(exp.diasAtendimento)}</div>
           <div style="font-size:0.66rem;color:var(--muted);text-transform:uppercase;">Dias de Atendimento</div>
         </div>` : ''}
@@ -3126,18 +3166,29 @@ let EXAM_AVG_MODE = 'geral';
 /* ================= tipo de gráfico selecionável (barra / linha / pizza) ================= */
 const CHART_TYPE_STATE = { specialties:'bar', examsBar:'bar', top10:'bar', cirTop10:'bar', breakdown:'bar' };
 const PIE_PALETTE = ['#0f2a4a','#b8934a','#0e8f6f','#a9564a','#7a5ea8','#3f7fa6','#e0917f','#2f6d4e','#8bd450','#d9c07e','#4f9e78','#173a63'];
+function getChartColors(){
+  // Read CSS variables from document root
+  const root = document.documentElement;
+  return {
+    axisText: getComputedStyle(root).getPropertyValue('--chart-axis-text').trim() || '#14202e',
+    gridColor: getComputedStyle(root).getPropertyValue('--chart-grid-color').trim() || 'rgba(15,42,74,0.05)',
+    linePrimary: getComputedStyle(root).getPropertyValue('--chart-line-primary').trim() || '#0f2a4a',
+    legendText: getComputedStyle(root).getPropertyValue('--chart-legend-text').trim() || '#14202e'
+  };
+}
 function buildTypedChart(ctx, type, labels, data, color, opts={}){
+  const colors = getChartColors();
   if(type==='pie'){
     return new Chart(ctx,{type:'doughnut',
       data:{labels, datasets:[{data, backgroundColor:labels.map((_,i)=>PIE_PALETTE[i%PIE_PALETTE.length]), borderWidth:2, borderColor:'#ffffff'}]},
-      options:{responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
+      options:{responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:colors.legendText,boxWidth:10,font:{size:9}}}}}
     });
   }
   if(type==='line'){
     return new Chart(ctx,{type:'line',
-      data:{labels, datasets:[{data, borderColor:opts.lineColor||'#0f2a4a', backgroundColor:opts.lineColor||'#0f2a4a', tension:0.3, pointRadius:3, fill:false}]},
+      data:{labels, datasets:[{data, borderColor:opts.lineColor||colors.linePrimary, backgroundColor:opts.lineColor||colors.linePrimary, tension:0.3, pointRadius:3, fill:false}]},
       options:{responsive:true,maintainAspectRatio:false, plugins:{legend:{display:false}},
-        scales:{x:{ticks:{font:{size:9},color:'#14202e',maxRotation:opts.maxRotation!==undefined?opts.maxRotation:30},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+        scales:{x:{ticks:{font:{size:9},color:colors.axisText,maxRotation:opts.maxRotation!==undefined?opts.maxRotation:30},grid:{display:false}},y:{grid:{color:colors.gridColor}}}}
     });
   }
   const isHorizontal = opts.indexAxis==='y';
@@ -3146,8 +3197,8 @@ function buildTypedChart(ctx, type, labels, data, color, opts={}){
     options:{indexAxis:opts.indexAxis||'x', responsive:true, maintainAspectRatio:false, layout:opts.layout||{},
       plugins:{legend:{display:false}},
       scales:isHorizontal
-        ? {x:{grid:{color:'rgba(15,42,74,0.05)'},ticks:{display:!!opts.showXTicks}},y:{grid:{display:false},ticks:{font:{size:opts.yFontSize||11},color:'#14202e'}}}
-        : {x:{ticks:{font:{size:9},color:'#14202e',maxRotation:opts.maxRotation!==undefined?opts.maxRotation:0},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}},
+        ? {x:{grid:{color:colors.gridColor},ticks:{display:!!opts.showXTicks}},y:{grid:{display:false},ticks:{font:{size:opts.yFontSize||11},color:colors.axisText}}}
+        : {x:{ticks:{font:{size:9},color:colors.axisText,maxRotation:opts.maxRotation!==undefined?opts.maxRotation:0},grid:{display:false}},y:{grid:{color:colors.gridColor}}}},
     plugins: opts.valueLabel ? [valueLabelPlugin] : []
   });
 }
@@ -3190,7 +3241,7 @@ function openLastExpeditionModal(){
     </div>`).join('');
   const overlay = document.createElement('div');
   overlay.id = 'lastExpModalOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
     <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
@@ -3263,7 +3314,7 @@ function openExpeditionReportModal(expIndex){
 
   const overlay = document.createElement('div');
   overlay.id = 'expReportModalOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
     <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
@@ -3325,7 +3376,12 @@ const valueLabelPlugin = {
     });
   }
 };
-if(window.HAS_CHART){ Chart.defaults.color='#6b7688'; Chart.defaults.font.family="'Inter',sans-serif"; Chart.defaults.borderColor='rgba(15,42,74,0.06)'; }
+if(window.HAS_CHART){
+  const root = document.documentElement;
+  Chart.defaults.color = getComputedStyle(root).getPropertyValue('--muted-2').trim() || '#6b7688';
+  Chart.defaults.font.family = "'Inter',sans-serif";
+  Chart.defaults.borderColor = getComputedStyle(root).getPropertyValue('--chart-grid-color').trim() || 'rgba(15,42,74,0.06)';
+}
 function destroyIfExists(c){ if(c) c.destroy(); }
 function markLoaded(canvasId){ const el=document.getElementById(canvasId); const wrap = el && el.closest('.chart-wrap'); if(wrap) wrap.classList.add('loaded'); }
 
@@ -3335,17 +3391,18 @@ function buildAllCharts(){
 
   destroyIfExists(chartArea);
   const ctx3 = document.getElementById('chartArea').getContext('2d');
+  const colors = getChartColors();
   const gradFill = ctx3.createLinearGradient(0,0,0,220);
   gradFill.addColorStop(0,'rgba(184,147,74,0.35)'); gradFill.addColorStop(1,'rgba(184,147,74,0.02)');
   chartArea = new Chart(ctx3,{type:'line',
     data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.n),
-      datasets:[{data:exp.map(x=>x.geral),borderColor:'#0f2a4a',backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:'#b8934a'}]},
+      datasets:[{data:exp.map(x=>x.geral),borderColor:colors.linePrimary,backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:'#b8934a'}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{
         title:(items)=> exp[items[0].dataIndex] ? exp[items[0].dataIndex].mun : '',
         label:(item)=> fmt(item.raw)
       }}},
-      scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+      scales:{x:{ticks:{font:{size:8},color:colors.axisText},grid:{display:false}},y:{grid:{color:colors.gridColor}}}}
   });
   markLoaded('chartArea');
 
@@ -3361,10 +3418,10 @@ function buildAllCharts(){
           {label:t.catInternacao, data:exp.map(x=>x.internClinCir||0), borderColor:'#2f6d4e', backgroundColor:'#2f6d4e', tension:0.3, pointRadius:2}
         ]},
       options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{
+        plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10},color:colors.legendText}},tooltip:{callbacks:{
           title:(items)=> exp[items[0].dataIndex] ? exp[items[0].dataIndex].mun : ''
         }}},
-        scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+        scales:{x:{ticks:{font:{size:8},color:colors.axisText},grid:{display:false}},y:{grid:{color:colors.gridColor}}}}
     });
     markLoaded('chartCirEvol');
   }
@@ -3376,7 +3433,7 @@ function buildAllCharts(){
     chartExamsMini = new Chart(ctxEM,{type:'bar',
       data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderRadius:5,maxBarThickness:26}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{ticks:{font:{size:8},color:'#14202e',maxRotation:30,minRotation:0},grid:{display:false}},y:{grid:{color:'rgba(15,42,74,0.05)'}}}}
+        scales:{x:{ticks:{font:{size:8},color:colors.axisText,maxRotation:30,minRotation:0},grid:{display:false}},y:{grid:{color:colors.gridColor}}}}
     });
     markLoaded('chartExamsMini');
   }
@@ -3421,9 +3478,10 @@ function buildAllCharts(){
 
   destroyIfExists(chartExamsDonut);
   const ctx6 = document.getElementById('chartExamsDonut').getContext('2d');
+  const colors = getChartColors();
   chartExamsDonut = new Chart(ctx6,{type:'doughnut',
     data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#14202e',boxWidth:10,font:{size:9}}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:colors.legendText,boxWidth:10,font:{size:9}}}}}
   });
   markLoaded('chartExamsDonut');
 }
@@ -3503,6 +3561,7 @@ const EXAM_AVG_COLORS = ["#b8934a","#173a63","#0e8f6f","#7a5ea8","#a9564a","#3f7
 function buildExamAvgChart(){
   if(!window.HAS_CHART || !document.getElementById('chartExamAvg')) return;
   destroyIfExists(chartExamAvg);
+  const colors = getChartColors();
   const ctx = document.getElementById('chartExamAvg').getContext('2d');
   const labels = EXAM_AVG_TYPES.map(trExam);
   const avgTooltip = { callbacks:{ label:(item)=> `${item.dataset.label ? item.dataset.label+': ' : ''}${fmtAvg(item.parsed.y!==undefined?item.parsed.y:item.parsed)}` } };
@@ -3518,8 +3577,8 @@ function buildExamAvgChart(){
     });
     chartExamAvg = new Chart(ctx,{type:'bar',
       data:{labels, datasets},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},tooltip:avgTooltip},
-        scales:{x:{ticks:{font:{size:9},color:'#14202e',maxRotation:20},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:'rgba(15,42,74,0.05)'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10},color:colors.legendText}},tooltip:avgTooltip},
+        scales:{x:{ticks:{font:{size:9},color:colors.axisText,maxRotation:20},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:colors.gridColor}}}}
     });
   } else if(EXAM_AVG_MODE === 'mes'){
     const months = monthLabels();
@@ -3535,8 +3594,8 @@ function buildExamAvgChart(){
     }));
     chartExamAvg = new Chart(ctx,{type:'line',
       data:{labels:months, datasets},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:9}}},tooltip:avgTooltip},
-        scales:{x:{ticks:{font:{size:9}},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:'rgba(15,42,74,0.05)'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:9},color:colors.legendText}},tooltip:avgTooltip},
+        scales:{x:{ticks:{font:{size:9},color:colors.axisText},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:colors.gridColor}}}}
     });
   } else {
     const exp = currentExpeditions();
@@ -3545,7 +3604,7 @@ function buildExamAvgChart(){
     chartExamAvg = new Chart(ctx,{type:'bar',
       data:{labels, datasets:[{data, backgroundColor:EXAM_AVG_COLORS, borderRadius:5, maxBarThickness:34}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:avgTooltip},
-        scales:{x:{ticks:{font:{size:9},color:'#14202e'},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:'rgba(15,42,74,0.05)'}}}}
+        scales:{x:{ticks:{font:{size:9},color:colors.axisText},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:colors.gridColor}}}}
     });
   }
   markLoaded('chartExamAvg');
@@ -3843,7 +3902,7 @@ async function askAI(){
       badgeEl.style.color = 'var(--muted)';
       badgeEl.textContent = '● ' + t.aiSrcLocalNoProxy;
     } else {
-      badgeEl.style.color = '#a9564a';
+      badgeEl.style.color = 'var(--danger)';
       badgeEl.textContent = '● ' + t.aiSrcLocalFallback + (detail ? ` (${detail})` : '');
     }
   }
@@ -4289,7 +4348,7 @@ function openMunicipalModal(munName){
     </div>`).join('');
   const overlay = document.createElement('div');
   overlay.id = 'munModalOverlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(15,42,74,0.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
     <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
@@ -4477,6 +4536,15 @@ function applyTheme(theme){
     themeIconSun.style.display = 'none';
     themeIconMoon.style.display = 'block';
   }
+  // Update Chart.js defaults for new theme
+  if(window.HAS_CHART){
+    const root = document.documentElement;
+    Chart.defaults.color = getComputedStyle(root).getPropertyValue('--muted-2').trim() || '#6b7688';
+    Chart.defaults.borderColor = getComputedStyle(root).getPropertyValue('--chart-grid-color').trim() || 'rgba(15,42,74,0.06)';
+  }
+  // Rebuild charts when theme changes (functions are in same scope)
+  buildAllCharts();
+  renderNavMap();
 }
 if(themeToggle){
   // Check saved theme or system preference
@@ -4492,6 +4560,13 @@ if(themeToggle){
     applyTheme(newTheme);
   });
 }
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+  if(!localStorage.getItem('theme')){
+    applyTheme(e.matches ? 'dark' : 'light');
+  }
+});
 
 } /* end initDashboardApp */
 </script>
