@@ -119,10 +119,9 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 
 .app-shell{display:flex;min-height:100vh;}
 footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted-2);font-size:0.7rem;text-align:center;}
-.report-btn{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;font-family:'Inter';font-size:0.85rem;transition:background .15s;}
+.report-btn{background:var(--navy);color:var(--navy-text);border:none;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;font-family:'Inter';font-size:0.85rem;transition:background .15s;}
 .report-btn:hover{background:var(--navy-2);}
 .report-btn:disabled{opacity:0.6;cursor:not-allowed;}
-.report-btn:hover{background:var(--navy-2);}
 
 .report-doc{
   background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:40px 46px;box-shadow:var(--shadow);
@@ -169,9 +168,14 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
   a{color:var(--teal); text-decoration:underline;}
   img{max-width:100%;}
 }
-.comp-tab{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit;color:var(--muted);font-size:0.85rem;font-weight:600;transition:all 0.15s;border-bottom:2px solid transparent;}
+.comp-tab{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;font-family:inherit;color:var(--muted);font-size:0.8rem;font-weight:600;transition:all 0.15s;border-bottom:2px solid transparent;white-space:nowrap;}
 .comp-tab:hover{background:var(--panel);color:var(--text);}
 .comp-tab.active{background:var(--panel);color:var(--teal);border-bottom:2px solid var(--teal);}
+
+/* Responsive tabs container */
+.comp-tabs-container{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:8px;}
+.comp-tabs-container::-webkit-scrollbar{height:4px;}
+.comp-tabs-container::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
 .comp-content table{width:100%;border-collapse:collapse;font-size:0.9rem;}
 .comp-content table th{background:var(--navy-soft);color:var(--navy);font-weight:600;padding:10px 12px;text-align:left;font-size:0.8rem;text-transform:uppercase;}
 .comp-content table td{padding:10px 12px;border-bottom:1px solid var(--line);}
@@ -377,7 +381,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 23:48</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 00:00</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -632,82 +636,74 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <h2 class="serif" style="color: var(--navy); margin-bottom: 24px; font-size: 1.35rem; font-weight: 700;">📊 KPIs Principais</h2>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 36px;">
             <!-- CARD: Total Atendimentos -->
-            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
-              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Total de Atendimentos</div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-total-2025">231.560</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" id="kpi-exp-2025">22 expedições</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;" id="kpi-total-2026">204.563</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" id="kpi-exp-2026">22 expedições</div>
-                </div>
+            <div class="kpi-card" style="grid-template-columns: 1fr 1fr; gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
+              <div class="kpi-label" data-i18n="compTotalAtend">Total de Atendimentos</div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                <div class="kpi-value mono" id="kpi-total-2025" style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;">—</div>
+                <div class="kpi-sub muted" id="kpi-exp-2025" style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">—</div>
+              </div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                <div class="kpi-value mono" id="kpi-total-2026" style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;">—</div>
+                <div class="kpi-sub muted" id="kpi-exp-2026" style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">—</div>
               </div>
             </div>
             <!-- CARD: Média por Expedição -->
-            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
-              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Média por Expedição</div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-media-2025">10.525</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px; font-weight: 500;">por expedição</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;" id="kpi-media-2026">10.022</div>
-                  <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-media-var">▼ 4.8%</div>
-                </div>
+            <div class="kpi-card" style="grid-template-columns: 1fr 1fr; gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
+              <div class="kpi-label" data-i18n="compMediaExp">Média por Expedição</div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                <div class="kpi-value mono" id="kpi-media-2025" style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;">—</div>
+                <div class="kpi-sub muted" style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" data-i18n="compPorExp">por expedição</div>
+              </div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                <div class="kpi-value mono" id="kpi-media-2026" style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;">—</div>
+                <div class="kpi-sub delta" id="kpi-media-var" style="font-size: 0.75rem; margin-top: 8px; font-weight: 600;">—</div>
               </div>
             </div>
             <!-- CARD: Pacientes Únicos -->
-            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
-              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Pacientes Únicos</div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-pac-2025">36.304</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">pessoas</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;" id="kpi-pac-2026">24.518</div>
-                  <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-pac-var">▼ 32.5%</div>
-                </div>
+            <div class="kpi-card" style="grid-template-columns: 1fr 1fr; gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
+              <div class="kpi-label" data-i18n="compPacUnicos">Pacientes Únicos</div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                <div class="kpi-value mono" id="kpi-pac-2025" style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;">—</div>
+                <div class="kpi-sub muted" style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" data-i18n="compPessoas">pessoas</div>
+              </div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                <div class="kpi-value mono" id="kpi-pac-2026" style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;">—</div>
+                <div class="kpi-sub delta" id="kpi-pac-var" style="font-size: 0.75rem; margin-top: 8px; font-weight: 600;">—</div>
               </div>
             </div>
             <!-- CARD: Total Dias em Atendimento -->
-            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e8edf3; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(26, 54, 93, 0.06);">
-              <div style="font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 12px;">Total Dias em Atendimento</div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;" id="kpi-dias-2025">0.0</div>
-                  <div style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;">dias</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
-                  <div style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;" id="kpi-dias-2026">77.5</div>
-                  <div style="font-size: 0.75rem; color: var(--teal); margin-top: 8px; font-weight: 600;" id="kpi-dias-var">▲ +∞%</div>
-                </div>
+            <div class="kpi-card" style="grid-template-columns: 1fr 1fr; gap: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 24px; box-shadow: var(--shadow);">
+              <div class="kpi-label" data-i18n="compDiasAtend">Total Dias em Atendimento</div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2025</div>
+                <div class="kpi-value mono" id="kpi-dias-2025" style="font-size: 2.4rem; font-weight: 700; color: var(--navy); line-height: 1.2;">—</div>
+                <div class="kpi-sub muted" style="font-size: 0.75rem; color: var(--muted); margin-top: 8px;" data-i18n="compDias">dias</div>
+              </div>
+              <div class="kpi-year-col">
+                <div class="kpi-year" style="font-size: 0.7rem; color: var(--muted); margin-bottom: 4px;">2026</div>
+                <div class="kpi-value mono" id="kpi-dias-2026" style="font-size: 2.4rem; font-weight: 700; color: var(--teal); line-height: 1.2;">—</div>
+                <div class="kpi-sub delta" id="kpi-dias-var" style="font-size: 0.75rem; margin-top: 8px; font-weight: 600;">—</div>
               </div>
             </div>
           </div>
         </div>
         <!-- ABAS DE COMPARATIVO -->
         <div style="margin-bottom: 28px;">
-          <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--line); overflow-x: auto;">
-            <button class="comp-tab active" onclick="showCompTab('especialidades')" style="white-space: nowrap;">Especialidades</button>
-            <button class="comp-tab" onclick="showCompTab('exames')" style="white-space: nowrap;">Exames</button>
-            <button class="comp-tab" onclick="showCompTab('atendimentos')" style="white-space: nowrap;">Tipo Atendimento</button>
-            <button class="comp-tab" onclick="showCompTab('cirmedia')" style="white-space: nowrap;">Cirurgias Médias</button>
-            <button class="comp-tab" onclick="showCompTab('cirbaixa')" style="white-space: nowrap;">Cirurgias Pequenas</button>
-            <button class="comp-tab" onclick="showCompTab('farmacia')" style="white-space: nowrap;">Farmácia</button>
-            <button class="comp-tab" onclick="showCompTab('alimentacao')" style="white-space: nowrap;">Alimentação</button>
-            <button class="comp-tab" onclick="showCompTab('pacientes')" style="white-space: nowrap;">Pacientes Únicos</button>
+          <div class="comp-tabs-container" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px;">
+            <button class="comp-tab active" onclick="showCompTab('especialidades')">Especialidades</button>
+            <button class="comp-tab" onclick="showCompTab('exames')">Exames</button>
+            <button class="comp-tab" onclick="showCompTab('atendimentos')">Tipo Atendimento</button>
+            <button class="comp-tab" onclick="showCompTab('cirmedia')">Cirurgias Médias</button>
+            <button class="comp-tab" onclick="showCompTab('cirbaixa')">Cirurgias Pequenas</button>
+            <button class="comp-tab" onclick="showCompTab('farmacia')">Farmácia</button>
+            <button class="comp-tab" onclick="showCompTab('alimentacao')">Alimentação</button>
+            <button class="comp-tab" onclick="showCompTab('pacientes')">Pacientes Únicos</button>
           </div>
           <!-- TAB: ESPECIALIDADES -->
           <div id="comp-especialidades" class="comp-content" style="display: block;">
@@ -938,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:48</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:00</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:48</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:00</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1249,7 +1245,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 23:48";
+const GENERATED_AT = "16/11/2026 00:00";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
