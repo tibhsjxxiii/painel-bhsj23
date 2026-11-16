@@ -200,27 +200,24 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
   .topbar h1{font-size:1.3rem;}
   .main{padding:12px 12px 16px;}
 }
-.sidebar{width:120px;background:var(--sidebar-bg, var(--navy));display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.sidebar{width:120px;background:var(--sidebar-bg);display:flex;flex-direction:column;align-items:center;padding:22px 0;flex-shrink:0;position:sticky;top:0;height:100vh;}
 .sidebar-logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(155deg,var(--gold),var(--gold-dim));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px var(--gold-dim);margin-bottom:30px;}
-.nav-item{width:100px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;color:var(--sidebar-text-muted, rgba(255,255,255,0.6));cursor:pointer;border-radius:10px;margin-bottom:6px;transition:all .18s;background:none;border:none;font-family:inherit;}
+.nav-item{width:100px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;color:var(--sidebar-text-muted);cursor:pointer;border-radius:10px;margin-bottom:6px;transition:all .18s;background:none;border:none;font-family:inherit;}
 .nav-item:focus-visible,.info-icon:focus-visible,.year-select button:focus-visible,#langSel:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 .nav-item svg{width:24px;height:24px;stroke:currentColor;}
 .nav-item span{font-size:0.7rem;letter-spacing:0.02em;text-align:center;line-height:1.3;font-weight:500;}
-.nav-item:hover{color:var(--sidebar-text-hover, #fff);background:var(--sidebar-hover-bg, rgba(255,255,255,0.06));}
+.nav-item:hover{color:var(--sidebar-text-hover);background:var(--sidebar-hover-bg);}
 .nav-item.active{color:var(--gold);background:var(--gold-dim);}
 .sidebar-spacer{flex:1;}
 .sidebar-live{width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;margin-bottom:12px;}
 
+/* Sidebar theme variables - defaults (light) */
+:root{ --sidebar-bg: var(--navy); --sidebar-text-muted: rgba(255,255,255,0.6); --sidebar-text-hover: #fff; --sidebar-hover-bg: rgba(255,255,255,0.06); }
+
 /* Dark mode sidebar overrides */
-:root[data-theme="dark"] .sidebar,
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .sidebar {
-    --sidebar-bg: var(--panel);
-    --sidebar-text-muted: var(--muted);
-    --sidebar-text-hover: var(--text);
-    --sidebar-hover-bg: rgba(255,255,255,0.08);
-  }
-}
+:root[data-theme="dark"]{ --sidebar-bg: var(--panel); --sidebar-text-muted: var(--muted); --sidebar-text-hover: var(--text); --sidebar-hover-bg: rgba(255,255,255,0.08); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --sidebar-bg: var(--panel); --sidebar-text-muted: var(--muted); --sidebar-text-hover: var(--text); --sidebar-hover-bg: rgba(255,255,255,0.08); } }
+
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
 /* MODO EXECUTIVO - Versão simplificada */
@@ -373,7 +370,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 23:07</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 15/11/2026 23:21</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -934,14 +931,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:07</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:21</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:07</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 15/11/2026 23:21</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1245,7 +1242,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "15/11/2026 23:07";
+const GENERATED_AT = "15/11/2026 23:21";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
