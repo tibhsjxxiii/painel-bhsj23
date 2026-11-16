@@ -381,7 +381,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 00:54</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 01:17</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -696,14 +696,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <!-- ABAS DE COMPARATIVO -->
         <div style="margin-bottom: 28px;">
           <div class="comp-tabs-container" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px;">
-            <button class="comp-tab active" onclick="showCompTab('especialidades')" data-i18n="compTabEspecialidades">Especialidades</button>
-            <button class="comp-tab" onclick="showCompTab('exames')" data-i18n="compTabExames">Exames</button>
-            <button class="comp-tab" onclick="showCompTab('atendimentos')" data-i18n="compTabAtendimentos">Tipo Atendimento</button>
-            <button class="comp-tab" onclick="showCompTab('cirmedia')" data-i18n="compTabCirmedia">Cirurgias Médias</button>
-            <button class="comp-tab" onclick="showCompTab('cirbaixa')" data-i18n="compTabCirbaixa">Cirurgias Pequenas</button>
-            <button class="comp-tab" onclick="showCompTab('farmacia')" data-i18n="compTabFarmacia">Farmácia</button>
-            <button class="comp-tab" onclick="showCompTab('alimentacao')" data-i18n="compTabAlimentacao">Alimentação</button>
-            <button class="comp-tab" onclick="showCompTab('pacientes')" data-i18n="compTabPacientes">Pacientes Únicos</button>
+            <button class="comp-tab active" onclick="showCompTab('especialidades', event)" data-i18n="compTabEspecialidades">Especialidades</button>
+            <button class="comp-tab" onclick="showCompTab('exames', event)" data-i18n="compTabExames">Exames</button>
+            <button class="comp-tab" onclick="showCompTab('atendimentos', event)" data-i18n="compTabAtendimentos">Tipo Atendimento</button>
+            <button class="comp-tab" onclick="showCompTab('cirmedia', event)" data-i18n="compTabCirmedia">Cirurgias Médias</button>
+            <button class="comp-tab" onclick="showCompTab('cirbaixa', event)" data-i18n="compTabCirbaixa">Cirurgias Pequenas</button>
+            <button class="comp-tab" onclick="showCompTab('farmacia', event)" data-i18n="compTabFarmacia">Farmácia</button>
+            <button class="comp-tab" onclick="showCompTab('alimentacao', event)" data-i18n="compTabAlimentacao">Alimentação</button>
+            <button class="comp-tab" onclick="showCompTab('pacientes', event)" data-i18n="compTabPacientes">Pacientes Únicos</button>
           </div>
           <!-- TAB: ESPECIALIDADES -->
           <div id="comp-especialidades" class="comp-content" style="display: block;">
@@ -934,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:54</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 01:17</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:54</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 01:17</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1022,10 +1022,10 @@ async function ensureJsPDF(){
 })();
 
 // FUNÇÕES PARA MENU COMPARATIVO
-function showCompTab(tab) {
+function showCompTab(tab, evt) {
   document.querySelectorAll('.comp-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.comp-content').forEach(c => c.style.display = 'none');
-  event.target.classList.add('active');
+  if(evt && evt.target) evt.target.classList.add('active');
   document.getElementById('comp-' + tab).style.display = 'block';
 }
 
@@ -1245,7 +1245,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 00:54";
+const GENERATED_AT = "16/11/2026 01:17";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
