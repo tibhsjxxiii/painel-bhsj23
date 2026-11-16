@@ -381,7 +381,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 00:00</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 00:22</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -696,14 +696,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
         <!-- ABAS DE COMPARATIVO -->
         <div style="margin-bottom: 28px;">
           <div class="comp-tabs-container" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px;">
-            <button class="comp-tab active" onclick="showCompTab('especialidades')">Especialidades</button>
-            <button class="comp-tab" onclick="showCompTab('exames')">Exames</button>
-            <button class="comp-tab" onclick="showCompTab('atendimentos')">Tipo Atendimento</button>
-            <button class="comp-tab" onclick="showCompTab('cirmedia')">Cirurgias Médias</button>
-            <button class="comp-tab" onclick="showCompTab('cirbaixa')">Cirurgias Pequenas</button>
-            <button class="comp-tab" onclick="showCompTab('farmacia')">Farmácia</button>
-            <button class="comp-tab" onclick="showCompTab('alimentacao')">Alimentação</button>
-            <button class="comp-tab" onclick="showCompTab('pacientes')">Pacientes Únicos</button>
+            <button class="comp-tab active" onclick="showCompTab('especialidades')" data-i18n="compTabEspecialidades">Especialidades</button>
+            <button class="comp-tab" onclick="showCompTab('exames')" data-i18n="compTabExames">Exames</button>
+            <button class="comp-tab" onclick="showCompTab('atendimentos')" data-i18n="compTabAtendimentos">Tipo Atendimento</button>
+            <button class="comp-tab" onclick="showCompTab('cirmedia')" data-i18n="compTabCirmedia">Cirurgias Médias</button>
+            <button class="comp-tab" onclick="showCompTab('cirbaixa')" data-i18n="compTabCirbaixa">Cirurgias Pequenas</button>
+            <button class="comp-tab" onclick="showCompTab('farmacia')" data-i18n="compTabFarmacia">Farmácia</button>
+            <button class="comp-tab" onclick="showCompTab('alimentacao')" data-i18n="compTabAlimentacao">Alimentação</button>
+            <button class="comp-tab" onclick="showCompTab('pacientes')" data-i18n="compTabPacientes">Pacientes Únicos</button>
           </div>
           <!-- TAB: ESPECIALIDADES -->
           <div id="comp-especialidades" class="comp-content" style="display: block;">
@@ -934,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:00</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:22</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:00</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 00:22</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1245,7 +1245,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 00:00";
+const GENERATED_AT = "16/11/2026 00:22";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1378,11 +1378,16 @@ const I18N = {
   compTabGeral:"Geral",compTabEspec:"Especialidades",compTabMun:"Municípios",compTabExames:"Exames",compTabAtendimentos:"Tipos Atendimento",compTabCirMed:"Cirurgias Médias",compTabCirBaixa:"Cirurgias Pequenas",compTabFarmacia:"Farmácia",compTabAlimentacao:"Alimentação",compTabPacientes:"Pacientes Únicos",compTabEfic:"Eficiência",
   compGeralTitle:"Comparação Geral de Atendimentos",compMetricasTitle:"Métricas Principais",
   metricaAno:"Ano",metricaExpedicoes:"Expedições",metricaAtendimentos:"Atendimentos",metricaDias:"Dias Atendimento",metricaMedia:"Média/Expedição",
+  compTotalAtend:"Total de Atendimentos",compMediaExp:"Média por Expedição",compPacUnicos:"Pacientes Únicos",compDiasAtend:"Total Dias em Atendimento",compPorExp:"por expedição",compPessoas:"pessoas",compDias:"dias",
+  compTabEspecialidades:"Especialidades",compTabExames:"Exames",compTabAtendimentos:"Tipo Atendimento",compTabCirmedia:"Cirurgias Médias",compTabCirbaixa:"Cirurgias Pequenas",compTabFarmacia:"Farmácia",compTabAlimentacao:"Alimentação",compTabPacientes:"Pacientes Únicos",
   compEspecTitle:"Especialidades: Novas e Removidas",compNovas:"✨ Novas em 2026",compRemovidas:"➖ Removidas de 2026",
   compTopEspecTitle:"Top 10 Especialidades (2026 vs 2025)",
   compMunTitle:"Municípios: Novos e Expansão",compNovosMun:"🗺️ Novos em 2026",compSaiosMun:"📍 Visitados em ambos",
   compEficTitle:"Análise de Eficiência por Expedição",compEficSub:"Métricas de eficiência operacional comparando atendimentos com dias de viagem",
   compEficExpTitle:"Eficiência por Expedição",colExpedicao:"Expedição",eficAtendDia:"Atend./Dia",eficPacientes:"Pacientes",eficConsultasPac:"Consultas/Pac",
+  compTotalAtend:"Total de Atendimentos",compMediaExp:"Média por Expedição",compPacUnicos:"Pacientes Únicos",compDiasAtend:"Total Dias em Atendimento",compPorExp:"por expedição",compPessoas:"pessoas",compDias:"dias",
+  compTabEspecialidades:"Especialidades",compTabExames:"Exames",compTabAtendimentos:"Tipo Atendimento",compTabCirmedia:"Cirurgias Médias",compTabCirbaixa:"Cirurgias Pequenas",compTabFarmacia:"Farmácia",compTabAlimentacao:"Alimentação",compTabPacientes:"Pacientes Únicos",
+  compEspecTitle:"Especialidades: Novas e Removidas",compNovas:"✨ Novas em 2026",compRemovidas:"➖ Removidas de 2026",
   reportTitle:"Resumo Executivo",
   reportSub:"Gerado automaticamente a partir do período selecionado",
   reportExportTitle:"Exportar",
@@ -1578,11 +1583,16 @@ const I18N = {
   compTabGeral:"General",compTabEspec:"Specialties",compTabMun:"Municipalities",compTabExames:"Exams",compTabAtendimentos:"Attendance Types",compTabCirMed:"Medium Surgeries",compTabCirBaixa:"Low Complexity Surgeries",compTabFarmacia:"Pharmacy",compTabAlimentacao:"Meals",compTabPacientes:"Unique Patients",compTabEfic:"Efficiency",
   compGeralTitle:"General Attendance Comparison",compMetricasTitle:"Key Metrics",
   metricaAno:"Year",metricaExpedicoes:"Expeditions",metricaAtendimentos:"Attendances",metricaDias:"Attendance Days",metricaMedia:"Avg/Expedition",
+  compTotalAtend:"Total Attendances",compMediaExp:"Avg per Expedition",compPacUnicos:"Unique Patients",compDiasAtend:"Total Attendance Days",compPorExp:"per expedition",compPessoas:"people",compDias:"days",
+  compTabEspecialidades:"Specialties",compTabExames:"Exams",compTabAtendimentos:"Attendance Types",compTabCirmedia:"Medium Surgeries",compTabCirbaixa:"Low Complexity Surgeries",compTabFarmacia:"Pharmacy",compTabAlimentacao:"Meals",compTabPacientes:"Unique Patients",
   compEspecTitle:"Specialties: New and Removed",compNovas:"✨ New in 2026",compRemovidas:"➖ Removed from 2026",
   compTopEspecTitle:"Top 10 Specialties (2026 vs 2025)",
   compMunTitle:"Municipalities: New and Expansion",compNovosMun:"🗺️ New in 2026",compSaiosMun:"📍 Visited in both",
   compEficTitle:"Efficiency Analysis per Expedition",compEficSub:"Operational efficiency metrics comparing attendances with travel days",
   compEficExpTitle:"Efficiency per Expedition",colExpedicao:"Expedition",eficAtendDia:"Attend./Day",eficPacientes:"Patients",eficConsultasPac:"Consult./Pac",
+  compTotalAtend:"Total Attendances",compMediaExp:"Avg per Expedition",compPacUnicos:"Unique Patients",compDiasAtend:"Total Attendance Days",compPorExp:"per expedition",compPessoas:"people",compDias:"days",
+  compTabEspecialidades:"Specialties",compTabExames:"Exams",compTabAtendimentos:"Attendance Types",compTabCirmedia:"Medium Surgeries",compTabCirbaixa:"Low Complexity Surgeries",compTabFarmacia:"Pharmacy",compTabAlimentacao:"Meals",compTabPacientes:"Unique Patients",
+  compEspecTitle:"Specialties: New and Removed",compNovas:"✨ New in 2026",compRemovidas:"➖ Removed from 2026",
   reportTitle:"Executive Summary",
   reportSub:"Automatically generated from the selected period",
   reportExportTitle:"Export",
