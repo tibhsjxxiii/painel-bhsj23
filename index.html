@@ -381,7 +381,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 01:21</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 10:28</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -934,14 +934,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 01:21</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 10:28</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 01:21</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 10:28</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1245,7 +1245,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 01:21";
+const GENERATED_AT = "16/11/2026 10:28";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3581,7 +3581,6 @@ function renderCirurgias(){
 
 /* ================= average exams: geral / por ano / por mês ================= */
 const EXAM_AVG_TYPES = ["Mamografia","Raios-X","Eletrocardiograma","Oftalmologia","Análises Clínicas","Ultrassom"];
-const EXAM_AVG_COLORS = ["#b8934a","#173a63","#0e8f6f","#7a5ea8","#a9564a","#3f7fa6"];
 
 function buildExamAvgChart(){
   if(!window.HAS_CHART || !document.getElementById('chartExamAvg')) return;
@@ -3591,6 +3590,15 @@ function buildExamAvgChart(){
   const labels = EXAM_AVG_TYPES.map(trExam);
   const avgTooltip = { callbacks:{ label:(item)=> `${item.dataset.label ? item.dataset.label+': ' : ''}${fmtAvg(item.parsed.y!==undefined?item.parsed.y:item.parsed)}` } };
   const avgYTicks = { callback:(v)=>fmtAvg(v) };
+  // Use theme-adaptive colors for exam avg chart
+  const examAvgBarColors = [
+    colors.linePrimary,
+    '#e0917f',  // light coral
+    '#4f9e78',  // light green
+    '#7a5ea8',  // light purple
+    '#a9564a',  // light red
+    '#3f7fa6'   // light blue
+  ];
 
   if(EXAM_AVG_MODE === 'ano'){
     const years = YEAR === 'all' ? YEARS : [YEAR];
@@ -3615,7 +3623,7 @@ function buildExamAvgChart(){
     const datasets = EXAM_AVG_TYPES.map((k,i)=>({
       label: trExam(k),
       data: buckets.map(b=> b.exp.length ? Math.round((b.exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/b.exp.length)*10)/10 : 0),
-      borderColor: EXAM_AVG_COLORS[i], backgroundColor: EXAM_AVG_COLORS[i], tension:0.3, pointRadius:2
+      borderColor: examAvgBarColors[i%examAvgBarColors.length], backgroundColor: examAvgBarColors[i%examAvgBarColors.length], tension:0.3, pointRadius:2
     }));
     chartExamAvg = new Chart(ctx,{type:'line',
       data:{labels:months, datasets},
@@ -3627,7 +3635,7 @@ function buildExamAvgChart(){
     const n = exp.length || 1;
     const data = EXAM_AVG_TYPES.map(k=> Math.round((exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/n)*10)/10 );
     chartExamAvg = new Chart(ctx,{type:'bar',
-      data:{labels, datasets:[{data, backgroundColor:EXAM_AVG_COLORS, borderRadius:5, maxBarThickness:34}]},
+      data:{labels, datasets:[{data, backgroundColor:examAvgBarColors, borderRadius:5, maxBarThickness:34}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:avgTooltip},
         scales:{x:{ticks:{font:{size:9},color:colors.axisText},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:colors.gridColor}}}}
     });
