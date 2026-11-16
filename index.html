@@ -402,7 +402,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 13:26</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 13:50</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -955,14 +955,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:26</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:50</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:26</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 13:50</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -981,130 +981,40 @@ async function ensureMapLibre(){
   for(const src of sources){ try{ await loadScript(src); if(window.maplibregl) return true; }catch(e){} }
   return false;
 }
-// Coorden
-}
 // Coordenadas aproximadas (lat, lng) dos municípios/comunidades já visitados. Mantida à mão —
 // se um novo município aparecer na planilha e não tiver coordenada aqui, ele simplesmente não
 // aparece no mapa (sem quebrar nada). Manaus é a base do barco.
-
-lten Zeitraum.",
-  infoDonut:"Prozentualer Anteil jeder Kategorie am Gesamtwert des gewählten Zeitraums.",
-  infoArea:"Gesamtbehandlungen jeder Expedition, in chronologischer Reihenfolge.",
-  infoSpec:"Gesamtes Konsultationsvolumen je medizinischer Fachrichtung im gewählten Zeitraum.",
-  infoExam:"Volumen jeder Untersuchungsart im gewählten Zeitraum.",
-  infoVoyage:"Die tatsächliche Reihenfolge der vom Boot besuchten Gemeinden. Klicken Sie auf einen Stopp für alle Daten dieser Expedition.",
-  infoRank:"Alle versorgten Gemeinden, summiert über alle Expeditionen im gewählten Zeitraum.",
-  infoTop10:"Die 10 Gemeinden mit den meisten Gesamtbehandlungen im gewählten Zeitraum, mit genauem Wert neben jedem Balken.",
-  examMiniTitle:"Untersuchungen nach Art",
-  breakdownTitle:"Behandlungsübersicht",
-  breakdownSub:"Alle Behandlungskategorien im gewählten Zeitraum",
-  infoBreakdown:"Alle vom Boot durchgeführten Behandlungskategorien: medizinische Fachrichtungen, Untersuchungen, Operationen mittlerer und niedriger Komplexität, zahnärztliche Eingriffe, Triage/Pflege, Zahnkonsultationen, Medikamentenausgabe und Mahlzeiten — im gewählten Zeitraum.",
-  catEspecialidade:"Medizinische Fachrichtung (Konsultationen)",
-  catExames:"Untersuchungen",
-  catTriagem:"Triage / Pflege",
-  catMedicamento:"Medikamentenausgabe",
-  catAlimentacao:"Mahlzeiten",
-  pacientesL:"Betreute Einzelpatienten",
-  pacientesNA:"für diesen Zeitraum nicht in der Tabelle erfasst",
-  colAno:"Jahr",
-  reportColAtendimentos:"Behandlungen",
-  reportS7:"Betreute Einzelpatienten (Krankenhaussystem)",
-  reportS7Note:"Daten aus dem Krankenhausverwaltungssystem (Anzahl eindeutiger Patienten im Jahr) — eine von der Expeditionstabelle des Bootes unabhängige Quelle.",
-  navNavegacao:"Navigation",
-  navBigHoras:"Navigationsstunden",
-  navBigDias:"Durchschnittliche Tage pro Expedition",
-  navBigIncidente:"Verlorene Stunden (Zwischenfälle)",
-  navBigKm:"Zurückgelegte Strecke (geschätzt)",
-  navMn:"Seemeilen",
-  navChartTitle:"Navigation pro Expedition — Hin- vs. Rückfahrt",
-  navChartSub:"Navigationsstunden der Hin- und Rückfahrt, in chronologischer Reihenfolge der Expeditionen.",
-  infoNavChart:"Jeder Balken zeigt, wie viele Stunden das Boot bei der Hin- und Rückfahrt dieser Expedition navigiert ist. Große Unterschiede können auf Flussströmung, einen Halt an mehr als einer Gemeinde oder einen Betriebsvorfall hinweisen.",
-  navHighlightTitle:"Betriebliche Highlights",
-  navTableTitle:"Aufschlüsselung nach Expedition",
-  navColDias:"Tage",
-  navColIda:"Hinfahrt",
-  navColVolta:"Rückfahrt",
-  navColNota:"Anmerkung",
-  graphsTitle:"Interaktive Grafiken",
-  chartCompTitle:"Vergleich 2025 vs 2026",
-  chartPieTitle:"Verteilung 2026",
-  chartTopSpecTitle:"Top 10 Fachrichtungen",
-  chartTotalAtendimentos:"Gesamtbehandlungen",
-  chartPacientes:"Patienten",
-  chartMediaExp:"Ø/Exp",
-  tripInfoTitle:"Expeditionsreisen",
-  tripInfoSub:"Die Navigationszeit des Bootes (basierend auf Abfahrts-/Ankunftszeiten) — siehe Menü Navigation für die vollständige Aufschlüsselung.",
-  infoTripInfo:"Zusammenfassung der Navigationszeit des Bootes, berechnet aus den Abfahrts- und Ankunftszeiten jeder Expedition — eine von der Behandlungstabelle unabhängige Quelle.",
-  navLongest:"Längste Expedition nach Navigationszeit",
-  navMostIncident:"Expedition mit der meisten Ausfallzeit",
-  navMapTitle:"Expeditionskarte",
-  navMapSub:"Klicken Sie auf einen Punkt, um die Expeditionen, Daten und Navigationsstunden für diesen Ort zu sehen.",
-  infoNavMap:"Karte der bereits vom Boot besuchten Gemeinden/Gemeinschaften. Die Punkte sind ungefähre Positionen — klicken Sie auf einen davon, um die Expeditionsgeschichte, Daten und Navigationsstunden für diesen Ort zu sehen.",
-  navMapExpeditions:"Expeditionen",
-  navMapLoadError:"Die Karte konnte nicht geladen werden (derzeit keine Internetverbindung).",
-  catInternacao:"Klinische/Chirurgische Einweisung",
-  voyageSpecNote:"Fahren Sie über einen Stopp, um die Fachrichtungen dieser Expedition zu sehen",
-  voyageExamNote:"Fahren Sie über einen Stopp, um die Untersuchungen dieser Expedition zu sehen",
-  infoVoyageSpec:"Dieselbe Expeditionsroute, aber beim Überfahren werden die medizinischen Fachrichtungen dieser Expedition angezeigt.",
-  infoVoyageExam:"Dieselbe Expeditionsroute, aber beim Überfahren werden die Untersuchungen dieser Expedition angezeigt.",
-  navCir:"Operationen",
-  voyageCirNote:"Dieselbe Expeditionsroute, aber beim Überfahren werden die Operationen und Einweisungen dieser Expedition angezeigt.",
-  infoVoyageCir:"Dieselbe Expeditionsroute, aber beim Überfahren werden die Operationen niedriger und mittlerer Komplexität sowie Einweisungen dieser Expedition angezeigt.",
-  cirEvolTitle:"Operationen und Einweisungen pro Expedition",
-  cirEvolSub:"Operationen mittlerer und niedriger Komplexität sowie klinische/chirurgische Einweisungen, in Reihenfolge der Expeditionen",
-  infoCirEvol:"Entwicklung von Operationen niedriger Komplexität, mittlerer Komplexität und klinischen/chirurgischen Einweisungen, Expedition für Expedition.",
-  cirTop10Title:"Top 10 Gemeinden · Operationen mittlerer und niedriger Komplexität",
-  cirTop10Sub:"Summe der Operationen mittlerer + niedriger Komplexität im gewählten Zeitraum (mehrfach besuchte Gemeinden werden summiert)",
-  infoCirTop10:"Die 10 Gemeinden mit der höchsten kombinierten Summe an Operationen mittlerer und niedriger Komplexität im gewählten Zeitraum.",
-  cirColMedia:"Mittlere OP",
-  cirColBaixa:"Kleine OP",
-  cirColTotal:"Gesamt",
-  examAvgTitle:"Durchschnittliche Untersuchungen pro Expedition",
-  examAvgSub:"Durchschnitt jeder Untersuchungsart pro Expedition — Ansicht unten wählen",
-  examAvgGeral:"Gesamt",
-  examAvgAno:"Nach Jahr",
-  examAvgMes:"Nach Monat",
-  infoExamAvg:"Durchschnitt von Mammographie, Röntgen, EKG, Augenheilkunde, Laboruntersuchungen und Ultraschall pro Expedition. 'Gesamt' mittelt über den gewählten Zeitraum; 'Nach Jahr' vergleicht Jahre; 'Nach Monat' gruppiert nach Kalendermonat über alle verfügbaren Jahre — nützlich, um Saisonalität zu erkennen.",
-  lastExpBtn:"Letzte Expedition",
-  lastExpTitle:"Letzte Expedition",
-  lastExpPeriodo:"Zeitraum",
-  lastExpStatus:"Status",
-  lastExpStatusConcluida:"Abgeschlossen",
-  lastExpDias:"Dauer (Tage)",
-  lastExpResultados:"Expeditionsergebnisse",
-  lastExpAtendTotais:"Gesamtbehandlungen",
-  lastExpConsultas:"Ärztliche Konsultationen",
-  lastExpExames:"Durchgeführte Untersuchungen",
-  lastExpOdonto:"Zahnärztliche Verfahren",
-  lastExpCirurgias:"Durchgeführte Operationen",
-  lastExpExportPdf:"Diese Expedition als PDF exportieren",
-  procMiniTitle:"Operationen und zahnärztliche Eingriffe",
-  procMiniSub:"Operationen mittlerer und niedriger Komplexität im Vergleich zu zahnärztlichen Eingriffen",
-  infoProcMini:"Vergleicht das Volumen von Operationen niedriger Komplexität, mittlerer Komplexität und zahnärztlichen Eingriffen (getrennt von der regulären Zahnkonsultation) im gewählten Zeitraum.",
-  procCirBaixa:"Operation niedriger Komplexität",
-  procCirMedia:"Operation mittlerer Komplexität",
-  procOdontoL:"Zahnärztlicher Eingriff",
-  consultaOdontoL:"Zahnkonsultation",
-  ansAverage:(name,avg,total,n)=>`Der Durchschnitt von "${name}" beträgt ${fmtAvg(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expeditionen im gewählten Zeitraum).`,
-  ansCount:(n,year)=>`Es wurden ${fmt(n)} Expeditionen erfasst${year?` im Jahr ${year}`:' im gewählten Zeitraum'}.`,
-  ansMunCountByMetric:(n,total,metric,list,neg)=>{
-    const base = neg
-      ? `${fmt(n)} von ${fmt(total)} Gemeinden hatten im gewählten Zeitraum kein erfasstes "${metric}"`
-      : `${fmt(n)} von ${fmt(total)} Gemeinden hatten im gewählten Zeitraum "${metric}" erfasst`;
-    return base + (list.length<=10 ? (list.length? `: ${list.join(', ')}.` : '.') : '.');
-  },
-  ansTotal:(name,total,avg)=>`Die Gesamtzahl für "${name}" im gewählten Zeitraum beträgt ${fmt(total)} (Durchschnitt ${fmt(avg)} pro Expedition).`,
-  ansTopSpec:(name,val)=>`Die Fachrichtung mit dem höchsten Volumen ist "${name}", mit ${fmt(val)} Konsultationen im gewählten Zeitraum.`,
-  ansTopExam:(name,val)=>`Die am häufigsten durchgeführte Untersuchung ist "${name}", mit ${fmt(val)} im gewählten Zeitraum.`,
-  ansTopMun:(name,val)=>`Die Gemeinde mit den meisten Gesamtbehandlungen ist ${name}, mit ${fmt(val)}.`,
-  ansTopMunMetric:(metric,name,val)=>`Die Gemeinde mit dem höchsten Volumen bei "${metric}" ist ${name}, mit ${fmt(val)}.`,
-  ansTopExp:(mun,n,val)=>`Die Expedition mit dem höchsten Volumen war Nr. ${n} (${mun}), mit ${fmt(val)} Gesamtbehandlungen.`,
-  ansTopExpMetric:(metric,mun,n,val)=>`Die Expedition mit dem höchsten Volumen bei "${metric}" war Nr. ${n} (${mun}), mit ${fmt(val)}.`,
-  ansCompare:(y1,y2,g1,g2)=>`${y1} betrugen die Gesamtbehandlungen ${fmt(g1)}; ${y2} waren es ${fmt(g2)} — eine Veränderung von ${(((g2-g1)/g1)*100).toFixed(1)}%.`,
-  ansAverageMun:(name,mun,avg,total,n)=>`Der Durchschnitt von "${name}" in ${mun} beträgt ${fmtAvg(avg)} pro Expedition (insgesamt ${fmt(total)} über ${n} Expedition(en) im betrachteten Zeitraum).`,
-  ansTotalMun:(name,mun,total,n)=>`Die Gesamtzahl für "${name}" in ${mun} im betrachteten Zeitraum beträgt ${fmt(total)}, über ${n} Expedition(en).`,
-  ansNoDataMun:(mun)=>`Keine Expeditionen in ${mun} im betrachteten Zeitraum gefunden.`,
-  ansFallback:"Diese Kennzahl wurde nicht gefunden. Fragen Sie nach einer Fachrichtung, Untersuchung, Kategorie, Gemeinde, oder nutzen Sie einen der Vorschläge unten."},
+const MUN_COORDS = {
+  "Manaus": [-3.1019, -60.0250],
+  "Alvarães": [-3.2233, -64.8039],
+  "Anamã": [-3.5811, -61.3961],
+  "Anori": [-3.7728, -61.6442],
+  "Barreirinha": [-2.7906, -57.0669],
+  "Belém": [-1.4558, -48.5039],
+  "Beruri": [-3.8886, -61.3767],
+  "Boa Vista Do Ramos": [-2.9989, -57.5989],
+  "Borba": [-4.3894, -59.5892],
+  "Caapiranga": [-3.8167, -62.0167],
+  "Careiro Castanho": [-3.3100, -59.8000],
+  "Careiro da Várzea": [-3.3100, -59.9000],
+  "Codajás": [-3.8333, -62.0667],
+  "Itacoatiara": [-3.1367, -58.4458],
+  "Itapiranga": [-2.9658, -57.7300],
+  "Manacapuru": [-3.2967, -60.6228],
+  "Maues": [-3.3833, -57.7167],
+  "Nhamundá": [-2.1500, -56.7167],
+  "Nova Olinda Do Norte": [-3.8833, -59.0667],
+  "Novo Airão": [-2.6167, -60.9500],
+  "Novo Aripuanã": [-5.1167, -60.3833],
+  "Parintins": [-2.6278, -56.7358],
+  "São Sebastião Do Uatumã": [-2.0667, -58.7833],
+  "Silves": [-2.8000, -58.2000],
+  "Tefé": [-3.3667, -64.7000],
+  "Urucará": [-2.7333, -57.6333],
+  "Urucurituba": [-2.2667, -57.7000],
+  "Autazes": [-3.7000, -59.1167],
+  "Barcelos": [-0.9833, -62.9333]
+};,
  es:{brandTitle:"Barco Hospital São João XXIII",brandSub:"Panel Ejecutivo de Expediciones · Amazonas",live:"Fuente: planilla oficial",yearAll:"Todos los años",updatedPrefix:"Actualizado el ",
   navDash:"Panel",navSpec:"Especialidades",navExam:"Exámenes",navMun:"Municipios",navAI:"Insights",navInfo:"Acerca de",
   navReport:"Informe",
