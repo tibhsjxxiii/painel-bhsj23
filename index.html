@@ -237,6 +237,35 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .comp-content ul li{padding:6px 0;color:var(--text);font-size:0.9rem;border-bottom:1px solid var(--line-2,rgba(231,229,223,0.5));}
 .comp-content ul li:last-child{border-bottom:none;}
 .mobile-nav-toggle{display:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;width:38px;height:38px;align-items:center;justify-content:center;color:var(--navy);cursor:pointer;flex-shrink:0;box-shadow:var(--shadow);}
+
+/* MapLibre/Mapbox GL popup theme override */
+.maplibregl-popup-content,
+.mapboxgl-popup-content{
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  border-radius:10px !important;
+  box-shadow:var(--shadow-lg) !important;
+  padding:12px 16px !important;
+  max-width:280px !important;
+}
+.maplibregl-popup-tip,
+.mapboxgl-popup-tip{
+  border-top-color:var(--panel) !important;
+}
+.maplibregl-popup-close-button,
+.mapboxgl-popup-close-button{
+  color:var(--muted) !important;
+  background:var(--panel-2) !important;
+  border-radius:50% !important;
+  width:24px !important;
+  height:24px !important;
+  line-height:20px !important;
+}
+.maplibregl-popup-close-button:hover,
+.mapboxgl-popup-close-button:hover{
+  background:var(--danger-dim) !important;
+  color:var(--danger) !important;
+}
 .mobile-nav-toggle svg{width:20px;height:20px;}
 .sidebar-backdrop{display:none;}
 @media(max-width:820px){
@@ -435,7 +464,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 14:03</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 14:11</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -988,14 +1017,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 14:03</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 14:11</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 14:03</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 14:11</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1299,7 +1328,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "17/11/2026 14:03";
+const GENERATED_AT = "17/11/2026 14:11";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3185,7 +3214,7 @@ function openExpeditionModal(exp){
   overlay.id = 'expModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <div>
           <div class="serif" style="font-size:1.25rem;font-weight:600;color:var(--navy);">${exp.mun}</div>
@@ -3360,7 +3389,7 @@ function openLastExpeditionModal(){
   overlay.id = 'lastExpModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
@@ -3433,7 +3462,7 @@ function openExpeditionReportModal(expIndex){
   overlay.id = 'expReportModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M3 16L4.5 12H19.5L21 16C21 16 18 18 12 18C6 18 3 16 3 16Z"/><path d="M6 12V6H15L18 12"/><path d="M12 6V3"/></svg>
@@ -4480,7 +4509,7 @@ function openMunicipalModal(munName){
   overlay.id = 'munModalOverlay';
   overlay.style.cssText = 'position:fixed;inset:0;background:var(--overlay-bg);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.innerHTML = `
-    <div class="modal-card-light" style="background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div class="modal-card-light" style="background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
