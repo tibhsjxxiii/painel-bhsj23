@@ -301,7 +301,7 @@ footer.app-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--li
 .sidebar-live{width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.2s ease-in-out infinite;margin-bottom:12px;}
 
 /* Sidebar theme variables - defaults (light) */
-:root{ --sidebar-bg: var(--navy); --sidebar-text-muted: rgba(255,255,255,0.6); --sidebar-text-hover: #fff; --sidebar-hover-bg: rgba(255,255,255,0.06); }
+:root{ --sidebar-bg: var(--navy); --sidebar-text-muted: rgba(255,255,255,0.6); --sidebar-text-hover: var(--navy-text); --sidebar-hover-bg: rgba(255,255,255,0.06); }
 
 /* Dark mode sidebar overrides */
 :root[data-theme="dark"]{ --sidebar-bg: var(--panel); --sidebar-text-muted: var(--muted); --sidebar-text-hover: var(--text); --sidebar-hover-bg: rgba(255,255,255,0.08); }
@@ -349,7 +349,7 @@ select#langSel{background:var(--panel);color:var(--text);border:1px solid var(--
 .chart-type-toggle button:hover:not(.active){background:rgba(15,42,74,0.08);color:var(--navy);}
 .info-icon{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:var(--navy-soft);color:var(--navy);font-size:0.62rem;font-style:italic;font-family:Georgia,serif;cursor:pointer;border:none;flex-shrink:0;}
 .info-icon:hover{background:var(--gold);color:#fff;}
-.info-popover{position:absolute;background:var(--navy);color:var(--navy-text);font-size:0.76rem;padding:10px 13px;border-radius:8px;max-width:270px;box-shadow:0 10px 28px rgba(0,0,0,0.3);z-index:9998;line-height:1.5;}
+.info-popover{position:absolute;background:var(--panel);color:var(--text);font-size:0.76rem;padding:10px 13px;border-radius:8px;max-width:270px;box-shadow:0 10px 28px rgba(0,0,0,0.3);z-index:9998;line-height:1.5;border:1px solid var(--line);}
 .panel-sub{color:var(--muted);font-size:0.8rem;margin-bottom:10px;}
 
 .dash-grid-v2{display:flex;flex-direction:column;gap:16px;height:calc(100vh - 100px);}
@@ -464,7 +464,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 15:45</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 16:50</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -1017,14 +1017,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 15:45</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 16:50</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 15:45</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 16:50</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1328,7 +1328,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "17/11/2026 15:45";
+const GENERATED_AT = "17/11/2026 16:50";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2924,13 +2924,14 @@ async function renderNavMap(){
       const nav = getNavData(e);
       const navText = nav ? ` · ${fmtAvg(navMinToHours(nav.idaMin))}h${t.navColIda.slice(0,1).toLowerCase()} / ${fmtAvg(navMinToHours(nav.voltaMin))}h${t.navColVolta.slice(0,1).toLowerCase()}` : '';
       const comText = nav && nav.comunidade && nav.comunidade !== label ? ` — ${nav.comunidade}` : '';
-      return `<div style="padding:3px 0;border-bottom:1px solid var(--line);font-size:0.78rem;">#${e.n}${comText}<br><span style="color:var(--muted-2);">${e.data}${navText}</span></div>`;
+      return `<div style="padding:3px 0;border-bottom:1px solid var(--line);font-size:0.78rem;color:var(--text);">#${e.n}${comText}<br><span style="color:var(--muted-2);">${e.data}${navText}</span></div>`;
     }).join('');
-    return `<div style="max-width:220px;"><strong>${label}</strong><div style="font-size:0.7rem;color:var(--muted-2);margin-bottom:4px;">${exps.length} ${t.navMapExpeditions.toLowerCase()}</div>${rows}</div>`;
+    return `<div style="max-width:220px;color:var(--text);"><strong>${label}</strong><div style="font-size:0.7rem;color:var(--muted-2);margin-bottom:4px;">${exps.length} ${t.navMapExpeditions.toLowerCase()}</div>${rows}</div>`;
   }
   function addMarker(coordLatLng, html, color, size){
     const el = document.createElement('div');
-    el.style.cssText = `background:${color};width:${size}px;height:${size}px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,0.45);cursor:pointer;`;
+    const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--panel').trim() || '#ffffff';
+    el.style.cssText = `background:${color};width:${size}px;height:${size}px;border-radius:50%;border:2px solid ${borderColor};box-shadow:0 1px 5px rgba(0,0,0,0.45);cursor:pointer;`;
     const marker = new maplibregl.Marker({element: el})
       .setLngLat([coordLatLng[1], coordLatLng[0]]) // MapLibre expects [lng, lat]
       .setPopup(new maplibregl.Popup({offset:14}).setHTML(html))
@@ -3326,7 +3327,7 @@ function buildTypedChart(ctx, type, labels, data, color, opts={}){
   if(type==='pie'){
     const piePalette = getPiePalette();
     return new Chart(ctx,{type:'doughnut',
-      data:{labels, datasets:[{data, backgroundColor:labels.map((_,i)=>piePalette[i%piePalette.length]), borderWidth:2, borderColor:'#ffffff'}]},
+      data:{labels, datasets:[{data, backgroundColor:labels.map((_,i)=>piePalette[i%piePalette.length]), borderWidth:2, borderColor:getComputedStyle(document.documentElement).getPropertyValue('--panel').trim() || '#ffffff'}]},
       options:{responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:colors.legendText,boxWidth:10,font:{size:9}}}}}
     });
   }
@@ -3633,8 +3634,9 @@ function buildAllCharts(){
   destroyIfExists(chartExamsDonut);
   const ctx6 = document.getElementById('chartExamsDonut').getContext('2d');
   const donutColors = getChartColors();
+  const panelColor = getComputedStyle(document.documentElement).getPropertyValue('--panel').trim() || '#ffffff';
   chartExamsDonut = new Chart(ctx6,{type:'doughnut',
-    data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:getCatColors().concat([getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-5').trim() || '#7a5ea8', getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-7').trim() || '#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
+    data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:getCatColors().concat([getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-5').trim() || '#7a5ea8', getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-7').trim() || '#3f7fa6']),borderWidth:2,borderColor:panelColor}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:donutColors.legendText,boxWidth:10,font:{size:9}}}}}
   });
   markLoaded('chartExamsDonut');
