@@ -464,7 +464,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 15:14</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 15:45</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -1017,14 +1017,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 15:14</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 15:45</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 15:14</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 15:45</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1328,7 +1328,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "17/11/2026 15:14";
+const GENERATED_AT = "17/11/2026 15:45";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -3175,14 +3175,14 @@ function showContextTooltip(el, exp, type){
   });
   const entries = Object.entries(data).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
   const rows = entries.length
-    ? entries.map(([n,v])=>`<div style="display:flex;justify-content:space-between;gap:14px;padding:2px 0;"><span>${translate(n)}</span><b class="mono" style="flex-shrink:0;">${fmt(v)}</b></div>`).join('')
-    : `<div style="opacity:0.75;">—</div>`;
+    ? entries.map(([n,v])=>`<div style="display:flex;justify-content:space-between;gap:14px;padding:2px 0;color:var(--text);"><span>${translate(n)}</span><b class="mono" style="flex-shrink:0;color:var(--navy);">${fmt(v)}</b></div>`).join('')
+    : `<div style="opacity:0.75;color:var(--muted);">—</div>`;
   const pop = document.createElement('div');
   pop.className = 'info-popover';
   pop.id = 'contextTooltip';
   pop.style.maxHeight = '260px';
   pop.style.overflowY = 'auto';
-  pop.innerHTML = `<div style="font-weight:700;margin-bottom:6px;border-bottom:1px solid var(--line);padding-bottom:5px;">${exp.mun} · ${exp.year}·${exp.n}${exp.data? ' · '+exp.data : ''}</div>${rows}`;
+  pop.innerHTML = `<div style="font-weight:700;margin-bottom:6px;border-bottom:1px solid var(--line);padding-bottom:5px;color:var(--text);">${exp.mun} · ${exp.year}·${exp.n}${exp.data? ' · '+exp.data : ''}</div>${rows}`;
   document.body.appendChild(pop);
   const r = el.getBoundingClientRect();
   let left = r.left + window.scrollX - 90;
@@ -3544,9 +3544,10 @@ function buildAllCharts(){
   const goldRgba = goldColor.startsWith('#') ? goldColor.replace(/^#/, '').match(/.{2}/g).map(c => parseInt(c, 16)).join(',') : '184,147,74';
   const gradFill = ctx3.createLinearGradient(0,0,0,220);
   gradFill.addColorStop(0,`rgba(${goldRgba},0.35)`); gradFill.addColorStop(1,`rgba(${goldRgba},0.02)`);
+  // Use gold color for the line in both themes for better visibility
   chartArea = new Chart(ctx3,{type:'line',
     data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.n),
-      datasets:[{data:exp.map(x=>x.geral),borderColor:colors.linePrimary,backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:goldColor}]},
+      datasets:[{data:exp.map(x=>x.geral),borderColor:goldColor,backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:goldColor}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{
         title:(items)=> exp[items[0].dataIndex] ? exp[items[0].dataIndex].mun : '',
