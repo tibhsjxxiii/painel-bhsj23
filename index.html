@@ -32,6 +32,21 @@
   --chart-line-primary:#0f2a4a;
   --chart-legend-text:#14202e;
 
+  /* Chart palette variables (light) - Pie/Doughnut */
+  --chart-pie-1:#0f2a4a; --chart-pie-2:#b8934a; --chart-pie-3:#0e8f6f;
+  --chart-pie-4:#a9564a; --chart-pie-5:#7a5ea8; --chart-pie-6:#3f7fa6;
+  --chart-pie-7:#e0917f; --chart-pie-8:#2f6d4e; --chart-pie-9:#8bd450;
+  --chart-pie-10:#d9c07e; --chart-pie-11:#4f9e78; --chart-pie-12:#173a63;
+
+  /* Chart palette variables (light) - Category bars */
+  --chart-cat-1:#0e8f6f; --chart-cat-2:#173a63; --chart-cat-3:#b8934a;
+  --chart-cat-4:#a9564a; --chart-cat-5:#7a5ea8; --chart-cat-6:#4f9e78;
+  --chart-cat-7:#3f7fa6;
+
+  /* Chart palette variables (light) - Exam averages */
+  --chart-exam-avg-1:#b8934a; --chart-exam-avg-2:#173a63; --chart-exam-avg-3:#0e8f6f;
+  --chart-exam-avg-4:#7a5ea8; --chart-exam-avg-5:#a9564a; --chart-exam-avg-6:#3f7fa6;
+
   /* Fluid typography scale */
   --fs-xs:clamp(0.65rem,0.6rem+0.25vw,0.75rem);
   --fs-sm:clamp(0.75rem,0.7rem+0.25vw,0.875rem);
@@ -71,6 +86,21 @@
     --chart-grid-color:rgba(255,255,255,0.08);
     --chart-line-primary:#e8edf3;
     --chart-legend-text:#e8edf3;
+
+    /* Chart palette variables (dark) - Pie/Doughnut */
+    --chart-pie-1:#e8edf3; --chart-pie-2:#c9a85c; --chart-pie-3:#2ec4b6;
+    --chart-pie-4:#e57c6b; --chart-pie-5:#7aa8a0; --chart-pie-6:#6ab0c8;
+    --chart-pie-7:#d9a85c; --chart-pie-8:#4fc49e; --chart-pie-9:#a8d46a;
+    --chart-pie-10:#d9c87e; --chart-pie-11:#6fd498; --chart-pie-12:#b8c5d6;
+
+    /* Chart palette variables (dark) - Category bars */
+    --chart-cat-1:#2ec4b6; --chart-cat-2:#b8c5d6; --chart-cat-3:#c9a85c;
+    --chart-cat-4:#e57c6b; --chart-cat-5:#7aa8a0; --chart-cat-6:#6fd498;
+    --chart-cat-7:#6ab0c8;
+
+    /* Chart palette variables (dark) - Exam averages */
+    --chart-exam-avg-1:#c9a85c; --chart-exam-avg-2:#b8c5d6; --chart-exam-avg-3:#2ec4b6;
+    --chart-exam-avg-4:#7aa8a0; --chart-exam-avg-5:#e57c6b; --chart-exam-avg-6:#6ab0c8;
   }
 }
 
@@ -91,6 +121,18 @@
   --chart-grid-color:rgba(15,42,74,0.05);
   --chart-line-primary:#0f2a4a;
   --chart-legend-text:#14202e;
+  /* Chart palette variables (light) - Pie/Doughnut */
+  --chart-pie-1:#0f2a4a; --chart-pie-2:#b8934a; --chart-pie-3:#0e8f6f;
+  --chart-pie-4:#a9564a; --chart-pie-5:#7a5ea8; --chart-pie-6:#3f7fa6;
+  --chart-pie-7:#e0917f; --chart-pie-8:#2f6d4e; --chart-pie-9:#8bd450;
+  --chart-pie-10:#d9c07e; --chart-pie-11:#4f9e78; --chart-pie-12:#173a63;
+  /* Chart palette variables (light) - Category bars */
+  --chart-cat-1:#0e8f6f; --chart-cat-2:#173a63; --chart-cat-3:#b8934a;
+  --chart-cat-4:#a9564a; --chart-cat-5:#7a5ea8; --chart-cat-6:#4f9e78;
+  --chart-cat-7:#3f7fa6;
+  /* Chart palette variables (light) - Exam averages */
+  --chart-exam-avg-1:#b8934a; --chart-exam-avg-2:#173a63; --chart-exam-avg-3:#0e8f6f;
+  --chart-exam-avg-4:#7a5ea8; --chart-exam-avg-5:#a9564a; --chart-exam-avg-6:#3f7fa6;
 }
 :root[data-theme="dark"]{
   --bg:#0b1a2e; --panel:#11243d; --panel-2:#0f1f38;
@@ -109,6 +151,18 @@
   --chart-grid-color:rgba(255,255,255,0.08);
   --chart-line-primary:#e8edf3;
   --chart-legend-text:#e8edf3;
+  /* Chart palette variables (dark) - Pie/Doughnut */
+  --chart-pie-1:#e8edf3; --chart-pie-2:#c9a85c; --chart-pie-3:#2ec4b6;
+  --chart-pie-4:#e57c6b; --chart-pie-5:#7aa8a0; --chart-pie-6:#6ab0c8;
+  --chart-pie-7:#d9a85c; --chart-pie-8:#4fc49e; --chart-pie-9:#a8d46a;
+  --chart-pie-10:#d9c87e; --chart-pie-11:#6fd498; --chart-pie-12:#b8c5d6;
+  /* Chart palette variables (dark) - Category bars */
+  --chart-cat-1:#2ec4b6; --chart-cat-2:#b8c5d6; --chart-cat-3:#c9a85c;
+  --chart-cat-4:#e57c6b; --chart-cat-5:#7aa8a0; --chart-cat-6:#6fd498;
+  --chart-cat-7:#6ab0c8;
+  /* Chart palette variables (dark) - Exam averages */
+  --chart-exam-avg-1:#c9a85c; --chart-exam-avg-2:#b8c5d6; --chart-exam-avg-3:#2ec4b6;
+  --chart-exam-avg-4:#7aa8a0; --chart-exam-avg-5:#e57c6b; --chart-exam-avg-6:#6ab0c8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -381,7 +435,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 16/11/2026 16:22</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 17/11/2026 13:18</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -934,14 +988,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 16:22</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 13:18</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 16/11/2026 16:22</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 17/11/2026 13:18</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1245,7 +1299,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "16/11/2026 16:22";
+const GENERATED_AT = "17/11/2026 13:18";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1327,7 +1381,6 @@ function currentExams(){
 }
 
 const CAT_KEYS = ['consultas','odonto','exames','naoMed','farm','oft','proc'];
-const CAT_COLORS = ['#0e8f6f','#173a63','#b8934a','#a9564a','#7a5ea8','#4f9e78','#3f7fa6'];
 const CAT_LABELS_I18N = {
   pt:["Consultas","Odontologia","Exames","Enfermagem","Farmácia","Oftalmologia","Procedimentos"],
   en:["Consultations","Dentistry","Exams","Nursing","Pharmacy","Ophthalmology","Procedures"],
@@ -2941,11 +2994,12 @@ function renderNavegacao(){
   if(window.HAS_CHART && document.getElementById('chartNav')){
     const colors = getChartColors();
     const ctx = document.getElementById('chartNav').getContext('2d');
+    const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#b8934a';
     chartNav = new Chart(ctx,{type:'bar',
       data:{labels:withValidNav.map(({e})=>`${e.mun} #${e.n}`),
         datasets:[
           {label:t.navColIda, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.idaMin)*10)/10), backgroundColor:colors.linePrimary, borderRadius:4, maxBarThickness:16},
-          {label:t.navColVolta, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:'#b8934a', borderRadius:4, maxBarThickness:16}
+          {label:t.navColVolta, data:withValidNav.map(({nav})=>Math.round(navMinToHours(nav.voltaMin)*10)/10), backgroundColor:goldColor, borderRadius:4, maxBarThickness:16}
         ]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10},color:colors.legendText}}},
         scales:{x:{ticks:{font:{size:8},color:colors.axisText,maxRotation:60,minRotation:60},grid:{display:false}},y:{title:{display:true,text:'h',font:{size:9},color:colors.axisText},grid:{color:colors.gridColor}}}}
@@ -3187,7 +3241,46 @@ let EXAM_AVG_MODE = 'geral';
 
 /* ================= tipo de gráfico selecionável (barra / linha / pizza) ================= */
 const CHART_TYPE_STATE = { specialties:'bar', examsBar:'bar', top10:'bar', cirTop10:'bar', breakdown:'bar' };
-const PIE_PALETTE = ['#0f2a4a','#b8934a','#0e8f6f','#a9564a','#7a5ea8','#3f7fa6','#e0917f','#2f6d4e','#8bd450','#d9c07e','#4f9e78','#173a63'];
+function getPiePalette(){
+  const root = document.documentElement;
+  return [
+    getComputedStyle(root).getPropertyValue('--chart-pie-1').trim() || '#0f2a4a',
+    getComputedStyle(root).getPropertyValue('--chart-pie-2').trim() || '#b8934a',
+    getComputedStyle(root).getPropertyValue('--chart-pie-3').trim() || '#0e8f6f',
+    getComputedStyle(root).getPropertyValue('--chart-pie-4').trim() || '#a9564a',
+    getComputedStyle(root).getPropertyValue('--chart-pie-5').trim() || '#7a5ea8',
+    getComputedStyle(root).getPropertyValue('--chart-pie-6').trim() || '#3f7fa6',
+    getComputedStyle(root).getPropertyValue('--chart-pie-7').trim() || '#e0917f',
+    getComputedStyle(root).getPropertyValue('--chart-pie-8').trim() || '#2f6d4e',
+    getComputedStyle(root).getPropertyValue('--chart-pie-9').trim() || '#8bd450',
+    getComputedStyle(root).getPropertyValue('--chart-pie-10').trim() || '#d9c07e',
+    getComputedStyle(root).getPropertyValue('--chart-pie-11').trim() || '#4f9e78',
+    getComputedStyle(root).getPropertyValue('--chart-pie-12').trim() || '#173a63'
+  ];
+}
+function getCatColors(){
+  const root = document.documentElement;
+  return [
+    getComputedStyle(root).getPropertyValue('--chart-cat-1').trim() || '#0e8f6f',
+    getComputedStyle(root).getPropertyValue('--chart-cat-2').trim() || '#173a63',
+    getComputedStyle(root).getPropertyValue('--chart-cat-3').trim() || '#b8934a',
+    getComputedStyle(root).getPropertyValue('--chart-cat-4').trim() || '#a9564a',
+    getComputedStyle(root).getPropertyValue('--chart-cat-5').trim() || '#7a5ea8',
+    getComputedStyle(root).getPropertyValue('--chart-cat-6').trim() || '#4f9e78',
+    getComputedStyle(root).getPropertyValue('--chart-cat-7').trim() || '#3f7fa6'
+  ];
+}
+function getExamAvgColors(){
+  const root = document.documentElement;
+  return [
+    getComputedStyle(root).getPropertyValue('--chart-exam-avg-1').trim() || '#b8934a',
+    getComputedStyle(root).getPropertyValue('--chart-exam-avg-2').trim() || '#173a63',
+    getComputedStyle(root).getPropertyValue('--chart-exam-avg-3').trim() || '#0e8f6f',
+    getComputedStyle(root).getPropertyValue('--chart-exam-avg-4').trim() || '#7a5ea8',
+    getComputedStyle(root).getPropertyValue('--chart-exam-avg-5').trim() || '#a9564a',
+    getComputedStyle(root).getPropertyValue('--chart-exam-avg-6').trim() || '#3f7fa6'
+  ];
+}
 function getChartColors(){
   // Read CSS variables from document root
   const root = document.documentElement;
@@ -3201,8 +3294,9 @@ function getChartColors(){
 function buildTypedChart(ctx, type, labels, data, color, opts={}){
   const colors = getChartColors();
   if(type==='pie'){
+    const piePalette = getPiePalette();
     return new Chart(ctx,{type:'doughnut',
-      data:{labels, datasets:[{data, backgroundColor:labels.map((_,i)=>PIE_PALETTE[i%PIE_PALETTE.length]), borderWidth:2, borderColor:'#ffffff'}]},
+      data:{labels, datasets:[{data, backgroundColor:labels.map((_,i)=>piePalette[i%piePalette.length]), borderWidth:2, borderColor:'#ffffff'}]},
       options:{responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:colors.legendText,boxWidth:10,font:{size:9}}}}}
     });
   }
@@ -3416,11 +3510,13 @@ function buildAllCharts(){
 
   destroyIfExists(chartArea);
   const ctx3 = document.getElementById('chartArea').getContext('2d');
+  const goldColor = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim() || '#b8934a';
+  const goldRgba = goldColor.startsWith('#') ? goldColor.replace(/^#/, '').match(/.{2}/g).map(c => parseInt(c, 16)).join(',') : '184,147,74';
   const gradFill = ctx3.createLinearGradient(0,0,0,220);
-  gradFill.addColorStop(0,'rgba(184,147,74,0.35)'); gradFill.addColorStop(1,'rgba(184,147,74,0.02)');
+  gradFill.addColorStop(0,`rgba(${goldRgba},0.35)`); gradFill.addColorStop(1,`rgba(${goldRgba},0.02)`);
   chartArea = new Chart(ctx3,{type:'line',
     data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.n),
-      datasets:[{data:exp.map(x=>x.geral),borderColor:colors.linePrimary,backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:'#b8934a'}]},
+      datasets:[{data:exp.map(x=>x.geral),borderColor:colors.linePrimary,backgroundColor:gradFill,fill:true,tension:0.35,pointRadius:2,pointBackgroundColor:goldColor}]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{
         title:(items)=> exp[items[0].dataIndex] ? exp[items[0].dataIndex].mun : '',
@@ -3434,12 +3530,15 @@ function buildAllCharts(){
   if(document.getElementById('chartCirEvol')){
     const t = I18N[CUR_LANG];
     const ctxCE = document.getElementById('chartCirEvol').getContext('2d');
+    const cirMedColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-4').trim() || '#a9564a';
+    const cirBaixaColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-7').trim() || '#e0917f';
+    const internacaoColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-8').trim() || '#2f6d4e';
     chartCirEvol = new Chart(ctxCE,{type:'line',
       data:{labels:exp.map(x=>(YEAR==='all'?x.year+'·':'')+x.n),
         datasets:[
-          {label:t.procCirMedia, data:exp.map(x=>x.cirMedia||0), borderColor:'#a9564a', backgroundColor:'#a9564a', tension:0.3, pointRadius:2},
-          {label:t.procCirBaixa, data:exp.map(x=>x.cirBaixa||0), borderColor:'#e0917f', backgroundColor:'#e0917f', tension:0.3, pointRadius:2},
-          {label:t.catInternacao, data:exp.map(x=>x.internClinCir||0), borderColor:'#2f6d4e', backgroundColor:'#2f6d4e', tension:0.3, pointRadius:2}
+          {label:t.procCirMedia, data:exp.map(x=>x.cirMedia||0), borderColor:cirMedColor, backgroundColor:cirMedColor, tension:0.3, pointRadius:2},
+          {label:t.procCirBaixa, data:exp.map(x=>x.cirBaixa||0), borderColor:cirBaixaColor, backgroundColor:cirBaixaColor, tension:0.3, pointRadius:2},
+          {label:t.catInternacao, data:exp.map(x=>x.internClinCir||0), borderColor:internacaoColor, backgroundColor:internacaoColor, tension:0.3, pointRadius:2}
         ]},
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10},color:colors.legendText}},tooltip:{callbacks:{
@@ -3455,7 +3554,7 @@ function buildAllCharts(){
   if(document.getElementById('chartExamsMini')){
     const ctxEM = document.getElementById('chartExamsMini').getContext('2d');
     chartExamsMini = new Chart(ctxEM,{type:'bar',
-      data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderRadius:5,maxBarThickness:26}]},
+      data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:getCatColors().concat([getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-5').trim() || '#7a5ea8', getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-7').trim() || '#3f7fa6']),borderRadius:5,maxBarThickness:26}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
         scales:{x:{ticks:{font:{size:8},color:colors.axisText,maxRotation:30,minRotation:0},grid:{display:false}},y:{grid:{color:colors.gridColor}}}}
     });
@@ -3466,16 +3565,16 @@ function buildAllCharts(){
   if(document.getElementById('chartBreakdown')){
     const t = I18N[CUR_LANG];
     const BREAKDOWN = [
-      {label:t.catEspecialidade, val:sum(exp,'consultas'), color:'#0f2a4a'},
-      {label:t.catExames, val:sum(exp,'exames'), color:'#3f7fa6'},
-      {label:t.procCirMedia, val:sum(exp,'cirMedia'), color:'#a9564a'},
-      {label:t.procCirBaixa, val:sum(exp,'cirBaixa'), color:'#e0917f'},
-      {label:t.procOdontoL, val:sum(exp,'procOdonto'), color:'#b8934a'},
-      {label:t.catInternacao, val:sum(exp,'internClinCir'), color:'#2f6d4e'},
-      {label:t.catTriagem, val:sum(exp,'naoMed'), color:'#7a5ea8'},
-      {label:t.consultaOdontoL, val:sum(exp,'consultaOdonto'), color:'#d9c07e'},
-      {label:t.catMedicamento, val:sum(exp,'farm'), color:'#4f9e78'},
-      {label:t.catAlimentacao, val:sum(exp,'alim'), color:'#8bd450'},
+      {label:t.catEspecialidade, val:sum(exp,'consultas'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-1').trim() || '#0f2a4a'},
+      {label:t.catExames, val:sum(exp,'exames'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-2').trim() || '#b8934a'},
+      {label:t.procCirMedia, val:sum(exp,'cirMedia'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-4').trim() || '#a9564a'},
+      {label:t.procCirBaixa, val:sum(exp,'cirBaixa'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-7').trim() || '#e0917f'},
+      {label:t.procOdontoL, val:sum(exp,'procOdonto'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-3').trim() || '#0e8f6f'},
+      {label:t.catInternacao, val:sum(exp,'internClinCir'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-8').trim() || '#2f6d4e'},
+      {label:t.catTriagem, val:sum(exp,'naoMed'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-5').trim() || '#7a5ea8'},
+      {label:t.consultaOdontoL, val:sum(exp,'consultaOdonto'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-10').trim() || '#d9c07e'},
+      {label:t.catMedicamento, val:sum(exp,'farm'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-11').trim() || '#4f9e78'},
+      {label:t.catAlimentacao, val:sum(exp,'alim'), color:getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-9').trim() || '#8bd450'},
     ].sort((a,b)=>b.val-a.val);
     const ctxBD = document.getElementById('chartBreakdown').getContext('2d');
     chartBreakdown = buildTypedChart(ctxBD, CHART_TYPE_STATE.breakdown, BREAKDOWN.map(p=>p.label), BREAKDOWN.map(p=>p.val), BREAKDOWN.map(p=>p.color), {indexAxis:'y', maxBarThickness:22, layout:{padding:{right:74}}, valueLabel:CHART_TYPE_STATE.breakdown==='bar', maxRotation:30});
@@ -3492,19 +3591,19 @@ function buildAllCharts(){
   destroyIfExists(chartSpecialties);
   const specSorted = Object.entries(currentSpecialties()).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);
   const ctx4 = document.getElementById('chartSpecialties').getContext('2d');
-  chartSpecialties = buildTypedChart(ctx4, CHART_TYPE_STATE.specialties, specSorted.map(e=>trSpec(e[0])), specSorted.map(e=>e[1]), '#0f2a4a', {indexAxis:'y', maxBarThickness:18, yFontSize:10, maxRotation:30});
+  chartSpecialties = buildTypedChart(ctx4, CHART_TYPE_STATE.specialties, specSorted.map(e=>trSpec(e[0])), specSorted.map(e=>e[1]), getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-1').trim() || '#0f2a4a', {indexAxis:'y', maxBarThickness:18, yFontSize:10, maxRotation:30});
   markLoaded('chartSpecialties');
 
   destroyIfExists(chartExamsBar);
   const ctx5 = document.getElementById('chartExamsBar').getContext('2d');
-  chartExamsBar = buildTypedChart(ctx5, CHART_TYPE_STATE.examsBar, examSorted.map(e=>trExam(e[0])), examSorted.map(e=>e[1]), CAT_COLORS.concat(['#7a5ea8','#3f7fa6']), {maxBarThickness:34});
+  chartExamsBar = buildTypedChart(ctx5, CHART_TYPE_STATE.examsBar, examSorted.map(e=>trExam(e[0])), examSorted.map(e=>e[1]), getCatColors().concat([getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-5').trim() || '#7a5ea8', getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-7').trim() || '#3f7fa6']), {maxBarThickness:34});
   markLoaded('chartExamsBar');
 
   destroyIfExists(chartExamsDonut);
   const ctx6 = document.getElementById('chartExamsDonut').getContext('2d');
   const donutColors = getChartColors();
   chartExamsDonut = new Chart(ctx6,{type:'doughnut',
-    data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:CAT_COLORS.concat(['#7a5ea8','#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
+    data:{labels:examSorted.map(e=>trExam(e[0])),datasets:[{data:examSorted.map(e=>e[1]),backgroundColor:getCatColors().concat([getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-5').trim() || '#7a5ea8', getComputedStyle(document.documentElement).getPropertyValue('--chart-cat-7').trim() || '#3f7fa6']),borderWidth:2,borderColor:'#ffffff'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:donutColors.legendText,boxWidth:10,font:{size:9}}}}}
   });
   markLoaded('chartExamsDonut');
@@ -3543,7 +3642,7 @@ function renderRanking(){
   if(window.HAS_CHART && document.getElementById('chartTop10')){
     const top10 = rows.slice(0,10);
     const ctxT = document.getElementById('chartTop10').getContext('2d');
-    chartTop10 = buildTypedChart(ctxT, CHART_TYPE_STATE.top10, top10.map(r=>r[0]), top10.map(r=>r[1].geral), '#0f2a4a', {indexAxis:'y', maxBarThickness:22, layout:{padding:{right:60}}, valueLabel:CHART_TYPE_STATE.top10==='bar', maxRotation:30});
+    chartTop10 = buildTypedChart(ctxT, CHART_TYPE_STATE.top10, top10.map(r=>r[0]), top10.map(r=>r[1].geral), getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-1').trim() || '#0f2a4a', {indexAxis:'y', maxBarThickness:22, layout:{padding:{right:60}}, valueLabel:CHART_TYPE_STATE.top10==='bar', maxRotation:30});
     markLoaded('chartTop10');
   }
 }
@@ -3573,14 +3672,13 @@ function renderCirurgias(){
   destroyIfExists(chartCirTop10);
   if(window.HAS_CHART && document.getElementById('chartCirTop10')){
     const ctxCT = document.getElementById('chartCirTop10').getContext('2d');
-    chartCirTop10 = buildTypedChart(ctxCT, CHART_TYPE_STATE.cirTop10, rows.map(r=>r[0]), rows.map(r=>r[3]), '#a9564a', {indexAxis:'y', maxBarThickness:22, layout:{padding:{right:60}}, valueLabel:CHART_TYPE_STATE.cirTop10==='bar', maxRotation:30});
+    chartCirTop10 = buildTypedChart(ctxCT, CHART_TYPE_STATE.cirTop10, rows.map(r=>r[0]), rows.map(r=>r[3]), getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-4').trim() || '#a9564a', {indexAxis:'y', maxBarThickness:22, layout:{padding:{right:60}}, valueLabel:CHART_TYPE_STATE.cirTop10==='bar', maxRotation:30});
     markLoaded('chartCirTop10');
   }
 }
 
 /* ================= average exams: geral / por ano / por mês ================= */
 const EXAM_AVG_TYPES = ["Mamografia","Raios-X","Eletrocardiograma","Oftalmologia","Análises Clínicas","Ultrassom"];
-const EXAM_AVG_COLORS = ["#b8934a","#173a63","#0e8f6f","#7a5ea8","#a9564a","#3f7fa6"];
 
 function buildExamAvgChart(){
   if(!window.HAS_CHART || !document.getElementById('chartExamAvg')) return;
@@ -3590,10 +3688,17 @@ function buildExamAvgChart(){
   const labels = EXAM_AVG_TYPES.map(trExam);
   const avgTooltip = { callbacks:{ label:(item)=> `${item.dataset.label ? item.dataset.label+': ' : ''}${fmtAvg(item.parsed.y!==undefined?item.parsed.y:item.parsed)}` } };
   const avgYTicks = { callback:(v)=>fmtAvg(v) };
+  const examAvgColors = getExamAvgColors();
 
   if(EXAM_AVG_MODE === 'ano'){
     const years = YEAR === 'all' ? YEARS : [YEAR];
-    const palette = ['#0f2a4a','#b8934a','#0e8f6f','#a9564a','#7a5ea8'];
+    const palette = [
+      getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-1').trim() || '#0f2a4a',
+      getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-2').trim() || '#b8934a',
+      getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-3').trim() || '#0e8f6f',
+      getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-4').trim() || '#a9564a',
+      getComputedStyle(document.documentElement).getPropertyValue('--chart-pie-5').trim() || '#7a5ea8'
+    ];
     const datasets = years.map((y,i)=>{
       const yExp = ALL_EXPEDITIONS.filter(d=>String(d.year)===String(y));
       const n = yExp.length || 1;
@@ -3614,7 +3719,7 @@ function buildExamAvgChart(){
     const datasets = EXAM_AVG_TYPES.map((k,i)=>({
       label: trExam(k),
       data: buckets.map(b=> b.exp.length ? Math.round((b.exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/b.exp.length)*10)/10 : 0),
-      borderColor: EXAM_AVG_COLORS[i], backgroundColor: EXAM_AVG_COLORS[i], tension:0.3, pointRadius:2
+      borderColor: examAvgColors[i], backgroundColor: examAvgColors[i], tension:0.3, pointRadius:2
     }));
     chartExamAvg = new Chart(ctx,{type:'line',
       data:{labels:months, datasets},
@@ -3626,7 +3731,7 @@ function buildExamAvgChart(){
     const n = exp.length || 1;
     const data = EXAM_AVG_TYPES.map(k=> Math.round((exp.reduce((a,e)=>a+((e.exam&&e.exam[k])||0),0)/n)*10)/10 );
     chartExamAvg = new Chart(ctx,{type:'bar',
-      data:{labels, datasets:[{data, backgroundColor:EXAM_AVG_COLORS, borderRadius:5, maxBarThickness:34}]},
+      data:{labels, datasets:[{data, backgroundColor:examAvgColors, borderRadius:5, maxBarThickness:34}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:avgTooltip},
         scales:{x:{ticks:{font:{size:9},color:colors.axisText},grid:{display:false}},y:{ticks:avgYTicks,grid:{color:colors.gridColor}}}}
     });
