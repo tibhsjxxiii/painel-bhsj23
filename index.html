@@ -464,7 +464,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 18/11/2026 17:23</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 19/11/2026 01:24</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -1017,14 +1017,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 18/11/2026 17:23</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 19/11/2026 01:24</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 18/11/2026 17:23</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 19/11/2026 01:24</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1046,41 +1046,7 @@ async function ensureMapLibre(){
 // Coordenadas aproximadas (lat, lng) dos municípios/comunidades já visitados. Mantida à mão —
 // se um novo município aparecer na planilha e não tiver coordenada aqui, ele simplesmente não
 // aparece no mapa (sem quebrar nada). Manaus é a base do barco.
-const MUN_COORDS = {
-  "Manaus": [-3.1019, -60.0250],
-  "Alvarães": [-3.2233, -64.8039],
-  "Anamã": [-3.5811, -61.3961],
-  "Anori": [-3.7728, -61.6442],
-  "Barreirinha": [-2.7906, -57.0669],
-  "Belém": [-1.4558, -48.5039],
-  "Beruri": [-3.8886, -61.3767],
-  "Boa Vista Do Ramos": [-2.9989, -57.5989],
-  "Borba": [-4.3878, -59.5947],
-  "Caapiranga": [-3.6667, -61.7667],
-  "Careiro Castanho": [-3.8322, -60.1875],
-  "Careiro da Várzea": [-3.2075, -59.8253],
-  "Codajás": [-3.8367, -62.0603],
-  "Itapiranga": [-2.7411, -58.0161],
-  "Manacapuru": [-3.2997, -60.6206],
-  "Manaquiri": [-3.4636, -60.3500],
-  "Nhamundá": [-2.1875, -56.7136],
-  "Novo Airão": [-2.6203, -60.9367],
-  "Novo Aripuanã": [-5.1256, -60.3808],
-  "Novo Remanço": [-3.2183, -59.0258],  // Alias para Novo Remanso I/II
-  "Novo Remanso I": [-3.2183, -59.0258],
-  "Novo Remanso II": [-3.2183, -59.0258],
-  "Parintins": [-2.6283, -56.7358],
-  "Silves": [-2.8125, -58.2536],
-  "São Sebastião Do Uatumã": [-2.5289, -57.7397],
-  "Tefé": [-3.3542, -64.7108],
-  "Urucará": [-2.5364, -57.7597],
-  "Urucurituba": [-2.6844, -57.6691],
-  // Municípios adicionais (2026)
-  "Autazes": [-3.5897, -59.1531],
-  "Barcelos": [0.9846, -62.9306],
-  "Maues": [-3.3894, -61.3066],
-  "Nova Olinda Do Norte": [-3.8361, -59.0569]
-};
+const MUN_COORDS = {"Manaus": [-3.1019, -60.025], "Alvarães": [-3.2233, -64.8039], "Anamã": [-3.5811, -61.3961], "Anori": [-3.7728, -61.6442], "Barreirinha": [-2.7906, -57.0669], "Belém": [-1.4558, -48.5039], "Beruri": [-3.8886, -61.3767], "Boa Vista Do Ramos": [-2.9989, -57.5989], "Borba": [-4.3878, -59.5947], "Caapiranga": [-3.6667, -61.7667], "Careiro Castanho": [-3.8322, -60.1875], "Careiro da Várzea": [-3.2075, -59.8253], "Codajás": [-3.8367, -62.0603], "Itacoatiara": [-3.14, -58.4428], "Itapiranga": [-2.7411, -58.0161], "Manacapuru": [-3.2997, -60.6206], "Manaquiri": [-3.4636, -60.35], "Nhamundá": [-2.1875, -56.7136], "Novo Airão": [-2.6203, -60.9367], "Novo Aripuanã": [-5.1256, -60.3808], "Novo Remanço": [-3.2183, -59.0258], "Novo Remanso I": [-3.2183, -59.0258], "Novo Remanso II": [-3.2183, -59.0258], "Parintins": [-2.6283, -56.7358], "Silves": [-2.8125, -58.2536], "São Sebastião Do Uatumã": [-2.5289, -57.7397], "Tefé": [-3.3542, -64.7108], "Urucará": [-2.5364, -57.7597], "Urucurituba": [-2.6844, -57.6691], "Autazes": [-3.5897, -59.1531], "Barcelos": [0.9846, -62.9306], "Maués": [-3.3894, -61.3066], "Nova Olinda Do Norte": [-3.8361, -59.0569], "Caimbé / Marajai": [0.0, 0.0], "Cinturão Verde/ Tilheiro": [0.0, 0.0], "Comunidade Bom Jesus": [0.0, 0.0], "Comunidade Cametá do Ramos": [0.0, 0.0], "Comunidade Castanhal": [0.0, 0.0], "Comunidade Castanho": [0.0, 0.0], "Comunidade Distrito\\n Terra Preta": [0.0, 0.0], "Comunidade Itapeaçu": [0.0, 0.0], "Comunidade Itália": [0.0, 0.0], "Comunidade Jacaré": [0.0, 0.0], "Comunidade Janaucá": [0.0, 0.0], "Comunidade Juruá": [0.0, 0.0], "Comunidade Liberdade": [0.0, 0.0], "Comunidade Miracauera": [0.0, 0.0], "Comunidade Nossa Senhora\\n Do Carmo": [0.0, 0.0], "Comunidade Santana\\n Do massauari": [0.0, 0.0], "Comunidade Santana/ Cidade": [0.0, 0.0], "Comunidade São Jorge": [0.0, 0.0], "Comunidade São João da Ilha": [0.0, 0.0], "Comunidade São Miguel\\n Do Curuça": [0.0, 0.0], "Comunidade São Sebastião do\\n Tabocal": [0.0, 0.0], "Comunidade Vencendor": [0.0, 0.0], "Comunidade Vila Rica\\n Do Caviana": [0.0, 0.0], "Comunidade Vila do Caiçara": [0.0, 0.0], "Icoaraci – COP30": [0.0, 0.0], "Maues": [0.0, 0.0], "Murituba / Urucurizinho": [0.0, 0.0], "Novo Remanso": [0.0, 0.0], "cidade": [0.0, 0.0]};
 
 async function ensureChart(){
   if(window.Chart) return true;
@@ -1328,7 +1294,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "18/11/2026 17:23";
+const GENERATED_AT = "19/11/2026 01:24";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2531,7 +2497,7 @@ function applyI18n(){
   if(upd) upd.textContent = t.updatedPrefix + GENERATED_AT;
   const footerEl = document.querySelector('[data-i18n="footerText"]');
   if(footerEl && t.footerText) footerEl.textContent = t.footerText.replace('{date}', GENERATED_AT);
-  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); gerarComparativo(ALL_EXPEDITIONS); }
+  if(chartsInitialized){ renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); gerarComparativo(currentExpeditions()); }
 }
 
 /* ================= mobile nav toggle ================= */
@@ -2761,7 +2727,7 @@ function renderYearSelector(){
   el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
     YEAR = b.dataset.year;
     renderYearSelector();
-    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); gerarComparativo(ALL_EXPEDITIONS);
+    renderDashboard(); renderVoyage(); buildAllCharts(); renderRanking(); renderCirurgias(); buildExamAvgChart(); renderReport(); renderNavegacao(); gerarComparativo(currentExpeditions());
     writeUrlState();
   }));
 }
@@ -4727,7 +4693,7 @@ renderRanking();
 renderCirurgias();
 buildExamAvgChart();
 renderNavegacao();
-gerarComparativo(ALL_EXPEDITIONS);
+gerarComparativo(currentExpeditions());
 
 renderReport();
 chartsInitialized = true;
