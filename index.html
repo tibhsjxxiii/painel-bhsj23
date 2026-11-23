@@ -464,7 +464,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 22/11/2026 19:28</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 22/11/2026 21:05</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -511,7 +511,10 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
 
           <!-- Viagens da Expedição (Compacto) -->
           <div class="panel" id="tripInfoPanelCompact" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100px;border-left:3px solid var(--teal);">
-            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;" data-i18n="tripInfoTitle">Viagens da Expedição</div>
+            <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+              <span data-i18n="tripInfoTitle">Viagens da Expedição</span>
+              <button class="info-icon" data-info="infoNavKm" style="vertical-align:middle;">?</button>
+            </div>
             <div id="tripInfoCompact" style="font-size:0.75rem;color:var(--navy);"></div>
           </div>
 
@@ -656,8 +659,8 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div class="stack">
         <div class="bignum-row">
           <div class="bignum"><div class="v mono" id="bigNavHoras">—</div><div class="l" data-i18n="navBigHoras">Horas Navegando</div></div>
+          <div class="bignum"><div class="v mono" id="bigNavKm">—</div><div class="l" data-i18n="navBigKm">Distância Navegada</div><button class="info-icon" data-info="infoNavKm" style="margin-left:6px;vertical-align:top;">?</button></div>
           <div class="bignum"><div class="v mono" id="bigNavDias">—</div><div class="l" data-i18n="navBigDias">Média de Dias por Expedição</div></div>
-          <div class="bignum"><div class="v mono" id="bigNavIncidente">—</div><div class="l" data-i18n="navBigIncidente">Horas Perdidas (Incidentes)</div></div>
         </div>
         <div class="panel">
           <div class="panel-title"><span data-i18n="navMapTitle">Mapa das Expedições</span><button class="info-icon" data-info="infoNavMap">i</button></div>
@@ -677,7 +680,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           <div class="panel-title"><span data-i18n="navTableTitle">Detalhamento por Expedição</span></div>
           <table><thead><tr>
             <th data-i18n="colExp">Expedição</th><th data-i18n="colMun">Município / Comunidade</th>
-            <th data-i18n="navColDias">Dias</th><th data-i18n="navColIda">Ida</th><th data-i18n="navColVolta">Volta</th><th data-i18n="navColNota">Observação</th>
+            <th data-i18n="navColDias">Dias</th><th data-i18n="navColIda">Ida</th><th data-i18n="navColVolta">Volta</th><th data-i18n="navColKm">Distância (km)</th><button class="info-icon" data-info="infoNavKm" style="vertical-align:middle;">?</button><th data-i18n="navColNota">Observação</th>
           </tr></thead><tbody id="navTableBody"></tbody></table>
         </div>
       </div>
@@ -1017,14 +1020,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 22/11/2026 19:28</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 22/11/2026 21:05</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 22/11/2026 19:28</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 22/11/2026 21:05</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1295,7 +1298,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "22/11/2026 19:28";
+const GENERATED_AT = "22/11/2026 21:05";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -1525,17 +1528,18 @@ const I18N = {
   navNavegacao:"Navegação",
   navBigHoras:"Horas Navegando",
   navBigDias:"Média de Dias por Expedição",
-  navBigIncidente:"Horas Perdidas (Incidentes)",
   navBigKm:"Distância Percorrida (estimada)",
   navMn:"milhas náuticas",
   navChartTitle:"Navegação por Expedição — Ida vs. Volta",
   navChartSub:"Horas de navegação de ida e de volta, na ordem cronológica das expedições.",
   infoNavChart:"Cada barra mostra quantas horas o barco navegou na ida e na volta daquela expedição. Diferenças grandes entre ida e volta podem indicar corrente do rio, parada em mais de uma comunidade, ou algum imprevisto operacional.",
+  infoNavKm:"A distância em km é uma ESTIMATIVA baseada no tempo real de navegação (ida + volta) multiplicado pela velocidade média calibrada de 14,15 km/h. Esta velocidade foi calculada a partir de expedições com distância fluvial conhecida (Tefé e Novo Aripuanã). O barco não navega em linha reta — segue o curso dos rios com curvas, correntezas na descida e subida, e paradas em comunidades. Os valores reais podem variar.",
   navHighlightTitle:"Destaques Operacionais",
   navTableTitle:"Detalhamento por Expedição",
   navColDias:"Dias",
   navColIda:"Ida",
   navColVolta:"Volta",
+  navColKm:"Distância (km) (estimada)",
   navColNota:"Observação",
   graphsTitle:"Gráficos Interativos",
   chartCompTitle:"Comparativo 2025 vs 2026",
@@ -1730,17 +1734,18 @@ const I18N = {
   navNavegacao:"Navigation",
   navBigHoras:"Hours Navigated",
   navBigDias:"Average Days per Expedition",
-  navBigIncidente:"Hours Lost (Incidents)",
   navBigKm:"Distance Traveled (estimated)",
   navMn:"nautical miles",
   navChartTitle:"Navigation by Expedition — Outbound vs. Return",
   navChartSub:"Outbound and return navigation hours, in chronological order of expeditions.",
   infoNavChart:"Each bar shows how many hours the boat navigated outbound and on the return of that expedition. Large differences between the two can indicate river current, a stop at more than one community, or an operational incident.",
+  infoNavKm:"The distance in km is an ESTIMATE based on actual navigation time (outbound + return) multiplied by the calibrated average speed of 14.15 km/h. This speed was calculated from expeditions with known river distances (Tefé and Novo Aripuanã). The boat does not travel in a straight line — it follows the river course with curves, currents on the way down and up, and stops at communities. Actual values may vary.",
   navHighlightTitle:"Operational Highlights",
   navTableTitle:"Expedition Breakdown",
   navColDias:"Days",
   navColIda:"Outbound",
   navColVolta:"Return",
+  navColKm:"Distance (km) (estimated)",
   navColNota:"Note",
   graphsTitle:"Interactive Graphs",
   chartCompTitle:"Comparison 2025 vs 2026",
@@ -1751,7 +1756,7 @@ const I18N = {
   chartMediaExp:"Avg/Exp",
   tripInfoTitle:"Expedition Travel",
   tripInfoSub:"The boat's navigation time (based on departure/arrival times) — see the Navigation menu for the full breakdown.",
-  infoTripInfo:"Summary of how much time the boat spends navigating, calculated from each expedition's departure and arrival times. * Distance is a straight-line estimate (Manaus to each municipality, round trip) — the actual river distance is greater, since the river winds.",
+  infoTripInfo:"Summary of how much time the boat spends navigating, calculated from each expedition's departure and arrival times. * Distance uses actual navigation time per expedition multiplied by an average speed of 14.15 km/h — calibrated from 2 destinations with known real river distance (Tefé and Novo Aripuanã). Since it uses real time, this estimate already reflects river curves, unlike a simple straight-line distance on the map.",
   navLongest:"Longest expedition by navigation time",
   navMostIncident:"Expedition with the most downtime",
   navMapTitle:"Expedition Map",
@@ -1920,17 +1925,18 @@ const I18N = {
   navNavegacao:"Navigation",
   navBigHoras:"Navigationsstunden",
   navBigDias:"Durchschnittliche Tage pro Expedition",
-  navBigIncidente:"Verlorene Stunden (Zwischenfälle)",
   navBigKm:"Zurückgelegte Strecke (geschätzt)",
   navMn:"Seemeilen",
   navChartTitle:"Navigation pro Expedition — Hin- vs. Rückfahrt",
   navChartSub:"Navigationsstunden der Hin- und Rückfahrt, in chronologischer Reihenfolge der Expeditionen.",
   infoNavChart:"Jeder Balken zeigt, wie viele Stunden das Boot bei der Hin- und Rückfahrt dieser Expedition navigiert ist. Große Unterschiede können auf Flussströmung, einen Halt an mehr als einer Gemeinde oder einen Betriebsvorfall hinweisen.",
+  infoNavKm:"Die Distanz in km ist eine SCHÄTZUNG basierend auf der tatsächlichen Navigationszeit (Hin- + Rückfahrt) multipliziert mit der kalibrierten Durchschnittsgeschwindigkeit von 14,15 km/h. Diese Geschwindigkeit wurde aus Expeditionen mit bekannten Flussstrecken (Tefé und Novo Aripuanã) berechnet. Das Boot fährt nicht in gerader Linie — es folgt dem Flusslauf mit Kurven, Strömungen tal- und bergauf sowie Stopps in Gemeinden. Die tatsächlichen Werte können abweichen.",
   navHighlightTitle:"Betriebliche Highlights",
   navTableTitle:"Aufschlüsselung nach Expedition",
   navColDias:"Tage",
   navColIda:"Hinfahrt",
   navColVolta:"Rückfahrt",
+  navColKm:"Distanz (km) (geschätzt)",
   navColNota:"Anmerkung",
   graphsTitle:"Interaktive Grafiken",
   chartCompTitle:"Vergleich 2025 vs 2026",
@@ -1941,7 +1947,7 @@ const I18N = {
   chartMediaExp:"Ø/Exp",
   tripInfoTitle:"Expeditionsreisen",
   tripInfoSub:"Die Navigationszeit des Bootes (basierend auf Abfahrts-/Ankunftszeiten) — siehe Menü Navigation für die vollständige Aufschlüsselung.",
-  infoTripInfo:"Zusammenfassung der Navigationszeit des Bootes, berechnet aus den Abfahrts- und Ankunftszeiten jeder Expedition — eine von der Behandlungstabelle unabhängige Quelle.",
+  infoTripInfo:"Zusammenfassung der Navigationszeit des Bootes, berechnet aus den Abfahrts- und Ankunftszeiten jeder Expedition. * Die Distanz verwendet die tatsächliche Navigationszeit jeder Expedition multipliziert mit einer Durchschnittsgeschwindigkeit von 14,15 km/h — kalibriert anhand von 2 Zielen mit bekanntem realem Flussabstand (Tefé und Novo Aripuanã). Da echte Zeit verwendet wird, spiegelt diese Schätzung bereits Flusskurven wider, im Gegensatz zu einer einfachen Luftlinienentfernung auf der Karte.",
   navLongest:"Längste Expedition nach Navigationszeit",
   navMostIncident:"Expedition mit der meisten Ausfallzeit",
   navMapTitle:"Expeditionskarte",
@@ -2106,17 +2112,18 @@ const I18N = {
   navNavegacao:"Navegación",
   navBigHoras:"Horas Navegando",
   navBigDias:"Promedio de Días por Expedición",
-  navBigIncidente:"Horas Perdidas (Incidentes)",
   navBigKm:"Distancia Recorrida (estimada)",
   navMn:"millas náuticas",
   navChartTitle:"Navegación por Expedición — Ida vs. Vuelta",
   navChartSub:"Horas de navegación de ida y vuelta, en orden cronológico de las expediciones.",
   infoNavChart:"Cada barra muestra cuántas horas navegó el barco de ida y de vuelta en esa expedición. Diferencias grandes entre ida y vuelta pueden indicar corriente del río, parada en más de una comunidad, o algún incidente operativo.",
+  infoNavKm:"La distancia en km es una ESTIMACIÓN basada en el tiempo real de navegación (ida + vuelta) multiplicado por la velocidad promedio calibrada de 14,15 km/h. Esta velocidad se calculó a partir de expediciones con distancias fluviales conocidas (Tefé y Novo Aripuanã). El barco no navega en línea recta — sigue el curso de los ríos con curvas, corrientes en la bajada y subida, y paradas en comunidades. Los valores reales pueden variar.",
   navHighlightTitle:"Destacados Operativos",
   navTableTitle:"Detalle por Expedición",
   navColDias:"Días",
   navColIda:"Ida",
   navColVolta:"Vuelta",
+  navColKm:"Distancia (km) (estimada)",
   navColNota:"Observación",
   graphsTitle:"Gráficos Interactivos",
   chartCompTitle:"Comparación 2025 vs 2026",
@@ -2127,7 +2134,7 @@ const I18N = {
   chartMediaExp:"Promedio/Exp",
   tripInfoTitle:"Viajes de la Expedición",
   tripInfoSub:"Tiempo de navegación del barco (datos de horario de salida y llegada) — vea el menú Navegación para el detalle completo.",
-  infoTripInfo:"Resumen del tiempo que el barco pasa navegando, calculado a partir de los horarios de salida y llegada de cada expedición — dato independiente de la planilla de atenciones.",
+  infoTripInfo:"Resumen del tiempo que el barco pasa navegando, calculado a partir de los horarios de salida y llegada de cada expedición. * La distancia usa el tiempo real de navegación de cada expedición multiplicado por una velocidad media de 14,15 km/h — calibrada a partir de 2 destinos con distancia fluvial real conocida (Tefé y Novo Aripuanã). Como usa el tiempo real, esta estimación ya refleja las curvas del río, a diferencia de una simple distancia en línea recta en el mapa.",
   navLongest:"Expedición más larga en navegación",
   navMostIncident:"Expedición con más tiempo de parada",
   navMapTitle:"Mapa de las Expediciones",
@@ -2394,17 +2401,18 @@ const I18N = {
   navNavegacao:"Навигация",
   navBigHoras:"Часов в пути",
   navBigDias:"Среднее число дней на экспедицию",
-  navBigIncidente:"Часов потеряно (инциденты)",
   navBigKm:"Пройденное расстояние (оценка)",
   navMn:"морских миль",
   navChartTitle:"Навигация по экспедициям — Туда и обратно",
   navChartSub:"Часы навигации туда и обратно, в хронологическом порядке экспедиций.",
   infoNavChart:"Каждый столбец показывает, сколько часов судно шло туда и обратно в этой экспедиции. Большая разница между ними может указывать на течение реки, остановку более чем в одной общине или технический инцидент.",
+  infoNavKm:"Расстояние в км — это ОЦЕНКА, основанная на реальном времени навигации (туда + обратно), умноженной на калиброванную среднюю скорость 14,15 км/ч. Скорость вычислена по экспедициям с известными речными расстояниями (Тефэ и Ново Арипуанья). Судно не движется по прямой — оно следует по руслу реки с поворотами, течениями при спуске и подъеме, и остановками в общинах. Реальные значения могут отличаться.",
   navHighlightTitle:"Эксплуатационные показатели",
   navTableTitle:"Детализация по экспедициям",
   navColDias:"Дней",
   navColIda:"Туда",
   navColVolta:"Обратно",
+  navColKm:"Расстояние (км) (оценка)",
   navColNota:"Примечание",
   graphsTitle:"Интерактивные графики",
   chartCompTitle:"Сравнение 2025 vs 2026",
@@ -2648,6 +2656,15 @@ async function exportViewPdf(viewName){
       const municipios = new Set(exp.map(d=>d.mun));
       const avgPerExp = exp.length? totalGeral/exp.length : 0;
 
+      // Calcular km navegados para o relatório
+      const withNavReport = exp.map(e=>({e, nav:getNavData(e)||{idaMin:0,voltaMin:0,extraMin:0}}));
+      const withValidNavReport = withNavReport.filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
+      let totalKmReport = 0;
+      if(withValidNavReport.length) {
+        const totalMinReport = withValidNavReport.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+(x.nav.extraMin||0),0);
+        totalKmReport = (totalMinReport / 60 * AVG_SPEED_KMH).toFixed(0);
+      }
+
       addTableSection('Indicadores Principais', '', [I18N[CUR_LANG].reportColIndicador, I18N[CUR_LANG].reportColValor], ()=>[
         [I18N[CUR_LANG].miniExpL, String(exp.length)],
         [I18N[CUR_LANG].miniMunL, String(municipios.size)],
@@ -2658,6 +2675,7 @@ async function exportViewPdf(viewName){
         [I18N[CUR_LANG].pacientesL, totalPacientes>0 ? fmt(totalPacientes) : I18N[CUR_LANG].pacientesNA],
         [I18N[CUR_LANG].miniAlimL, fmt(totalAlim)],
         [I18N[CUR_LANG].miniAvgL, fmt(Math.round(avgPerExp))],
+        ['Distância Navegada (km)', Number(totalKmReport).toLocaleString('pt-BR')+' km'],
       ]);
       break;
 
@@ -2674,7 +2692,7 @@ async function exportViewPdf(viewName){
       break;
 
     case 'navegacao':
-      addTableSection('Detalhamento por Expedição', 'navTableBody', [I18N[CUR_LANG].colExp, I18N[CUR_LANG].colMun, I18N[CUR_LANG].navColDias, I18N[CUR_LANG].navColIda, I18N[CUR_LANG].navColVolta, I18N[CUR_LANG].navColNota]);
+      addTableSection('Detalhamento por Expedição', 'navTableBody', [I18N[CUR_LANG].colExp, I18N[CUR_LANG].colMun, I18N[CUR_LANG].navColDias, I18N[CUR_LANG].navColIda, I18N[CUR_LANG].navColVolta, 'Distância (km)', I18N[CUR_LANG].navColNota]);
       break;
 
     case 'municipios':
@@ -2846,8 +2864,12 @@ function renderTripInfo(){
   const totalMin = totalIdaMin + totalVoltaMin;
   const avgDias = withNav.length > 0 ? withNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withNav.length : 0;
 
+  // Calcular km navegados (velocidade média calibrada 14.15 km/h)
+  const totalHoras = totalMin / 60;
+  const totalKm = (totalHoras * AVG_SPEED_KMH).toFixed(0);
+
   // Formatar valores
-  const horasTotal = (totalMin / 60).toFixed(1);
+  const horasTotal = totalHoras.toFixed(1);
   const avgDiasStr = avgDias.toFixed(1);
 
   // Renderizar painel compacto
@@ -2856,6 +2878,10 @@ function renderTripInfo(){
       <div>
         <div style="font-size:0.55rem;color:var(--muted);text-transform:uppercase;font-weight:600;">${t.navBigHoras}</div>
         <div class="mono" style="font-size:0.95rem;font-weight:700;color:var(--navy);">${horasTotal}h</div>
+      </div>
+      <div>
+        <div style="font-size:0.55rem;color:var(--muted);text-transform:uppercase;font-weight:600;">${t.navBigKm || 'Distância Navegada'}</div>
+        <div class="mono" style="font-size:0.95rem;font-weight:700;color:var(--teal);">${Number(totalKm).toLocaleString('pt-BR')} km</div>
       </div>
       <div>
         <div style="font-size:0.55rem;color:var(--muted);text-transform:uppercase;font-weight:600;">${t.navBigDias}</div>
@@ -2900,6 +2926,13 @@ async function renderNavMap(){
   function popupHtml(label, exps){
     const rows = exps.map(e=>{
       const nav = getNavData(e);
+      if (nav && nav.idaMin && nav.voltaMin) {
+        const horasTotal = (nav.idaMin + nav.voltaMin + (nav.extraMin||0)) / 60;
+        const kmEst = (horasTotal * AVG_SPEED_KMH).toFixed(0);
+        const navText = ` · ${fmtAvg(navMinToHours(nav.idaMin))}h${t.navColIda.slice(0,1).toLowerCase()} / ${fmtAvg(navMinToHours(nav.voltaMin))}h${t.navColVolta.slice(0,1).toLowerCase()} · ${Number(kmEst).toLocaleString('pt-BR')} km`;
+        const comText = nav && nav.comunidade && nav.comunidade !== label ? ` — ${nav.comunidade}` : '';
+        return `<div style="padding:3px 0;border-bottom:1px solid var(--line);font-size:0.78rem;color:var(--text);">#${e.n}${comText}<br><span style="color:var(--muted-2);">${e.data}${navText}</span></div>`;
+      }
       const navText = nav ? ` · ${fmtAvg(navMinToHours(nav.idaMin))}h${t.navColIda.slice(0,1).toLowerCase()} / ${fmtAvg(navMinToHours(nav.voltaMin))}h${t.navColVolta.slice(0,1).toLowerCase()}` : '';
       const comText = nav && nav.comunidade && nav.comunidade !== label ? ` — ${nav.comunidade}` : '';
       return `<div style="padding:3px 0;border-bottom:1px solid var(--line);font-size:0.78rem;color:var(--text);">#${e.n}${comText}<br><span style="color:var(--muted-2);">${e.data}${navText}</span></div>`;
@@ -2963,8 +2996,8 @@ function renderNavegacao(){
   const withValidNav = withNav.filter(x=>x.nav && x.nav.idaMin && x.nav.voltaMin);
   if(!withValidNav.length){
     document.getElementById('bigNavHoras').textContent = '—';
+    document.getElementById('bigNavKm').textContent = '—';
     document.getElementById('bigNavDias').textContent = '—';
-    document.getElementById('bigNavIncidente').textContent = '—';
     document.getElementById('navTableBody').innerHTML = '';
     document.getElementById('navHighlightPanel').style.display = 'none';
     destroyIfExists(chartNav);
@@ -2972,28 +3005,30 @@ function renderNavegacao(){
   }
 
   const totalMin = withValidNav.reduce((a,x)=>a+x.nav.idaMin+x.nav.voltaMin+x.nav.extraMin,0);
-  const incidentMin = withValidNav.reduce((a,x)=>a+x.nav.extraMin,0);
+  const totalHoras = totalMin / 60;
+  const totalKm = (totalHoras * AVG_SPEED_KMH).toFixed(0);
   const avgDias = withValidNav.reduce((a,x)=>a+(parseFloat(x.nav.diasTotal)||0),0)/withValidNav.length;
   document.getElementById('bigNavHoras').textContent = fmtAvg(navMinToHours(totalMin))+'h';
   document.getElementById('bigNavDias').textContent = fmtAvg(avgDias);
-  document.getElementById('bigNavIncidente').textContent = fmtAvg(navMinToHours(incidentMin))+'h';
+  document.getElementById('bigNavKm').textContent = Number(totalKm).toLocaleString('pt-BR')+' km';
 
   // table
-  document.getElementById('navTableBody').innerHTML = withNav.map(({e,nav})=>`
-    <tr><td>${e.mun} #${e.n}</td><td>${nav.comunidade}</td><td class="mono">${nav.diasTotal}</td>
+  document.getElementById('navTableBody').innerHTML = withNav.map(({e,nav})=>{
+    const horasTotal = (nav.idaMin + nav.voltaMin + (nav.extraMin||0)) / 60;
+    const kmEst = (horasTotal * AVG_SPEED_KMH).toFixed(0);
+    return `<tr><td>${e.mun} #${e.n}</td><td>${nav.comunidade}</td><td class="mono">${nav.diasTotal}</td>
     <td class="mono">${minToHHMM(nav.idaMin)}h</td><td class="mono">${minToHHMM(nav.voltaMin)}h</td>
-    <td style="font-size:0.78rem;color:var(--muted);">${nav.nota||''}</td></tr>`).join('');
+    <td class="mono">${Number(kmEst).toLocaleString('pt-BR')} km</td>
+    <td style="font-size:0.78rem;color:var(--muted);">${nav.nota||''}</td></tr>`;
+  }).join('');
 
-  // highlights: longest total nav time + most incident time
+  // highlights: longest total nav time + most distance
   const longest = [...withValidNav].sort((a,b)=>(b.nav.idaMin+b.nav.voltaMin+b.nav.extraMin)-(a.nav.idaMin+a.nav.voltaMin+a.nav.extraMin))[0];
-  const incidentOnes = withValidNav.filter(x=>x.nav.extraMin>0).sort((a,b)=>b.nav.extraMin-a.nav.extraMin);
+  const longestKm = ((longest.nav.idaMin + longest.nav.voltaMin + (longest.nav.extraMin||0)) / 60 * AVG_SPEED_KMH).toFixed(0);
   const hlPanel = document.getElementById('navHighlightPanel');
-  if(longest || incidentOnes.length){
+  if(longest){
     hlPanel.style.display = '';
-    let html = `<div style="margin-bottom:10px;"><span style="color:var(--muted);font-size:0.8rem;">${t.navLongest}:</span> <strong>${longest.e.mun} #${longest.e.n}</strong> — ${fmtAvg(navMinToHours(longest.nav.idaMin+longest.nav.voltaMin+longest.nav.extraMin))}h (${longest.nav.diasTotal} dias)</div>`;
-    if(incidentOnes.length){
-      html += `<div><span style="color:var(--muted);font-size:0.8rem;">${t.navMostIncident}:</span> <strong>${incidentOnes[0].e.mun} #${incidentOnes[0].e.n}</strong> — ${fmtAvg(navMinToHours(incidentOnes[0].nav.extraMin))}h (${incidentOnes[0].nav.nota||''})</div>`;
-    }
+    let html = `<div style="margin-bottom:10px;"><span style="color:var(--muted);font-size:0.8rem;">${t.navLongest}:</span> <strong>${longest.e.mun} #${longest.e.n}</strong> — ${fmtAvg(navMinToHours(longest.nav.idaMin+longest.nav.voltaMin+longest.nav.extraMin))}h / ${Number(longestKm).toLocaleString('pt-BR')} km (${longest.nav.diasTotal} dias)</div>`;
     document.getElementById('navHighlightBody').innerHTML = html;
   } else { hlPanel.style.display = 'none'; }
 
