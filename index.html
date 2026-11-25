@@ -464,7 +464,7 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
       <div>
         <h1 class="serif" data-i18n="brandTitle">Barco Hospital São João XXIII</h1>
         <div class="sub" data-i18n="brandSub">Painel Executivo de Expedições · Amazonas</div>
-        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 25/11/2026 17:49</div>
+        <div class="updated-badge" data-i18n-prefix="updatedPrefix">Atualizado em 25/11/2026 19:44</div>
       </div>
       <div class="topbar-controls">
         <button id="btnLastExp" class="report-btn" style="display:flex;align-items:center;gap:8px;background:var(--gold);">
@@ -1028,14 +1028,14 @@ code.inline{background:var(--navy-soft);padding:2px 6px;border-radius:4px;font-f
           </section>
 
           <div class="report-doc-footer">
-            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 25/11/2026 17:49</div>
+            <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 25/11/2026 19:44</div>
             <div data-i18n="footerLgpd">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
           </div>
         </div>
       </div>
     </div>
     <footer class="app-footer">
-      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 25/11/2026 17:49</div>
+      <div data-i18n="footerText">Fonte: planilha oficial de expedições · Extração programática, linha por linha · Última atualização: 25/11/2026 19:44</div>
       <div data-i18n="footerLgpd" style="margin-top:3px;">Este painel contém apenas dados agregados de atendimento (contagens), sem qualquer informação pessoal identificável de pacientes.</div>
     </footer>
   </main>
@@ -1306,7 +1306,7 @@ const EXAMS_BY_YEAR = {"2025": {"Raios-X": 4807, "Mamografia": 3624, "Ultrassom"
     if(exp.exam) exp.exam = mergeDict(exp.exam, examCanon);
   });
 })();
-const GENERATED_AT = "25/11/2026 17:49";
+const GENERATED_AT = "25/11/2026 19:44";
 
 // Dados anuais de pacientes atendidos e atendimentos gerais — extraídos automaticamente
 // da planilha de expedições pelo gerador de dashboard.
@@ -2739,7 +2739,7 @@ async function exportViewPdf(viewName){
       break;
 
     case 'navegacao':
-      addTableSection('Detalhamento por Expedição', 'navTableBody', [I18N[CUR_LANG].colExp, I18N[CUR_LANG].colMun, I18N[CUR_LANG].navColDias, I18N[CUR_LANG].navColIda, I18N[CUR_LANG].navColVolta, 'Distância (km)', I18N[CUR_LANG].navColNota]);
+      addTableSection('Detalhamento por Expedição', 'navTableBody', [I18N[CUR_LANG].colExp, I18N[CUR_LANG].colMun, I18N[CUR_LANG].navColDias, I18N[CUR_LANG].navColIda, I18N[CUR_LANG].navColVolta, 'Distância (km)', I18N[CUR_LANG].navColDiesel, I18N[CUR_LANG].navColNota]);
       break;
 
     case 'municipios':
